@@ -1,0 +1,54 @@
+# Compiled Object files
+*.slo
+*.lo
+*.o
+*.obj
+
+# Precompiled Headers
+*.gch
+*.pch
+
+# Compiled Dynamic libraries
+*.so
+*.dylib
+*.dll
+
+# Fortran module files
+*.mod
+*.smod
+
+# Compiled Static libraries
+*.lai
+*.la
+*.a
+*.lib
+
+# Executables
+*.exe
+*.out
+*.app
+bin/
+#Vim
+*.swp
+#Clion
+**/.idea
+#Mesos
+**/MesosWA
+#Generated files protobuf
+**/GeneretedFiles
+*.cbp
+# Cmake
+CMakeCache.txt
+!*.cmake
+!cmake/*
+CMakeFiles/
+Makefile
+#ctags
+tags
+ctags.bash
+.tags/
+#YouCompleteMe
+*ycm*
+#Third Party
+Third_Party/*
+!Third_Party/Patch/*

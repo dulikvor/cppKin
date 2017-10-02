@@ -1,0 +1,42 @@
+project(cppKin CXX)
+cmake_minimum_required(VERSION 3.0)
+
+set (CMAKE_CXX_STANDARD 14)
+set (CMAKE_CXX_STANDARD_REQUIRED ON)
+set (CMAKE_COLOR_MAKEFILE ON)
+set (CMAKE_CXX_EXTENSIONS OFF)
+set (CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} -fPIC)
+
+if (NOT CMAKE_BUILD_TYPE)
+    message(STATUS "Default build type 'Debug'")
+    set(CMAKE_BUILD_TYPE DEBUG CACHE STRING "" FORCE )
+else()
+    string(TOUPPER ${CMAKE_BUILD_TYPE} CMAKE_BUILD_TYPE)
+    message(STATUS "Build type: ${CMAKE_BUILD_TYPE}")
+endif()
+
+set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
+set(PROJECT_DIR ${CMAKE_CURRENT_SOURCE_DIR})
+list(APPEND CMAKE_PREFIX_PATH ${EXTERNAL_PROJECT_DIR})
+
+if(3RD_PARTY_INSTALL_STEP)
+    find_package(SpdLog REQUIRED)
+    include(installThirdParty)
+endif()
+
+if(COMPILATION_STEP)
+    set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+    set(PROJECT_DIR ${CMAKE_CURRENT_SOURCE_DIR})
+    set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_DIR}/bin)
+    set(CMAKE_LIBRARY_OUTPUT_DIRECTORY  ${PROJECT_DIR}/bin)
+    set(CMAKE_BINARY_DIR ${PROJECT_DIR}/bin)
+    set(EXECUTABLE_OUTPUT_PATH ${PROJECT_DIR}/bin)
+    set(PROJECT_3RD_LOC ${CMAKE_CURRENT_SOURCE_DIR}/Third_Party)
+    #Pre build step
+    set(CORE_NO_3RD_PARTY True)
+    set(CORE_NO_GLOBAL_HANDLING True)
+    add_subdirectory(${PROJECT_DIR}/Core)
+
+    include_directories(. ..  ${PROJECT_DIR}/src ${PROJECT_3RD_LOC}/include)
+    add_library(cppKin STATIC src/Trace.h src/SpanContainer.h src/SpanContainer.cpp)
+endif()
