@@ -21,6 +21,7 @@ list(APPEND CMAKE_PREFIX_PATH ${EXTERNAL_PROJECT_DIR})
 
 if(3RD_PARTY_INSTALL_STEP)
     find_package(SpdLog REQUIRED)
+    find_package(Thrift REQUIRED)
     include(installThirdParty)
 endif()
 
