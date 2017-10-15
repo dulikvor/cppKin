@@ -23,6 +23,7 @@ if(3RD_PARTY_INSTALL_STEP)
     find_package(SpdLog REQUIRED)
     find_package(Thrift REQUIRED)
     include(installThirdParty)
+    add_custom_target(THRIFT_BUILD COMMAND ${PROJECT_DIR}/IDL/GenerateZipkin.bash ${PROJECT_DIR})
 endif()
 
 #if(COMPILATION_STEP)
@@ -40,4 +41,5 @@ endif()
 
     include_directories(. ..  ${PROJECT_DIR}/src ${PROJECT_3RD_LOC}/include)
     add_library(cppKin STATIC src/Trace.h src/SpanContainer.h src/SpanContainer.cpp src/Span.cpp src/Span.h src/AnnotationType.cpp src/AnnotationType.h src/Annotation.h src/SimpleAnnotation.cpp src/SimpleAnnotation.h src/cppkin.h src/Trace.cpp)
+    add_dependencies(cppKin THRIFT_BUILD)
 #endif()
