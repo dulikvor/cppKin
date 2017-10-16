@@ -13,28 +13,36 @@ namespace cppkin
     class Span
     {
     public:
+        typedef std::vector<std::unique_ptr<Annotation>> Annotations;
         struct SpanHeader
         {
         public:
-            SpanHeader(const std::string& name, uint_fast64_t traceID, uint_fast64_t parentID, uint_fast64_t id);
+            SpanHeader(const std::string& name, int_fast64_t traceID, int_fast64_t parentID, int_fast64_t id);
         public:
             std::string Name;
-            uint_fast64_t ID;
-            uint_fast64_t ParentID;
-            uint_fast64_t TraceID;
+            int_fast64_t ID;
+            int_fast64_t ParentID;
+            int_fast64_t TraceID;
         };
 
     public:
+        const SpanHeader& GetHeader() const{
+            return m_header;
+        }
+        const Annotations& GetAnnotations() const{
+            return m_events;
+        }
         void CreateSimpleAnnotation(const std::string& event);
         template<typename T>
         void CreateBinaryAnnotation(const std::string& key, const T& value);
 
     private:
         friend class Trace;
-        Span(const std::string& name, uint_fast64_t traceID, uint_fast64_t parentID, uint_fast64_t id);
+        Span(const std::string& name, int_fast64_t traceID, int_fast64_t parentID, int_fast64_t id);
+        int_fast64_t GetCurrentTime();
 
     private:
         SpanHeader m_header;
-        std::vector<std::unique_ptr<Annotation>> m_events;
+        Annotations m_events;
     };
 }

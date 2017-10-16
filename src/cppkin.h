@@ -27,6 +27,11 @@
         span.Submit();  \
     }while(0)
 
+#define TRACE_CLIENT_SEND_EVENT()
+#define TRACE_CLIENT_RECEIVE_EVENT()
+#define TRACE_SERVER_SEND_EVENT()
+#define TRACE_SERVER_RECEIVE_EVENT()
+
 #define TRACE_EVENT(event) \
     do  \
     {   \
