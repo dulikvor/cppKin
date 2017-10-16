@@ -15,6 +15,7 @@ namespace cppkin
         for(auto& annotation : span.GetAnnotations())
             if(annotation->GetType() == AnnotationType::Simple)
                 Serialize(thriftSpan, static_cast<const SimpleAnnotation&>(*annotation));
+        thriftContext.AddSpan(thriftSpan);
     }
     void Serializor<SerializeType::Thrift>::Serialize(::Span& thriftSpan, const SimpleAnnotation &annotation) {
         ::Annotation thriftAnnotation;
