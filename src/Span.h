@@ -32,7 +32,7 @@ namespace cppkin
         const Annotations& GetAnnotations() const{
             return m_events;
         }
-        void CreateSimpleAnnotation(const std::string& event);
+        void CreateSimpleAnnotation(const Annotation::EndPoint& endPoint, const std::string& event);
         template<typename T>
         void CreateBinaryAnnotation(const std::string& key, const T& value);
 

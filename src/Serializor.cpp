@@ -1,7 +1,10 @@
 #include "Serializor.h"
+#include "Core/src/TcpSocket.h"
 #include "Span.h"
 #include "SimpleAnnotation.h"
 #include "SerializeContext.h"
+
+using namespace core;
 
 namespace cppkin
 {
@@ -21,6 +24,10 @@ namespace cppkin
         ::Annotation thriftAnnotation;
         thriftAnnotation.value = annotation.GetEvent();
         thriftAnnotation.timestamp = annotation.GetTimeStamp();
+        const Annotation::EndPoint& endPoint = annotation.GetEndPoint();
+        sockaddr_in formattedAddress =  TCPSocket::GetSocketAddress(endPoint.Host, endPoint.Port);
+        thriftAnnotation.host.ipv4 = formattedAddress.sin_addr.s_addr;
+        thriftAnnotation.host.port = formattedAddress.sin_port;
         thriftSpan.annotations.emplace_back(thriftAnnotation);
     }
 }
