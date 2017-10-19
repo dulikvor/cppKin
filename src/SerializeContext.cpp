@@ -19,4 +19,20 @@ namespace cppkin
     void SerializeContextThrift::AddSpan(const ::Span &thriftSpan){
         m_spans.emplace_back(thriftSpan);
     }
+
+    string SerializeContextByteStream::ToString() {
+        return m_buffer.str();
+    }
+
+    void SerializeContextByteStream::Write(const char* data, int size){
+        m_buffer.write(data, size);
+    }
+
+    void SerializeContextByteStream::Read(char* data, int size){
+        m_buffer.read(data, size);
+    }
+
+    void SerializeContextByteStream::Clean() {
+        m_buffer.str(string());
+    }
 }

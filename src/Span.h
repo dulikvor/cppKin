@@ -18,6 +18,7 @@ namespace cppkin
         {
         public:
             SpanHeader(const std::string& name, int_fast64_t traceID, int_fast64_t parentID, int_fast64_t id);
+            SpanHeader(){}
         public:
             std::string Name;
             int_fast64_t ID;

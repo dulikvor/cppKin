@@ -7,7 +7,8 @@ class SerializeType
 public:
     enum Enumeration
     {
-        Thrift
+        Thrift,
+        ByteStream
     };
     ENUMERATION(SerializeType)
 };

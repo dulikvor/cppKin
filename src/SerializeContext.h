@@ -3,6 +3,7 @@
 #include <string>
 #include <memory>
 #include <vector>
+#include <sstream>
 #include "boost/shared_ptr.hpp"
 #include "GeneratedFiles/zipkinCore_types.h"
 #include "thrift/protocol/TBinaryProtocol.h"
@@ -35,5 +36,23 @@ namespace cppkin
         std::vector<::Span> m_spans;
         std::unique_ptr<apache::thrift::protocol::TBinaryProtocol> m_protocol;
         boost::shared_ptr<apache::thrift::transport::TMemoryBuffer> m_buffer;
+    };
+
+
+    class SerializeContextByteStream : SerializeContext
+    {
+    public:
+        SerializeContextByteStream();
+        virtual ~SerializeContextByteStream(){}
+        std::string ToString();
+
+    private:
+        friend class Serializor<SerializeType::ByteStream>;
+        void Write(const char* data, int size);
+        void Read(char* data, int size);
+        void Clean();
+
+    private:
+        std::stringstream m_buffer;
     };
 }

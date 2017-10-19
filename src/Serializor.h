@@ -3,6 +3,7 @@
 #include "GeneratedFiles/zipkinCore_types.h"
 #include "Core/src/Enumeration.h"
 #include "SerializeType.h"
+#include "Span.h"
 
 namespace cppkin
 {
@@ -14,7 +15,13 @@ namespace cppkin
     class Serializor
     {
     public:
+        static void Serialize(SerializeContext& context, const Span::SpanHeader& spanHeader){
+            throw core::Exception(SOURCE, "Unsupported method");
+        }
         static void Serialize(SerializeContext& context, const Span& span){
+            throw core::Exception(SOURCE, "Unsupported method");
+        }
+        static Span::SpanHeader DeSerializeSpanHeader(SerializeContext& context){
             throw core::Exception(SOURCE, "Unsupported method");
         }
     };
@@ -23,10 +30,27 @@ namespace cppkin
     class Serializor<SerializeType::Thrift>
     {
     public:
+        static void Serialize(SerializeContext& context, const Span::SpanHeader& spanHeader){
+            throw core::Exception(SOURCE, "Unsupported method");
+        }
         static void Serialize(SerializeContext& context, const Span& span);
+        static Span::SpanHeader DeSerializeSpanHeader(SerializeContext& context){
+            throw core::Exception(SOURCE, "Unsupported method");
+        }
 
     private:
         static void Serialize(::Span& thriftSpan, const SimpleAnnotation& annotation);
+    };
+
+    template<>
+    class Serializor<SerializeType::ByteStream>
+    {
+    public:
+        static void Serialize(SerializeContext& context, const Span::SpanHeader& spanHeader);
+        static void Serialize(SerializeContext& context, const Span& span){
+            throw core::Exception(SOURCE, "Unsupported method");
+        }
+        static Span::SpanHeader DeSerializeSpanHeader(SerializeContext& context);
     };
 }
 
