@@ -1,9 +1,13 @@
 #pragma once
 
 #include <memory>
+#include "ConfigParams.h"
 #include "SpanContainer.h"
 #include "Span.h"
 #include "Trace.h"
+
+#define INIT(params) \
+	ConfigParams::Instance().Load(params);
 
 #define CREATE_TRACE(operationName) \
     do \
@@ -19,6 +23,8 @@
         std::shared_ptr<cppkin::Span> span = cppkin::Trace::Instance().CreateSpan(operationName, traceID, parentID); \
         cppkin::SpanContainer::Instance().SetSpan(std::move(span)); \
     }while(0)
+
+#define JOIN_SPAN(operationName, traceID, parentID, spanID)
 
 #define SUBMIT_SPAN()  \
     do  \

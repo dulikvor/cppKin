@@ -1,14 +1,14 @@
-#include "SerializeContext.h"
+#include "EncodingContext.h"
 
 using namespace std;
 using namespace apache::thrift;
 
 namespace cppkin
 {
-    SerializeContextThrift::SerializeContextThrift(): m_buffer(new transport::TMemoryBuffer()) {
+    EncoderContextThrift::EncoderContextThrift(): m_buffer(new transport::TMemoryBuffer()) {
         m_protocol.reset(new protocol::TBinaryProtocol(m_buffer));
     }
-    string SerializeContextThrift::ToString(){
+    string EncoderContextThrift::ToString(){
        m_protocol->writeListBegin(protocol::T_STRUCT, m_spans.size());
         for(const auto& span : m_spans)
            span.write(m_protocol.get());
@@ -16,23 +16,23 @@ namespace cppkin
         return m_buffer->getBufferAsString();
     }
 
-    void SerializeContextThrift::AddSpan(const ::Span &thriftSpan){
+    void EncoderContextThrift::AddSpan(const ::Span &thriftSpan){
         m_spans.emplace_back(thriftSpan);
     }
 
-    string SerializeContextByteStream::ToString() {
+    string EncoderContextByteStream::ToString() {
         return m_buffer.str();
     }
 
-    void SerializeContextByteStream::Write(const char* data, int size){
+    void EncoderContextByteStream::Write(const char* data, int size){
         m_buffer.write(data, size);
     }
 
-    void SerializeContextByteStream::Read(char* data, int size){
+    void EncoderContextByteStream::Read(char* data, int size){
         m_buffer.read(data, size);
     }
 
-    void SerializeContextByteStream::Clean() {
+    void EncoderContextByteStream::Clean() {
         m_buffer.str(string());
     }
 }

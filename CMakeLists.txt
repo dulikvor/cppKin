@@ -41,5 +41,5 @@ if(COMPILATION_STEP)
     add_subdirectory(${PROJECT_DIR}/Core)
 
     include_directories(. ..  ${PROJECT_DIR}/src ${PROJECT_3RD_LOC}/include)
-    add_library(cppKin STATIC src/Trace.h src/SpanContainer.h src/SpanContainer.cpp src/Span.cpp src/Span.h src/AnnotationType.cpp src/AnnotationType.h src/Annotation.h src/SimpleAnnotation.cpp src/SimpleAnnotation.h src/cppkin.h src/Trace.cpp src/Serializor.cpp src/Serializor.h src/SerializeType.cpp src/SerializeType.h src/SerializeContext.cpp src/SerializeContext.h src/TrasnportManager.cpp src/TrasnportManager.h)
+    add_library(cppKin STATIC src/Trace.h src/SpanContainer.h src/SpanContainer.cpp src/Span.cpp src/Span.h src/AnnotationType.cpp src/AnnotationType.h src/Annotation.h src/SimpleAnnotation.cpp src/SimpleAnnotation.h src/cppkin.h src/Trace.cpp src/Encoder.cpp src/Encoder.h src/EncodingTypes.cpp src/EncodingTypes.h src/EncodingContext.cpp src/EncodingContext.h src/TrasnportManager.cpp src/TrasnportManager.h src/Transport.cpp src/Transport.h src/ScribeTransport.cpp src/ScribeTransport.h src/ConfigTags.h)
 endif()

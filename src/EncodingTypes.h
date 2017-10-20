@@ -2,7 +2,7 @@
 
 #include "Core/src/Enumeration.h"
 
-class SerializeType
+class EncodingTypes
 {
 public:
     enum Enumeration
@@ -10,5 +10,5 @@ public:
         Thrift,
         ByteStream
     };
-    ENUMERATION(SerializeType)
+    ENUMERATION(EncodingTypes)
 };

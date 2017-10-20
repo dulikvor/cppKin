@@ -8,29 +8,29 @@
 #include "GeneratedFiles/zipkinCore_types.h"
 #include "thrift/protocol/TBinaryProtocol.h"
 #include "thrift/transport/TBufferTransports.h"
-#include "SerializeType.h"
-#include "Serializor.h"
+#include "EncodingTypes.h"
+#include "Encoder.h"
 
 namespace cppkin
 {
     class Span;
     class SimpleAnnotation;
 
-    class SerializeContext
+    class EncoderContext
     {
     public:
         virtual std::string ToString() = 0;
     };
 
-    class SerializeContextThrift : SerializeContext
+    class EncoderContextThrift : public EncoderContext
     {
     public:
-        SerializeContextThrift();
-        virtual ~SerializeContextThrift(){}
+        EncoderContextThrift();
+        virtual ~EncoderContextThrift(){}
         std::string ToString();
 
     private:
-        friend class Serializor<SerializeType::Thrift>;
+        friend class Encoder<EncodingTypes::Thrift>;
         void AddSpan(const ::Span& thriftSpan);
     private:
         std::vector<::Span> m_spans;
@@ -39,15 +39,15 @@ namespace cppkin
     };
 
 
-    class SerializeContextByteStream : SerializeContext
+    class EncoderContextByteStream : public EncoderContext
     {
     public:
-        SerializeContextByteStream();
-        virtual ~SerializeContextByteStream(){}
+        EncoderContextByteStream();
+        virtual ~EncoderContextByteStream(){}
         std::string ToString();
 
     private:
-        friend class Serializor<SerializeType::ByteStream>;
+        friend class Encoder<EncodingTypes::ByteStream>;
         void Write(const char* data, int size);
         void Read(char* data, int size);
         void Clean();

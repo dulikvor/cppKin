@@ -1,17 +1,17 @@
-#include "Serializor.h"
+#include "Encoder.h"
 #include <string>
 #include "Core/src/TcpSocket.h"
 #include "Span.h"
 #include "SimpleAnnotation.h"
-#include "SerializeContext.h"
+#include "EncodingContext.h"
 
 using namespace core;
 using namespace std;
 
 namespace cppkin
 {
-    void Serializor<SerializeType::Thrift>::Serialize(SerializeContext& context, const Span& span){
-        SerializeContextThrift& thriftContext = static_cast<SerializeContextThrift&>(context);
+    void Encoder<EncodingTypes::Thrift>::Serialize(EncoderContext& context, const Span& span){
+        EncoderContextThrift& thriftContext = static_cast<EncoderContextThrift&>(context);
         ::Span thriftSpan;
         thriftSpan.trace_id = span.GetHeader().TraceID;
         thriftSpan.name = span.GetHeader().Name;
@@ -22,7 +22,7 @@ namespace cppkin
                 Serialize(thriftSpan, static_cast<const SimpleAnnotation&>(*annotation));
         thriftContext.AddSpan(thriftSpan);
     }
-    void Serializor<SerializeType::Thrift>::Serialize(::Span& thriftSpan, const SimpleAnnotation &annotation) {
+    void Encoder<EncodingTypes::Thrift>::Serialize(::Span& thriftSpan, const SimpleAnnotation &annotation) {
         ::Annotation thriftAnnotation;
         thriftAnnotation.value = annotation.GetEvent();
         thriftAnnotation.timestamp = annotation.GetTimeStamp();
@@ -34,9 +34,9 @@ namespace cppkin
     }
 
 
-    void Serializor<SerializeType::ByteStream>::Serialize(SerializeContext& context, const Span::SpanHeader& spanHeader)
+    void Encoder<EncodingTypes::ByteStream>::Serialize(EncoderContext& context, const Span::SpanHeader& spanHeader)
     {
-        SerializeContextByteStream& byteStreamContext = static_cast<SerializeContextByteStream&>(context);
+        EncoderContextByteStream& byteStreamContext = static_cast<EncoderContextByteStream&>(context);
         byteStreamContext.Write(reinterpret_cast<const char*>(&spanHeader.ParentID), sizeof(spanHeader.ParentID));
         byteStreamContext.Write(reinterpret_cast<const char*>(&spanHeader.ID), sizeof(spanHeader.ID));
         int stringSize = spanHeader.Name.size();
@@ -45,8 +45,8 @@ namespace cppkin
         byteStreamContext.Write(reinterpret_cast<const char*>(&spanHeader.TraceID), sizeof(spanHeader.TraceID));
     }
 
-    Span::SpanHeader Serializor<SerializeType::ByteStream>::DeSerializeSpanHeader(SerializeContext &context) {
-        SerializeContextByteStream& byteStreamContext = static_cast<SerializeContextByteStream&>(context);
+    Span::SpanHeader Encoder<EncodingTypes::ByteStream>::DeSerializeSpanHeader(EncoderContext &context) {
+        EncoderContextByteStream& byteStreamContext = static_cast<EncoderContextByteStream&>(context);
         Span::SpanHeader spanHeader;
         byteStreamContext.Read(reinterpret_cast<char*>(&spanHeader.ParentID), sizeof(spanHeader.ParentID));
         byteStreamContext.Read(reinterpret_cast<char*>(&spanHeader.ID), sizeof(spanHeader.ID));
@@ -56,5 +56,6 @@ namespace cppkin
         byteStreamContext.Read(const_cast<char*>(strName.data()), stringSize);
         spanHeader.Name = move(strName);
         byteStreamContext.Read(reinterpret_cast<char*>(&spanHeader.TraceID), sizeof(spanHeader.TraceID));
+        return spanHeader;
     }
 }
