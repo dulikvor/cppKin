@@ -1,27 +1,35 @@
 # pragma once
 
 #include <string>
+#include "TransportType.h"
 
-class GeneralParams;
-
-class ConfigParams
+namespace cppkin
 {
-public:
-	static ConfigParams& Instance();
-	~ConfigParams(){}
-	void Load(const GeneralParams& configParams);
-	//Accessors
-	const std::string& GetHostAddress() const{
-		return m_hostAddress;
-	}
-	int GetPort() const{
-		return m_port;
-	}
+	class GeneralParams;
 
-private:
-	ConfigParams(){}
+	class ConfigParams
+	{
+	public:
+		static ConfigParams& Instance();
+		~ConfigParams(){}
+		void Load(const GeneralParams& configParams);
+		//Accessors
+		const std::string& GetHostAddress() const{
+			return m_hostAddress;
+		}
+		int GetPort() const{
+			return m_port;
+		}
+		TransportType GetTransportType() const{
+			return m_transportType;
+		}
 
-private:
-	std::string m_hostAddress;
-	int m_port;
-};
+	private:
+		ConfigParams():m_transportType(TransportType::Scribe){}
+
+	private:
+		std::string m_hostAddress;
+		int m_port;
+		TransportType m_transportType;
+	};
+}

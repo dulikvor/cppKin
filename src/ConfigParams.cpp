@@ -14,7 +14,8 @@ namespace cppkin
 
 	void ConfigParams::Load(const GeneralParams& configParams)
 	{
-		m_hostAddress = StringConverter::Convert(configParams.GetValue(HOST_ADDRESS));
-		m_port = configParams.GetValue(PORT);
+		m_hostAddress = StringConverter::Convert(configParams.GetValue(tags::HOST_ADDRESS));
+		m_port = configParams.GetValue(tags::PORT);
+        m_transportType = configParams.GetValue(tags::TRANSPORT_TYPE);
 	}
 }

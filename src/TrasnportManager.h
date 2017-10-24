@@ -4,12 +4,14 @@
 #include <atomic>
 #include <condition_variable>
 #include <mutex>
+#include "Transport.h"
 #include "boost/lockfree/queue.hpp"
 #include "Core/src/Thread.h"
 #include "Span.h"
 
 namespace cppkin
 {
+
     class TransportManager
     {
     public:
@@ -25,6 +27,7 @@ namespace cppkin
         void TransportWorker();
 
     private:
+        std::unique_ptr<Transport> m_transport;
         std::unique_ptr<core::Thread> m_worker;
         const int BATCH_SIZE = 100;
         boost::lockfree::queue<Span*> m_spanQueue;

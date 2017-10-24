@@ -2,6 +2,8 @@
 #include <vector>
 #include <chrono>
 #include <functional>
+#include "TransportFactory.h"
+#include "ConfigParams.h"
 
 using namespace core;
 using namespace std;
@@ -11,7 +13,9 @@ namespace cppkin
 {
 
     TransportManager::TransportManager():m_batchReached(false), m_terminate(false) {
-       m_currentSpanCount = 0;
+
+        m_currentSpanCount = 0;
+        m_transport = TransportFactory::Instance().Create(ConfigParams::Instance().GetTransportType());
         m_worker = make_unique<Thread>("TransportManager", bind(&TransportManager::TransportWorker, this));
         m_worker->Start();
     }
@@ -44,7 +48,7 @@ namespace cppkin
             }
             static vector<Span*> retrievedSpans;
             m_spanQueue.consume_all([](Span* span){retrievedSpans.push_back(span);});
-            //Some logic
+            m_transport->Submit(retrievedSpans);
             for(Span* span : retrievedSpans){
                 delete span;
             }
