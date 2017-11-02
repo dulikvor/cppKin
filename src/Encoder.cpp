@@ -13,10 +13,13 @@ namespace cppkin
     void Encoder<EncodingTypes::Thrift>::Serialize(EncoderContext& context, const Span& span){
         EncoderContextThrift& thriftContext = static_cast<EncoderContextThrift&>(context);
         ::Span thriftSpan;
-        thriftSpan.trace_id = span.GetHeader().TraceID;
-        thriftSpan.name = span.GetHeader().Name;
-        thriftSpan.id = span.GetHeader().ID;
-        thriftSpan.parent_id = span.GetHeader().ParentID;
+        thriftSpan.__set_trace_id(span.GetHeader().TraceID);
+        thriftSpan.__set_name(span.GetHeader().Name);
+        thriftSpan.__set_id(span.GetHeader().ID);
+        thriftSpan.__set_debug(true);
+        thriftSpan.__set_timestamp(span.GetTimeStamp());
+        thriftSpan.__set_duration(span.GetDuration());
+        //thriftSpan.parent_id = span.GetHeader().ParentID;
         for(auto& annotation : span.GetAnnotations())
             if(annotation->GetType() == AnnotationType::Simple)
                 Serialize(thriftSpan, static_cast<const SimpleAnnotation&>(*annotation));
@@ -32,7 +35,6 @@ namespace cppkin
         thriftAnnotation.host.port = formattedAddress.sin_port;
         thriftSpan.annotations.emplace_back(thriftAnnotation);
     }
-
 
     void Encoder<EncodingTypes::ByteStream>::Serialize(EncoderContext& context, const Span::SpanHeader& spanHeader)
     {

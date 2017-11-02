@@ -10,8 +10,8 @@ namespace  cppkin
         return instance;
     }
 
-    shared_ptr<Span> Trace::CreateSpan(const char *operationName, uint_fast64_t traceID, uint_fast64_t parentID ) {
-        return shared_ptr<Span>(new Span(operationName, traceID, parentID, GenerateSpanID()));
+    unique_ptr<Span> Trace::CreateSpan(const char *operationName, uint_fast64_t traceID, uint_fast64_t parentID ) {
+        return unique_ptr<Span>(new Span(operationName, traceID, parentID, GenerateSpanID()));
     }
 
     uint_fast64_t Trace::GenerateSpanID(){

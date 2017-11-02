@@ -14,9 +14,10 @@ namespace cppkin
             return instance;
         }
         Span& GetSpan() const{
-            return *m_span;
+            return *m_span.get();
         }
         void SetSpan(std::unique_ptr<Span> span);
+        std::unique_ptr<Span> ReleaseSpan();
     private:
         SpanContainer(){}
 

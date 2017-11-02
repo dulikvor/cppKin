@@ -10,7 +10,7 @@ namespace cppkin
             Name(name), ID(id), ParentID(parentID), TraceID(traceID){}
 
     Span::Span(const std::string &name, int_fast64_t traceID, int_fast64_t parentID, int_fast64_t id) :
-            m_header(name, traceID, parentID, id) {}
+            m_header(name, traceID, parentID, id), m_timeStamp(GetCurrentTime()) {}
 
     void Span::CreateSimpleAnnotation(const Annotation::EndPoint& endPoint, const std::string &event) {
         m_events.emplace_back(new SimpleAnnotation(endPoint, event, GetCurrentTime()));

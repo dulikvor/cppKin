@@ -2,7 +2,7 @@
 
 #include <string>
 #include <memory>
-#include <vector>
+#include <list>
 #include <sstream>
 #include "boost/shared_ptr.hpp"
 #include "GeneratedFiles/zipkinCore_types.h"
@@ -33,7 +33,7 @@ namespace cppkin
         friend class Encoder<EncodingTypes::Thrift>;
         void AddSpan(const ::Span& thriftSpan);
     private:
-        std::vector<::Span> m_spans;
+        std::list<::Span> m_spans;
         std::unique_ptr<apache::thrift::protocol::TBinaryProtocol> m_protocol;
         boost::shared_ptr<apache::thrift::transport::TMemoryBuffer> m_buffer;
     };

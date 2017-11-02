@@ -1,5 +1,6 @@
 #include "ConfigParams.h"
 #include "GeneralParams.h"
+#define EXTERN_IMPL
 #include "ConfigTags.h"
 
 using namespace std;
@@ -14,8 +15,7 @@ namespace cppkin
 
 	void ConfigParams::Load(const GeneralParams& configParams)
 	{
-		m_hostAddress = StringConverter::Convert(configParams.GetValue(tags::HOST_ADDRESS));
-		m_port = configParams.GetValue(tags::PORT);
-        m_transportType = configParams.GetValue(tags::TRANSPORT_TYPE);
+		m_hostAddress = StringConverter::Convert(configParams.GetValue(ConfigTags::HOST_ADDRESS));
+		m_port = configParams.GetValue(ConfigTags::PORT);
 	}
 }

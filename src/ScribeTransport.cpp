@@ -25,15 +25,19 @@ namespace cppkin
 
     void ScribeTransport::Submit(const std::vector<Span *> &spans) {
         EncoderContextThrift context;
-        for(Span* span : spans)
-            Encoder<EncodingTypes::Thrift>::Serialize(context, *span);
-        string buffer = base64EncodeText(context.ToString());
-
         using Entry = scribe::thrift::LogEntry;
-        Entry entry;
-        entry.__set_category("zipkin");
-        entry.__set_message(buffer);
-        vector<Entry> entries = {entry};
+        vector<Entry> entries;
+
+        for(Span* span : spans){
+            Encoder<EncodingTypes::Thrift>::Serialize(context, *span);
+            string buffer = base64EncodeText(context.ToString());
+
+            Entry entry;
+            entry.__set_category("zipkin");
+            entry.__set_message(buffer);
+            entries.push_back(entry);
+        }
+
         m_client->Log(entries);
     }
 }

@@ -1,11 +1,13 @@
 #pragma once
 
-namespace  cppkin
-{
-    namespace tags
+namespace  cppkin {
+    class ConfigTags
     {
-        const char *HOST_ADDRESS = "Host Address";
-        const char *PORT = "Port";
-        const char *TRANSPORT_TYPE = "Transport Type";
-    }
+    public:
+        static const char *HOST_ADDRESS;
+        static const char *PORT;
+        static const char *TRANSPORT_TYPE;
+    private:
+        ConfigTags(){}
+    };
 }

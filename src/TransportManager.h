@@ -29,8 +29,9 @@ namespace cppkin
     private:
         std::unique_ptr<Transport> m_transport;
         std::unique_ptr<core::Thread> m_worker;
-        const int BATCH_SIZE = 100;
-        boost::lockfree::queue<Span*> m_spanQueue;
+        static constexpr int BATCH_SIZE = 1;
+        boost::lockfree::queue<Span*, boost::lockfree::fixed_sized<true>,
+                boost::lockfree::capacity<BATCH_SIZE * 3>> m_spanQueue;
         std::atomic_int m_currentSpanCount;
         bool m_batchReached;
         bool m_terminate;

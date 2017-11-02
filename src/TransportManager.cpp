@@ -1,4 +1,4 @@
-#include "TrasnportManager.h"
+#include "TransportManager.h"
 #include <vector>
 #include <chrono>
 #include <functional>
@@ -48,11 +48,13 @@ namespace cppkin
             }
             static vector<Span*> retrievedSpans;
             m_spanQueue.consume_all([](Span* span){retrievedSpans.push_back(span);});
-            m_transport->Submit(retrievedSpans);
-            for(Span* span : retrievedSpans){
-                delete span;
+            if(retrievedSpans.size() > 0) {
+                m_transport->Submit(retrievedSpans);
+                for (Span *span : retrievedSpans) {
+                    delete span;
+                }
+                retrievedSpans.clear();
             }
-            retrievedSpans.clear();
         }
     }
 }
