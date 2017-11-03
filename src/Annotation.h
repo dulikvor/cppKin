@@ -11,10 +11,12 @@ namespace cppkin
         struct EndPoint
         {
         public:
-            EndPoint(const std::string& host, uint_fast16_t port): Host(host), Port(port){}
+            EndPoint(const std::string& serviceName, const std::string& host, uint_fast16_t port):
+                    ServiceName(serviceName), Host(host), Port(port){}
         public:
             std::string Host;
             uint_fast16_t Port;
+            std::string ServiceName;
         };
 
     public:

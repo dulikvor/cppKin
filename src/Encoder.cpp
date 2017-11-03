@@ -19,7 +19,8 @@ namespace cppkin
         thriftSpan.__set_debug(true);
         thriftSpan.__set_timestamp(span.GetTimeStamp());
         thriftSpan.__set_duration(span.GetDuration());
-        //thriftSpan.parent_id = span.GetHeader().ParentID;
+        if(span.GetHeader().ParentIDSet)
+            thriftSpan.__set_parent_id(span.GetHeader().ParentID);
         for(auto& annotation : span.GetAnnotations())
             if(annotation->GetType() == AnnotationType::Simple)
                 Serialize(thriftSpan, static_cast<const SimpleAnnotation&>(*annotation));
@@ -27,12 +28,17 @@ namespace cppkin
     }
     void Encoder<EncodingTypes::Thrift>::Serialize(::Span& thriftSpan, const SimpleAnnotation &annotation) {
         ::Annotation thriftAnnotation;
-        thriftAnnotation.value = annotation.GetEvent();
-        thriftAnnotation.timestamp = annotation.GetTimeStamp();
+        thriftAnnotation.__set_value(annotation.GetEvent());
+        thriftAnnotation.__set_timestamp(annotation.GetTimeStamp());
         const Annotation::EndPoint& endPoint = annotation.GetEndPoint();
+        ::Endpoint thriftEndPoint;
+        thriftEndPoint.__set_service_name(endPoint.ServiceName);
+
         sockaddr_in formattedAddress =  TCPSocket::GetSocketAddress(endPoint.Host, endPoint.Port);
-        thriftAnnotation.host.ipv4 = formattedAddress.sin_addr.s_addr;
-        thriftAnnotation.host.port = formattedAddress.sin_port;
+        thriftEndPoint.__set_ipv4(formattedAddress.sin_addr.s_addr);
+        thriftEndPoint.__set_port(formattedAddress.sin_port);
+
+        thriftAnnotation.__set_host(thriftEndPoint);
         thriftSpan.annotations.emplace_back(thriftAnnotation);
     }
 

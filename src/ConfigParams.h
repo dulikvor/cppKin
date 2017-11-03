@@ -23,12 +23,16 @@ namespace cppkin
 		TransportType GetTransportType() const{
 			return m_transportType;
 		}
+		const std::string& GetServiceName() const{
+			return m_serviceName;
+		}
 
 	private:
 		ConfigParams():m_transportType(TransportType::Scribe){}
 
 	private:
 		std::string m_hostAddress;
+		std::string m_serviceName;
 		int m_port;
 		TransportType m_transportType;
 	};

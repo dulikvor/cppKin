@@ -1,6 +1,7 @@
 #pragma once
 
 #include <memory>
+#include "Core/src/Enviorment.h"
 #include "ConfigParams.h"
 #include "ConfigTags.h"
 #include "GeneralParams.h"
@@ -11,20 +12,22 @@
 
 
 #define INIT(params) \
+    core::Enviorment::Instance().Init(); \
 	cppkin::ConfigParams::Instance().Load(params);
 
 #define CREATE_TRACE(operationName) \
     do \
     { \
         uint_fast64_t id = cppkin::Trace::Instance().GenerateTraceID(); \
-        std::unique_ptr<cppkin::Span> span = cppkin::Trace::Instance().CreateSpan(operationName, id, id); \
+        std::unique_ptr<cppkin::Span> span = cppkin::Trace::Instance().CreateSpan(operationName, id); \
         cppkin::SpanContainer::Instance().SetSpan(move(span)); \
     }while(0)
 
 #define CREATE_SPAN(operationName, traceID, parentID)  \
     do  \
     {   \
-        std::unique_ptr<cppkin::Span> span = cppkin::Trace::Instance().CreateSpan(operationName, traceID, parentID); \
+        uint_fast64_t id = cppkin::Trace::Instance().GenerateTraceID(); \
+        std::unique_ptr<cppkin::Span> span = cppkin::Trace::Instance().CreateSpan(operationName, traceID, parentID, id); \
         cppkin::SpanContainer::Instance().SetSpan(move(span)); \
     }while(0)
 

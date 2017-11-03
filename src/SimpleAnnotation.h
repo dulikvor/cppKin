@@ -11,6 +11,7 @@ namespace cppkin
     {
     public:
         SimpleAnnotation(const EndPoint& endPoint, const std::string& event, int_fast64_t timeStamp);
+        virtual ~SimpleAnnotation(){}
         const std::string& GetEvent() const{
             return m_event;
         }
