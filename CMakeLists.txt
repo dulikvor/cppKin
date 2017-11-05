@@ -24,7 +24,10 @@ if(3RD_PARTY_INSTALL_STEP)
     find_package(Boost REQUIRED)
     find_package(Thrift REQUIRED)
     include(installThirdParty)
-    add_custom_target(THRIFT_BUILD ALL COMMAND ${PROJECT_DIR}/IDL/GenerateZipkin.bash ${PROJECT_DIR})
+endif()
+
+if(PRE_COMPILE_STEP)
+    add_custom_target(THRIFT_BUILD COMMAND ${PROJECT_DIR}/IDL/GenerateZipkin.bash ${PROJECT_DIR})
 endif()
 
 if(COMPILATION_STEP)
