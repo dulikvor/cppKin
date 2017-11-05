@@ -27,7 +27,7 @@ if(3RD_PARTY_INSTALL_STEP)
 endif()
 
 if(PRE_COMPILE_STEP)
-    add_custom_target(THRIFT_BUILD COMMAND ${PROJECT_DIR}/IDL/GenerateZipkin.bash ${PROJECT_DIR})
+    add_custom_target(THRIFT_BUILD ALL COMMAND ${PROJECT_DIR}/IDL/GenerateZipkin.bash ${PROJECT_DIR})
 endif()
 
 if(COMPILATION_STEP)
