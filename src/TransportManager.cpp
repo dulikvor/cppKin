@@ -53,8 +53,8 @@ namespace cppkin
                 for (Span *span : retrievedSpans) {
                     delete span;
                 }
-                retrievedSpans.clear();
             }
+            retrievedSpans.clear();
         }
     }
 }
