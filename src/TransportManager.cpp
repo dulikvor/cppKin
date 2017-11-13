@@ -11,7 +11,6 @@ using namespace std::chrono_literals;
 
 namespace cppkin
 {
-
     TransportManager::TransportManager():m_batchReached(false), m_terminate(false) {
 
         m_currentSpanCount = 0;
@@ -53,8 +52,8 @@ namespace cppkin
                 for (Span *span : retrievedSpans) {
                     delete span;
                 }
-                retrievedSpans.clear();
             }
+            retrievedSpans.clear();
         }
     }
 }

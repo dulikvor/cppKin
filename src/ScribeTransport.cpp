@@ -38,6 +38,12 @@ namespace cppkin
             entries.push_back(entry);
         }
 
-        m_client->Log(entries);
+        try {
+            m_client->Log(entries);
+        }
+        catch(apache::thrift::transport::TTransportException& exc){
+            if(m_socket->isOpen() == false)
+                m_socket->open();
+        }
     }
 }

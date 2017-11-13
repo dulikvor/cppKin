@@ -9,6 +9,7 @@ namespace cppkin
     class Transport
     {
     public:
+        virtual ~Transport(){}
         virtual void Submit(const std::vector<Span*>& spans) = 0;
     };
 }

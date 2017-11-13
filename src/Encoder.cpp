@@ -1,6 +1,7 @@
 #include "Encoder.h"
 #include <string>
 #include "Core/src/TcpSocket.h"
+#include "GeneratedFiles/zipkinCore_types.h"
 #include "Span.h"
 #include "SimpleAnnotation.h"
 #include "EncodingContext.h"
@@ -26,6 +27,7 @@ namespace cppkin
                 Serialize(thriftSpan, static_cast<const SimpleAnnotation&>(*annotation));
         thriftContext.AddSpan(thriftSpan);
     }
+
     void Encoder<EncodingTypes::Thrift>::Serialize(::Span& thriftSpan, const SimpleAnnotation &annotation) {
         ::Annotation thriftAnnotation;
         thriftAnnotation.__set_value(annotation.GetEvent());
@@ -42,28 +44,27 @@ namespace cppkin
         thriftSpan.annotations.emplace_back(thriftAnnotation);
     }
 
-    void Encoder<EncodingTypes::ByteStream>::Serialize(EncoderContext& context, const Span::SpanHeader& spanHeader)
-    {
-        EncoderContextByteStream& byteStreamContext = static_cast<EncoderContextByteStream&>(context);
-        byteStreamContext.Write(reinterpret_cast<const char*>(&spanHeader.ParentID), sizeof(spanHeader.ParentID));
-        byteStreamContext.Write(reinterpret_cast<const char*>(&spanHeader.ID), sizeof(spanHeader.ID));
-        int stringSize = spanHeader.Name.size();
-        byteStreamContext.Write(reinterpret_cast<const char*>(&stringSize), sizeof(int));
-        byteStreamContext.Write(spanHeader.Name.data(), stringSize);
-        byteStreamContext.Write(reinterpret_cast<const char*>(&spanHeader.TraceID), sizeof(spanHeader.TraceID));
+    void Encoder<EncodingTypes::Thrift>::Serialize(EncoderContext& context, const Span::SpanHeader& spanHeader){
+        EncoderContextThrift& thriftContext = static_cast<EncoderContextThrift&>(context);
+        ::Span thriftSpan;
+        thriftSpan.__set_trace_id(spanHeader.TraceID);
+        thriftSpan.__set_name(spanHeader.Name);
+        thriftSpan.__set_id(spanHeader.ID);
+        if(spanHeader.ParentIDSet)
+            thriftSpan.__set_parent_id(spanHeader.ParentID);
+        thriftContext.AddSpan(thriftSpan);
     }
 
-    Span::SpanHeader Encoder<EncodingTypes::ByteStream>::DeSerializeSpanHeader(EncoderContext &context) {
-        EncoderContextByteStream& byteStreamContext = static_cast<EncoderContextByteStream&>(context);
-        Span::SpanHeader spanHeader;
-        byteStreamContext.Read(reinterpret_cast<char*>(&spanHeader.ParentID), sizeof(spanHeader.ParentID));
-        byteStreamContext.Read(reinterpret_cast<char*>(&spanHeader.ID), sizeof(spanHeader.ID));
-        int stringSize;
-        byteStreamContext.Read(reinterpret_cast<char*>(&stringSize), sizeof(int));
-        string strName(stringSize, 0);
-        byteStreamContext.Read(const_cast<char*>(strName.data()), stringSize);
-        spanHeader.Name = move(strName);
-        byteStreamContext.Read(reinterpret_cast<char*>(&spanHeader.TraceID), sizeof(spanHeader.TraceID));
-        return spanHeader;
+    Span::SpanHeader Encoder<EncodingTypes::Thrift>::DeSerializeSpanHeader(EncoderContext &context) {
+        EncoderContextThrift& thriftContext = static_cast<EncoderContextThrift&>(context);
+        ::Span thriftSpan = thriftContext.ToSpan();
+        if(thriftSpan.__isset.parent_id == true) {
+            Span::SpanHeader spanHeader(thriftSpan.name, thriftSpan.trace_id, thriftSpan.parent_id, thriftSpan.id);
+            return spanHeader;
+        }
+        else{
+            Span::SpanHeader spanHeader(thriftSpan.name, thriftSpan.trace_id, thriftSpan.id);
+            return spanHeader;
+        }
     }
 }
