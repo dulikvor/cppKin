@@ -22,7 +22,7 @@
     { \
         uint_fast64_t id = cppkin::Trace::Instance().GenerateTraceID(); \
         std::unique_ptr<cppkin::Span> span = cppkin::Trace::Instance().CreateSpan(operationName, id); \
-        cppkin::SpanContainer::Instance().SetSpan(move(span)); \
+        cppkin::SpanContainer::Instance().SetSpan(std::move(span)); \
     }while(0)
 
 #define CREATE_SPAN(operationName, traceID, parentID)  \
@@ -30,14 +30,18 @@
     {   \
         uint_fast64_t id = cppkin::Trace::Instance().GenerateSpanID(); \
         std::unique_ptr<cppkin::Span> span = cppkin::Trace::Instance().CreateSpan(operationName, traceID, parentID, id); \
-        cppkin::SpanContainer::Instance().SetSpan(move(span)); \
+        cppkin::SpanContainer::Instance().SetSpan(std::move(span)); \
     }while(0)
 
-#define JOIN_SPAN(operationName, traceID, parentID, spanID, id) \
+#define JOIN_SPAN(spanHeader) \
     do  \
     {   \
-        std::unique_ptr<cppkin::Span> span = cppkin::Trace::Instance().CreateSpan(operationName, traceID, parentID, id); \
-        cppkin::SpanContainer::Instance().SetSpan(move(span)); \
+        std::unique_ptr<cppkin::Span> span; \
+        if(spanHeader.ParentIDSet)  \
+             span = std::move(cppkin::Trace::Instance().CreateSpan(spanHeader.Name.c_str(), spanHeader.TraceID, spanHeader.ParentID, spanHeader.ID)); \
+        else \
+            span = std::move(cppkin::Trace::Instance().CreateSpan(spanHeader.Name.c_str(), spanHeader.TraceID)); \
+        cppkin::SpanContainer::Instance().SetSpan(std::move(span)); \
     }while(0)
 
 #define SERIALIZE_TRACING_HEADER(encodingType, outputData) \
@@ -46,7 +50,7 @@
         cppkin::Span& span = cppkin::SpanContainer::Instance().GetSpan(); \
         cppkin::EncoderContext##encodingType context; \
         cppkin::Encoder<EncodingTypes::encodingType>::Serialize(context, span.GetHeader()); \
-        outputData = move(context.ToString()); \
+        outputData = std::move(context.ToString()); \
     }while(0)
 
 #define DESERIALIZE_TRACING_HEADER(decodingType, data, length, outputHeader) \
@@ -61,7 +65,7 @@
     {   \
         std::unique_ptr<cppkin::Span> span = cppkin::SpanContainer::Instance().ReleaseSpan();   \
         span->SetEndTime(); \
-        cppkin::TransportManager::Instance().PushSpan(move(span)); \
+        cppkin::TransportManager::Instance().PushSpan(std::move(span)); \
     }while(0)
 
 #define TRACE_EVENT(event) \
