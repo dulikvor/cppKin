@@ -31,7 +31,7 @@ The shared object will be available under the bin dir.
 
 In order to use cppkin include cppkin interface file - `cppkin.h`.
 ```c++
-#include "cppkin/cppkin.h"
+#include "cppKin/src/cppkin.h"
 ```
 The file publish the following capabilities:
 1) Initialization.
@@ -44,4 +44,26 @@ All capabilities are provided in Macro method style (semicolon is in need), for 
 ```c++
 CREATE_TRACE("Resource_Offer");
 ```
-To be continue :).
+### Initialization
+In order to initialize `cppkin` (the first step you would like to take) two operations are in need:
+1) Composing `cppkin` configuration.
+2) Providing the config object to the `Init` routine.
+
+#### Configuration
+`cppkin` supports the following policies:
+
+| Config Tag      | Info |
+| -------------   | ------------- |
+| HOST_ADDRESS    | Zipkin server address in IPV4 format XXX.XXX.XXX.XXX provided as c++ string.  |
+| PORT            | Zipkin server port value, usually 9410 for Scribe collector  |
+| TRANSPORT_TYPE  | Which transportaion to use, as of now only Scribe is supported and the tag is not in use. |
+| SERVICE_NAME    | The traced service name which will be displayed at Zipkin UI, provided as c++ string.  |
+
+A full example:
+```c++
+cppkin::GeneralParams cppkinParams;
+cppkinParams.AddParam(cppkin::ConfigTags::HOST_ADDRESS, string("127.0.0.1"));
+cppkinParams.AddParam(cppkin::ConfigTags::PORT, 9410);
+cppkinParams.AddParam(cppkin::ConfigTags::SERVICE_NAME, string("Index_Builder"));
+INIT(cppkinParams);
+```
