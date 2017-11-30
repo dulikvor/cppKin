@@ -18,5 +18,7 @@ namespace cppkin
 		m_hostAddress = StringConverter::Convert(configParams.GetValue(ConfigTags::HOST_ADDRESS));
 		m_port = configParams.GetValue(ConfigTags::PORT);
 		m_serviceName = StringConverter::Convert(configParams.GetValue(ConfigTags::SERVICE_NAME));
+		m_debug = configParams.GetValue(ConfigTags::DEBUG);
+		m_sampleCount = configParams.GetValue(ConfigTags::SAMPLE_COUNT);
 	}
 }

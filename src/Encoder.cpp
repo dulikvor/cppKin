@@ -1,10 +1,10 @@
 #include "Encoder.h"
 #include <string>
-#include "Core/src/TcpSocket.h"
 #include "GeneratedFiles/zipkinCore_types.h"
 #include "Span.h"
 #include "SimpleAnnotation.h"
 #include "EncodingContext.h"
+#include "ConfigParams.h"
 
 using namespace core;
 using namespace std;
@@ -17,7 +17,7 @@ namespace cppkin
         thriftSpan.__set_trace_id(span.GetHeader().TraceID);
         thriftSpan.__set_name(span.GetHeader().Name);
         thriftSpan.__set_id(span.GetHeader().ID);
-        thriftSpan.__set_debug(true);
+        thriftSpan.__set_debug(ConfigParams::Instance().GetDebug());
         thriftSpan.__set_timestamp(span.GetTimeStamp());
         thriftSpan.__set_duration(span.GetDuration());
         if(span.GetHeader().ParentIDSet)
@@ -36,9 +36,8 @@ namespace cppkin
         ::Endpoint thriftEndPoint;
         thriftEndPoint.__set_service_name(endPoint.ServiceName);
 
-        sockaddr_in formattedAddress =  TCPSocket::GetSocketAddress(endPoint.Host, endPoint.Port);
-        thriftEndPoint.__set_ipv4(formattedAddress.sin_addr.s_addr);
-        thriftEndPoint.__set_port(formattedAddress.sin_port);
+        thriftEndPoint.__set_ipv4(endPoint.Host);
+        thriftEndPoint.__set_port(endPoint.Port);
 
         thriftAnnotation.__set_host(thriftEndPoint);
         thriftSpan.annotations.emplace_back(thriftAnnotation);

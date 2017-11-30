@@ -26,6 +26,12 @@ namespace cppkin
 		const std::string& GetServiceName() const{
 			return m_serviceName;
 		}
+		bool GetDebug() const{
+			return m_debug;
+		}
+		int GetSampleCount() const{
+			return m_sampleCount;
+		};
 
 	private:
 		ConfigParams():m_transportType(TransportType::Scribe){}
@@ -35,5 +41,7 @@ namespace cppkin
 		std::string m_serviceName;
 		int m_port;
 		TransportType m_transportType;
+		bool m_debug;
+		int m_sampleCount;
 	};
 }
