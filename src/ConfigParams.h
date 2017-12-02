@@ -1,40 +1,32 @@
 # pragma once
 
 #include <string>
+#include "Core\src\Export.h"
 #include "TransportType.h"
+#if defined(WIN32)
+#pragma warning (disable : 4251)
+#endif
 
 namespace cppkin
 {
 	class GeneralParams;
 
-	class ConfigParams
+	class A_EXPORT ConfigParams
 	{
 	public:
 		static ConfigParams& Instance();
-		~ConfigParams(){}
+		~ConfigParams();
 		void Load(const GeneralParams& configParams);
 		//Accessors
-		const std::string& GetHostAddress() const{
-			return m_hostAddress;
-		}
-		int GetPort() const{
-			return m_port;
-		}
-		TransportType GetTransportType() const{
-			return m_transportType;
-		}
-		const std::string& GetServiceName() const{
-			return m_serviceName;
-		}
-		bool GetDebug() const{
-			return m_debug;
-		}
-		int GetSampleCount() const{
-			return m_sampleCount;
-		};
+		const std::string& GetHostAddress() const;
+		int GetPort() const;
+		TransportType GetTransportType() const;
+		const std::string& GetServiceName() const;
+		bool GetDebug() const;
+		int GetSampleCount() const;
 
 	private:
-		ConfigParams():m_transportType(TransportType::Scribe){}
+		ConfigParams();
 
 	private:
 		std::string m_hostAddress;

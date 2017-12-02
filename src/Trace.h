@@ -3,6 +3,7 @@
 #include <cstdint>
 #include <memory>
 #include <string>
+#include "Core\src\Export.h"
 #include "SpanContainer.h"
 
 
@@ -10,7 +11,7 @@ namespace cppkin
 {
     class Span;
 
-    class Trace
+	class A_EXPORT Trace
     {
     public:
         static Trace& Instance();

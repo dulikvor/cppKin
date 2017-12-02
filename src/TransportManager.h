@@ -7,18 +7,18 @@
 #include "Transport.h"
 #include "boost/lockfree/queue.hpp"
 #include "Core/src/Thread.h"
+#include "Core\src\Export.h"
 #include "Span.h"
+
+#pragma warning (disable : 4251)
 
 namespace cppkin
 {
 
-    class TransportManager
+	class A_EXPORT TransportManager
     {
     public:
-        static TransportManager& Instance(){
-            static TransportManager instance;
-            return  instance;
-        }
+		static TransportManager& Instance();
         ~TransportManager();
         void PushSpan(std::unique_ptr<Span> span);
 
@@ -29,7 +29,7 @@ namespace cppkin
     private:
         std::unique_ptr<Transport> m_transport;
         std::unique_ptr<core::Thread> m_worker;
-        static constexpr int BATCH_SIZE = 1;
+        static const int BATCH_SIZE = 1;
         boost::lockfree::queue<Span*, boost::lockfree::fixed_sized<true>,
                 boost::lockfree::capacity<BATCH_SIZE * 3>> m_spanQueue;
         std::atomic_int m_currentSpanCount;

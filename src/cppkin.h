@@ -25,7 +25,7 @@
         if(cppkin::Sampler::ShouldSample()){ \
             uint_fast64_t id = cppkin::Trace::Instance().GenerateTraceID(); \
             std::unique_ptr<cppkin::Span> span = cppkin::Trace::Instance().CreateSpan(operationName, id); \
-            cppkin::SpanContainer::Instance().SetSpan(std::move(span)); \
+            cppkin::SpanContainer::Instance().SetSpan(span.release()); \
         } \
     }while(0)
 
@@ -36,7 +36,7 @@
         if(cppkin::Sampler::ShouldSample()){ \
             uint_fast64_t id = cppkin::Trace::Instance().GenerateSpanID(); \
             std::unique_ptr<cppkin::Span> span = cppkin::Trace::Instance().CreateSpan(operationName, traceID, parentID, id); \
-            cppkin::SpanContainer::Instance().SetSpan(std::move(span)); \
+            cppkin::SpanContainer::Instance().SetSpan(span.release()); \
         } \
     }while(0)
 
@@ -50,7 +50,7 @@
                  span = std::move(cppkin::Trace::Instance().CreateSpan(spanHeader.Name.c_str(), spanHeader.TraceID, spanHeader.ParentID, spanHeader.ID)); \
             else \
                 span = std::move(cppkin::Trace::Instance().CreateSpan(spanHeader.Name.c_str(), spanHeader.TraceID)); \
-            cppkin::SpanContainer::Instance().SetSpan(std::move(span)); \
+            cppkin::SpanContainer::Instance().SetSpan(span.release()); \
         } \
     }while(0)
 
