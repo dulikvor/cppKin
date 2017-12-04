@@ -1,7 +1,7 @@
 # pragma once
 
 #include <string>
-#include "Core\src\Export.h"
+#include "Core/src/Export.h"
 #include "TransportType.h"
 #if defined(WIN32)
 #pragma warning (disable : 4251)
