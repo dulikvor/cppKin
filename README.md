@@ -39,7 +39,7 @@ The script will:
 
 In order to start run the following script:
 ```
-. INSTALL.bat
+INSTALL.bat
 ```
 The script will:
 1) Retrieve all 3rd party dependecies, compiling them and installing them locally (under cppkin directory structure).
@@ -92,6 +92,12 @@ cppkinParams.AddParam(cppkin::ConfigTags::DEBUG, false);
 cppkinParams.AddParam(cppkin::ConfigTags::SAMPLE_COUNT, 1000);
 INIT(cppkinParams);
 ```
+
+### Storage
+Each new span (acting as the new context), is referenced by using the current thread TLS, all operation are acted upon the current context. 
+
+by creating a new span in the context of the current thread, it will be elected as the new context.
+
 #### Tracing
 In order to trace use the `CREATE_TRACE` command:
 ```c++
@@ -108,3 +114,26 @@ CREATE_SPAN("Processing Task", spanHeader.TraceID, spanHeader.ID);
 * Operation name - `const char*` type.
 * The current trace id - retrieved from the previous span header.
 * Parent span id - retrieved from the previous span header.
+
+### Trace simple events
+In order to trace an event use the `TRACE_EVENT` command:
+```c++
+TRACE_EVENT("Trace an event");
+```
+`TRACE_EVENT` takes a single argument - the `"Event value"` which needs to be provided as `const char*`  argument type.
+
+### Transportation
+`cppkin` contains a specified `transportation` layer, providing the following capabilities:
+* Serializing the received data.
+* Transporting it to a specific zipkin collector out stream.
+
+As of now only `scribe` collector is supported in the transportation layer, which uses `Thrift` for both `serializing` and as a `RPC` solution.
+
+### OutStream Communication
+Outstream communication is done by using a single simple command - `SUBMIT_SPAN'.
+```c++
+SUBMIT_SPAN();
+```
+once called the current span in `context` will be out streamed to the designated collector. the `context` will be cleared after the completion of the command.
+
+Collector type and collector address are set by using `cppkin` configuration during the `init` step.
