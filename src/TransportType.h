@@ -13,6 +13,7 @@ namespace cppkin
     public:
         enum Enumeration
         {
+            Stub,
             Scribe
         };
         ENUMERATION(TransportType)

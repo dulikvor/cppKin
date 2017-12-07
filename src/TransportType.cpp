@@ -3,6 +3,7 @@
 namespace cppkin
 {
     ENUMERATION_NAMING_BEGIN(TransportType)
-    {Scribe, "Scribe"}
+    {Stub, "Stub Transport"},
+    {Scribe, "Scribe Transport"}
     ENUMERATION_NAMING_END(TransportType)
 }

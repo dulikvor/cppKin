@@ -1,6 +1,7 @@
 #include "TransportFactory.h"
 #include <utility>
 #include "ScribeTransport.h"
+#include "StubTransport.h"
 
 using namespace std;
 using namespace core;
@@ -19,6 +20,7 @@ namespace cppkin
     }
 
     TransportFactory::TransportFactory() {
+        m_transports.insert(make_pair(TransportType::Stub, new ConcreteTransportCreator<StubTransport>()));
         m_transports.insert(make_pair(TransportType::Scribe, new ConcreteTransportCreator<ScribeTransport>()));
     }
 

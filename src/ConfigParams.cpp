@@ -15,10 +15,11 @@ namespace cppkin
 
 	ConfigParams::~ConfigParams(){}
 
-	ConfigParams::ConfigParams() :m_transportType(TransportType::Scribe){}
+	ConfigParams::ConfigParams():m_transportType(TransportType::Stub){}
 
 	void ConfigParams::Load(const GeneralParams& configParams)
 	{
+		m_transportType = TransportType::FromString(configParams.GetValue(ConfigTags::TRANSPORT_TYPE));
 		m_hostAddress = StringConverter::Convert(configParams.GetValue(ConfigTags::HOST_ADDRESS));
 		m_port = configParams.GetValue(ConfigTags::PORT);
 		m_serviceName = StringConverter::Convert(configParams.GetValue(ConfigTags::SERVICE_NAME));
