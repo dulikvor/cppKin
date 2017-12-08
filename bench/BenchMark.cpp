@@ -48,3 +48,4 @@ int main(int argc, char** argv)
 BENCHMARK(BM_SpanCreation);
 BENCHMARK(BM_EventCreation);
 BENCHMARK(BM_EventCreationSubmit);
+BENCHMARK(BM_EventCreationSubmit)->Threads(10);
