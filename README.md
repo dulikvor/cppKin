@@ -1,5 +1,7 @@
 # cppkin
 
+[![Join the chat at https://gitter.im/cppKin/Lobby](https://badges.gitter.im/cppKin/Lobby.svg)](https://gitter.im/cppKin/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 `cppkin` is an instrumentation client library for `zipkin` written in C++.
 meant to be used by distributed services in order to measure latency across clusters.
 
