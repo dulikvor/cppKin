@@ -12,7 +12,7 @@ namespace cppkin
     class HttpTransport  : public Transport
     {
     public:
-    	HttpTransport();
+        HttpTransport();
         virtual ~HttpTransport();
         void Submit(const std::vector<Span*>& spans) override;
     private:

@@ -11,7 +11,7 @@ namespace cppkin
 {
     class Span;
 
-	class A_EXPORT Trace
+    class A_EXPORT Trace
     {
     public:
         static Trace& Instance();
