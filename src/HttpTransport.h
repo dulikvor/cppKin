@@ -16,6 +16,7 @@ namespace cppkin
         virtual ~HttpTransport();
         void Submit(const std::vector<Span*>& spans) override;
     private:
+//        CURL* m_curl;
 //        boost::shared_ptr<apache::thrift::protocol::TBinaryProtocolT<apache::thrift::transport::TSocket>> m_protocol;
 //        boost::shared_ptr<apache::thrift::transport::TSocket> m_socket;
 //        std::unique_ptr<scribe::thrift::scribeClient> m_client;

@@ -44,8 +44,9 @@ if(CURL_INCLUDE_DIR)
   endforeach()
 endif()
 
-include(${CMAKE_CURRENT_LIST_DIR}/FindPackageHandleStandardArgs.cmake)
-FIND_PACKAGE_HANDLE_STANDARD_ARGS(CURL
+include(FindPackageHandleStandardArgs)
+#include(FindPackageHandleStandardArgs.cmake)
+find_package_handle_standard_args(CURL
                                   REQUIRED_VARS CURL_LIBRARY CURL_INCLUDE_DIR
                                   VERSION_VAR CURL_VERSION_STRING)
 

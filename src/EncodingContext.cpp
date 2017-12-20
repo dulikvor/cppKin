@@ -19,9 +19,20 @@ namespace cppkin
     }
 
     string EncoderContextThrift::ToString(){
-        m_spans.front().write(m_protocol.get());
-        m_spans.pop_front();
-        return m_buffer->getBufferAsString();
+
+    	m_protocol->writeListBegin(protocol::T_STRUCT, m_spans.size());
+
+    	for (auto &span : m_spans)
+		{
+    		span.write(m_protocol.get());
+		}
+
+    	m_protocol->writeListEnd();
+    	return m_buffer->getBufferAsString();
+
+//        m_spans.front().write(m_protocol.get());
+//        m_spans.pop_front();
+//        return m_buffer->getBufferAsString();
     }
 
     ::Span EncoderContextThrift::ToSpan() {
