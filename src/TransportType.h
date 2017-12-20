@@ -14,7 +14,8 @@ namespace cppkin
         enum Enumeration
         {
             Stub,
-            Scribe
+            Scribe,
+			Http
         };
         ENUMERATION(TransportType)
     };

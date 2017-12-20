@@ -4,6 +4,7 @@ set_directory_properties(PROPERTIES EP_PREFIX ${EXTERNAL_PROJECT_DIR}) #Sets the
 include(InstallSpdLog)
 include(InstallThrift)
 include(InstallBoost)
+include(InstallCURL)
 if(UNIX AND NOT APPLE)
     include(InstallBenchMark)
 endif()
