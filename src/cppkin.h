@@ -16,7 +16,7 @@
 
 #define INIT(params) \
     core::Enviorment::Instance().Init(); \
-	cppkin::ConfigParams::Instance().Load(params);
+    cppkin::ConfigParams::Instance().Load(params);
 
 #define CREATE_TRACE(operationName) \
     do \

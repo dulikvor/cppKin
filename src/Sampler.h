@@ -12,7 +12,7 @@ namespace cppkin
     private:
         static std::atomic_int sampler;
 #if defined(WIN32)
-		static _declspec(thread) int currentSample;
+        static _declspec(thread) int currentSample;
 #else
         static thread_local int currentSample;
 #endif

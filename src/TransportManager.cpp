@@ -10,10 +10,10 @@ using namespace std;
 
 namespace cppkin
 {
-	TransportManager& TransportManager::Instance(){
-		static TransportManager instance;
-		return  instance;
-	}
+    TransportManager& TransportManager::Instance(){
+        static TransportManager instance;
+        return  instance;
+    }
     TransportManager::TransportManager():m_batchReached(false), m_terminate(false) {
 
         m_currentSpanCount = 0;
@@ -46,7 +46,7 @@ namespace cppkin
         {
             {
                 unique_lock<mutex> lock(m_mut);
-				m_cv.wait_until(lock, chrono::system_clock::now() + chrono::seconds(10), [this]{return m_batchReached; });
+                m_cv.wait_until(lock, chrono::system_clock::now() + chrono::seconds(10), [this]{return m_batchReached; });
             }
             static vector<Span*> retrievedSpans;
             m_spanQueue.consume_all([](Span* span){retrievedSpans.push_back(span);});

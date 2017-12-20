@@ -8,14 +8,14 @@
 
 namespace cppkin
 {
-	class A_EXPORT TransportType
+    class A_EXPORT TransportType
     {
     public:
         enum Enumeration
         {
             Stub,
             Scribe,
-			Http
+            Http
         };
         ENUMERATION(TransportType)
     };

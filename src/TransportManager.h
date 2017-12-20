@@ -15,10 +15,10 @@
 namespace cppkin
 {
 
-	class A_EXPORT TransportManager
+    class A_EXPORT TransportManager
     {
     public:
-		static TransportManager& Instance();
+        static TransportManager& Instance();
         ~TransportManager();
         void PushSpan(std::unique_ptr<Span> span);
 
