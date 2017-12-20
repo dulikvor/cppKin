@@ -24,7 +24,7 @@ namespace cppkin
 			Encoder<EncodingTypes::Thrift>::Serialize(context, *span);
 		}
 
-    	string buffer = context.ToString();
+    	string buffer = context.ToString( true );
         try {
 
         	CURL* curl = curl_easy_init();

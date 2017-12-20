@@ -21,7 +21,7 @@ namespace cppkin
     {
     public:
         virtual ~EncoderContext();
-        virtual std::string ToString() = 0;
+        virtual std::string ToString( bool ) = 0;
     };
 
     class EncoderContextThrift : public EncoderContext
@@ -30,7 +30,7 @@ namespace cppkin
         EncoderContextThrift();
         EncoderContextThrift(const char* buf, uint32_t sz);
         virtual ~EncoderContextThrift();
-        std::string ToString();
+        std::string ToString( bool asList = false );
         ::Span ToSpan();
 
     private:
