@@ -34,12 +34,12 @@ int main( int argc, const char *argv[] )
     Logger::Instance().AddListener(make_shared<FileRotationListener>(TraceSeverity::Info, "./example", 50 * 1024 * 1024, 20));
     Logger::Instance().Start(TraceSeverity::Info);
 
-    int port = 9441;
+    int port = 9411;
     auto transportType = cppkin::TransportType::Http;
     if (vm["transport"].as<string>() == "scribe") {
         transportType = cppkin::TransportType::Scribe;
         if (vm["port"].as<int>() == -1 ) {
-            port = 9440;
+            port = 9410;
         }
     }
 
