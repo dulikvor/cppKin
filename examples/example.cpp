@@ -20,7 +20,8 @@ int main( int argc, const char *argv[] )
           ("help,h", "Help screen")
           ("transport", value<string>()->default_value("http"), "Transport" )
           ("host", value<string>()->default_value("127.0.0.1"), "Host" )
-          ("port", value<int>()->default_value(-1), "Port");
+          ("port", value<int>()->default_value(-1), "Port")
+          ("service", value<string>()->default_value("example_service"), "Service");
 
     variables_map vm;
     store(parse_command_line(argc, argv, desc), vm);
@@ -46,7 +47,7 @@ int main( int argc, const char *argv[] )
     cppkin::GeneralParams cppkinParams;
     cppkinParams.AddParam(cppkin::ConfigTags::HOST_ADDRESS, vm["host"].as<string>());
     cppkinParams.AddParam(cppkin::ConfigTags::PORT, port);
-    cppkinParams.AddParam(cppkin::ConfigTags::SERVICE_NAME, string("example_service"));
+    cppkinParams.AddParam(cppkin::ConfigTags::SERVICE_NAME, vm["service"].as<string>());
     cppkinParams.AddParam(cppkin::ConfigTags::DEBUG, true);
     cppkinParams.AddParam(cppkin::ConfigTags::SAMPLE_COUNT, 1);
     cppkinParams.AddParam(cppkin::ConfigTags::TRANSPORT_TYPE, cppkin::TransportType(transportType).ToString());

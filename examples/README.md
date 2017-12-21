@@ -7,5 +7,5 @@ wget -O zipkin.jar 'https://search.maven.org/remote_content?g=io.zipkin.java&a=z
 java -jar zipkin.jar
 
 
-
+> examples/bin/example --transport=http --service=commandline_service
 
