@@ -24,6 +24,7 @@ cppkin uses the following 3rd party dependencies -
 1) boost.
 2) spdlog.
 3) thrift.
+4) curl.
 
 ### Linux Install
 

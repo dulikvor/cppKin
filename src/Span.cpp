@@ -1,7 +1,7 @@
 #include "Span.h"
 #include <chrono>
 #include "Core/src/Assert.h"
-#include "Core/src/Enviorment.h"
+#include "Core/src/Environment.h"
 #include "SimpleAnnotation.h"
 #include "ConfigTags.h"
 #include "ConfigParams.h"
@@ -23,9 +23,9 @@ namespace cppkin
             m_header(name, traceID, traceID), m_timeStamp(GetCurrentTime()) {}
 
     void Span::CreateSimpleAnnotation(const std::string &event) {
-        VERIFY(core::Enviorment::Instance().GetIPV4Addresses().size() > 0, "Missing IPV4 address");
+        VERIFY(core::Environment::Instance().GetIPV4Addresses().size() > 0, "Missing IPV4 address");
         static Annotation::EndPoint endPoint(ConfigParams::Instance().GetServiceName(),
-                                      core::Enviorment::Instance().GetIPV4Addresses().back(),
+                                      core::Environment::Instance().GetIPV4Addresses().back(),
                                       ConfigParams::Instance().GetPort());
         m_events.emplace_back(new SimpleAnnotation(endPoint, event, GetCurrentTime()));
     }

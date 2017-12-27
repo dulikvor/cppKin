@@ -1,7 +1,7 @@
 #pragma once
 
 #include <memory>
-#include "Core/src/Enviorment.h"
+#include "Core/src/Environment.h"
 #include "ConfigParams.h"
 #include "ConfigTags.h"
 #include "GeneralParams.h"
@@ -15,7 +15,7 @@
 
 
 #define INIT(params) \
-    core::Enviorment::Instance().Init(); \
+    core::Environment::Instance().Init(); \
     cppkin::ConfigParams::Instance().Load(params);
 
 #define CREATE_TRACE(operationName) \
