@@ -28,9 +28,14 @@ namespace cppkin
         using Entry = scribe::thrift::LogEntry;
         vector<Entry> entries;
 
-        for(Span* span : spans){
+        for(Span* span : spans) {
             Encoder<EncodingTypes::Thrift>::Serialize(context, *span);
-            string buffer = base64EncodeText(context.ToString());
+        }
+
+        auto it = context.begin();
+        while(it != context.end()) {
+            string buffer = base64EncodeText(it->ToString());
+            it++;
 
             Entry entry;
             entry.__set_category("zipkin");
