@@ -51,7 +51,7 @@ if(COMPILATION_STEP)
     set(EXECUTABLE_OUTPUT_PATH ${PROJECT_DIR}/bin)
     set(PROJECT_3RD_LOC ${CMAKE_CURRENT_SOURCE_DIR}/Third_Party)
     #Pre build step
-    set(CORE_NO_3RD_PARTY True)
+    #set(CORE_NO_3RD_PARTY True)
     set(CORE_NO_GLOBAL_HANDLING True)
     add_subdirectory(${PROJECT_DIR}/Core)
     if(UNIX AND NOT APPLE)
