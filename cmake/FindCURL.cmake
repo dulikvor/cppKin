@@ -47,7 +47,6 @@ if(CURL_INCLUDE_DIR)
 endif()
 
 include(FindPackageHandleStandardArgs)
-#include(FindPackageHandleStandardArgs.cmake)
 find_package_handle_standard_args(CURL
                                   REQUIRED_VARS CURL_LIBRARY CURL_INCLUDE_DIR
                                   VERSION_VAR CURL_VERSION_STRING)
