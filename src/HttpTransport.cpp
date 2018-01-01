@@ -52,7 +52,7 @@ namespace cppkin
             curl_slist_free_all(headers);
             curl_easy_cleanup(curl);
         }
-        catch(apache::thrift::transport::TTransportException& exc){
+        catch(apache::thrift::transport::TTransportException&){
         }
     }
 }

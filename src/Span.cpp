@@ -22,12 +22,32 @@ namespace cppkin
     Span::Span(const std::string &name, int_fast64_t traceID) :
             m_header(name, traceID, traceID), m_timeStamp(GetCurrentTime()) {}
 
+    const Span::SpanHeader& Span::GetHeader() const{
+        return m_header;
+    }
+
+    const Span::Annotations& Span::GetAnnotations() const{
+        return m_events;
+    }
+
     void Span::CreateSimpleAnnotation(const std::string &event) {
         VERIFY(core::Environment::Instance().GetIPV4Addresses().size() > 0, "Missing IPV4 address");
         static Annotation::EndPoint endPoint(ConfigParams::Instance().GetServiceName(),
                                       core::Environment::Instance().GetIPV4Addresses().back(),
                                       ConfigParams::Instance().GetPort());
         m_events.emplace_back(new SimpleAnnotation(endPoint, event, GetCurrentTime()));
+    }
+
+    int_fast64_t Span::GetTimeStamp() const{
+        return m_timeStamp;
+    }
+
+    int_fast64_t Span::GetDuration() const{
+        return m_duration;
+    }
+
+    void Span::SetEndTime(){
+        m_duration = GetCurrentTime() - m_timeStamp;
     }
 
     int_fast64_t Span::GetCurrentTime() {

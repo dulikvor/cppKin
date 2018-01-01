@@ -1,7 +1,9 @@
 #pragma once
 
+#include "Core/src/Export.h"
+
 namespace  cppkin {
-    class ConfigTags
+    class A_EXPORT ConfigTags
     {
     public:
         static const char *HOST_ADDRESS;
@@ -11,6 +13,6 @@ namespace  cppkin {
         static const char *DEBUG;
         static const char *SAMPLE_COUNT;
     private:
-        ConfigTags(){}
+        ConfigTags();
     };
 }

@@ -1,14 +1,15 @@
 #pragma once
 
 #include <string>
+#include <stdint.h>
 #include "AnnotationType.h"
 
 namespace cppkin
 {
-    class Annotation
+    class A_EXPORT Annotation
     {
     public:
-        struct EndPoint
+        struct A_EXPORT EndPoint
         {
         public:
             EndPoint(const std::string& serviceName, std::string host, uint_fast16_t port);

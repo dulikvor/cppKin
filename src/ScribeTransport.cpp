@@ -46,7 +46,7 @@ namespace cppkin
         try {
             m_client->Log(entries);
         }
-        catch(apache::thrift::transport::TTransportException& exc){
+        catch(apache::thrift::transport::TTransportException&){
             if(m_socket->isOpen() == false)
                 m_socket->open();
         }
