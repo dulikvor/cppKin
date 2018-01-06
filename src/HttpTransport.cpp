@@ -24,12 +24,7 @@ namespace cppkin
 
     void HttpTransport::Submit(const std::vector<Span*>& spans) {
 
-//        EncoderImpl<_EncodingType> encoder;
-//        EncoderContext context(spans, encoder);
-//        string buffer = context.ToString();
-
         string buffer = EncoderImpl<_EncodingType>().ToString(spans);
-
         try {
 
             CURL* curl = curl_easy_init();

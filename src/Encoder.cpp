@@ -57,8 +57,8 @@ namespace cppkin
         return m_buffer->getBufferAsString();
     }
 
-    string EncoderImpl<EncodingTypes::Thrift>::ToString(const std::vector<EncoderContext::ContextElement>& spans) const {
-
+    template <class T>
+    std::string EncoderImpl<EncodingTypes::Thrift>::SpansVectorToString(T& spans) const {
         m_buffer->resetBuffer();
         m_protocol->writeListBegin(protocol::T_STRUCT, spans.size());
         for (auto &span : spans) {
@@ -69,16 +69,12 @@ namespace cppkin
         return m_buffer->getBufferAsString();
     }
 
-    string EncoderImpl<EncodingTypes::Thrift>::ToString(const std::vector<Span*>& spans) const {
-        m_buffer->resetBuffer();
-        m_protocol->writeListBegin(protocol::T_STRUCT, spans.size());
-        for (auto &span : spans) {
-            ::Span thriftSpan = EncoderImpl<EncodingTypes::Thrift>::Serialize(*span);
-            thriftSpan.write(m_protocol.get());
-        }
-        m_protocol->writeListEnd();
+    string EncoderImpl<EncodingTypes::Thrift>::ToString(const std::vector<EncoderContext::ContextElement>& spans) const {
+        return SpansVectorToString(spans);
+    }
 
-        return m_buffer->getBufferAsString();
+    string EncoderImpl<EncodingTypes::Thrift>::ToString(const std::vector<Span*>& spans) const {
+        return SpansVectorToString(spans);
     }
 
     string EncoderImpl<EncodingTypes::Json>::ToString(const Span& span) const {
