@@ -8,7 +8,8 @@ public:
     enum Enumeration
     {
         Thrift,
-        ByteStream
+        ByteStream,
+        Json
     };
     ENUMERATION(EncodingTypes)
 };

@@ -3,6 +3,7 @@
 #include "src/cppkin.h"
 #include "Core/src/Logger.h"
 #include "Core/src/TraceListener.h"
+#include "Core/src/SpdLogTraceListener.h"
 
 using namespace std;
 using namespace core;
@@ -31,9 +32,6 @@ int main( int argc, const char *argv[] )
         std::cout << desc << '\n';
         return 0;
     }
-
-    Logger::Instance().AddListener(make_shared<FileRotationListener>(TraceSeverity::Info, "./example", 50 * 1024 * 1024, 20));
-    Logger::Instance().Start(TraceSeverity::Info);
 
     int port = 9411;
     auto transportType = cppkin::TransportType::Http;

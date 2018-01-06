@@ -23,19 +23,14 @@ namespace cppkin
         m_socket->close();
     }
 
-    void ScribeTransport::Submit(const std::vector<Span *> &spans) {
-        EncoderContextThrift context;
+    void ScribeTransport::Submit(const std::vector<Span*>& spans) {
+        EncoderImpl<EncodingTypes::Thrift> encoder;
+        EncoderContext context(spans, encoder);
         using Entry = scribe::thrift::LogEntry;
         vector<Entry> entries;
 
-        for(Span* span : spans) {
-            Encoder<EncodingTypes::Thrift>::Serialize(context, *span);
-        }
-
-        auto it = context.begin();
-        while(it != context.end()) {
-            string buffer = base64EncodeText(it->ToString());
-            it++;
+        for (auto& span : context) {
+            string buffer = base64EncodeText(span.ToString());
 
             Entry entry;
             entry.__set_category("zipkin");

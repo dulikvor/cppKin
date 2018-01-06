@@ -1,18 +1,24 @@
-#include "Encoder.h"
 #include <string>
+#include <boost/make_shared.hpp>
+
 #include "GeneratedFiles/zipkinCore_types.h"
+#include "Encoder.h"
 #include "Span.h"
 #include "SimpleAnnotation.h"
 #include "EncodingContext.h"
 #include "ConfigParams.h"
 
+using namespace apache::thrift;
 using namespace core;
 using namespace std;
 
 namespace cppkin
 {
-    void Encoder<EncodingTypes::Thrift>::Serialize(EncoderContext& context, const Span& span){
-        EncoderContextThrift& thriftContext = static_cast<EncoderContextThrift&>(context);
+    EncoderImpl<EncodingTypes::Thrift>::EncoderImpl(): m_buffer(boost::make_shared<transport::TMemoryBuffer>()) {
+        m_protocol.reset(new protocol::TBinaryProtocol(m_buffer));
+    }
+
+    ::Span EncoderImpl<EncodingTypes::Thrift>::Serialize(const Span& span) {
         ::Span thriftSpan;
         thriftSpan.__set_trace_id(span.GetHeader().TraceID);
         thriftSpan.__set_name(span.GetHeader().Name);
@@ -25,10 +31,11 @@ namespace cppkin
         for(auto& annotation : span.GetAnnotations())
             if(annotation->GetType() == AnnotationType::Simple)
                 Serialize(thriftSpan, static_cast<const SimpleAnnotation&>(*annotation));
-        thriftContext.AddSpan(thriftSpan);
+
+        return thriftSpan;
     }
 
-    void Encoder<EncodingTypes::Thrift>::Serialize(::Span& thriftSpan, const SimpleAnnotation &annotation) {
+    void EncoderImpl<EncodingTypes::Thrift>::Serialize(::Span& thriftSpan, const SimpleAnnotation &annotation) {
         ::Annotation thriftAnnotation;
         thriftAnnotation.__set_value(annotation.GetEvent());
         thriftAnnotation.__set_timestamp(annotation.GetTimeStamp());
@@ -43,27 +50,89 @@ namespace cppkin
         thriftSpan.annotations.emplace_back(thriftAnnotation);
     }
 
-    void Encoder<EncodingTypes::Thrift>::Serialize(EncoderContext& context, const Span::SpanHeader& spanHeader){
-        EncoderContextThrift& thriftContext = static_cast<EncoderContextThrift&>(context);
-        ::Span thriftSpan;
-        thriftSpan.__set_trace_id(spanHeader.TraceID);
-        thriftSpan.__set_name(spanHeader.Name);
-        thriftSpan.__set_id(spanHeader.ID);
-        if(spanHeader.ParentIDSet)
-            thriftSpan.__set_parent_id(spanHeader.ParentID);
-        thriftContext.AddSpan(thriftSpan);
+    string EncoderImpl<EncodingTypes::Thrift>::ToString(const Span& span) const {
+        ::Span thriftSpan = EncoderImpl<EncodingTypes::Thrift>::Serialize(span);
+        m_buffer->resetBuffer();
+        thriftSpan.write(m_protocol.get());
+        return m_buffer->getBufferAsString();
     }
 
-    Span::SpanHeader Encoder<EncodingTypes::Thrift>::DeSerializeSpanHeader(EncoderContext &context) {
-        EncoderContextThrift& thriftContext = static_cast<EncoderContextThrift&>(context);
-        ::Span thriftSpan = thriftContext.ToSpan();
-        if(thriftSpan.__isset.parent_id == true) {
-            Span::SpanHeader spanHeader(thriftSpan.name, thriftSpan.trace_id, thriftSpan.parent_id, thriftSpan.id);
-            return spanHeader;
+    string EncoderImpl<EncodingTypes::Thrift>::ToString(const std::vector<EncoderContext::ContextElement>& spans) const {
+
+        m_buffer->resetBuffer();
+        m_protocol->writeListBegin(protocol::T_STRUCT, spans.size());
+        for (auto &span : spans) {
+            ::Span thriftSpan = EncoderImpl<EncodingTypes::Thrift>::Serialize(*span);
+            thriftSpan.write(m_protocol.get());
         }
-        else{
-            Span::SpanHeader spanHeader(thriftSpan.name, thriftSpan.trace_id, thriftSpan.id);
-            return spanHeader;
-        }
+        m_protocol->writeListEnd();
+        return m_buffer->getBufferAsString();
     }
+
+    string EncoderImpl<EncodingTypes::Thrift>::ToString(const std::vector<Span*>& spans) const {
+        m_buffer->resetBuffer();
+        m_protocol->writeListBegin(protocol::T_STRUCT, spans.size());
+        for (auto &span : spans) {
+            ::Span thriftSpan = EncoderImpl<EncodingTypes::Thrift>::Serialize(*span);
+            thriftSpan.write(m_protocol.get());
+        }
+        m_protocol->writeListEnd();
+
+        return m_buffer->getBufferAsString();
+    }
+
+    string EncoderImpl<EncodingTypes::Json>::ToString(const Span& span) const {
+        return "not ready yet";
+    }
+
+    string EncoderImpl<EncodingTypes::Json>::ToString(const std::vector<EncoderContext::ContextElement>&) const {
+        return "not ready yet";
+    }
+
+    string EncoderImpl<EncodingTypes::Json>::ToString(const std::vector<Span*>& spans) const {
+        return "not ready yet";
+    }
+
+//
+
+//
+//    void Encoder<EncodingTypes::Thrift>::Serialize(EncoderContext& context, const Span::SpanHeader& spanHeader) {
+////        EncoderContextThrift& thriftContext = static_cast<EncoderContextThrift&>(context);
+////        ::Span thriftSpan;
+////        thriftSpan.__set_trace_id(spanHeader.TraceID);
+////        thriftSpan.__set_name(spanHeader.Name);
+////        thriftSpan.__set_id(spanHeader.ID);
+////        if(spanHeader.ParentIDSet)
+////            thriftSpan.__set_parent_id(spanHeader.ParentID);
+////        thriftContext.AddSpan(thriftSpan);
+//    }
+//
+//    Span::SpanHeader Encoder<EncodingTypes::Thrift>::DeSerializeSpanHeader(EncoderContext &context) {
+////        EncoderContextThrift& thriftContext = static_cast<EncoderContextThrift&>(context);
+////        ::Span thriftSpan = thriftContext.ToSpan();
+////        if(thriftSpan.__isset.parent_id == true) {
+////            Span::SpanHeader spanHeader(thriftSpan.name, thriftSpan.trace_id, thriftSpan.parent_id, thriftSpan.id);
+////            return spanHeader;
+////        }
+////        else{
+////            Span::SpanHeader spanHeader(thriftSpan.name, thriftSpan.trace_id, thriftSpan.id);
+////            return spanHeader;
+////        }
+//    }
+//
+//    void Encoder<EncodingTypes::Json>::Serialize(EncoderContext& context, const Span& span) {
+//
+//    }
+//
+//    void Encoder<EncodingTypes::Json>::Serialize(::Span& thriftSpan, const SimpleAnnotation &annotation) {
+//
+//    }
+//
+//    void Encoder<EncodingTypes::Json>::Serialize(EncoderContext& context, const Span::SpanHeader& spanHeader) {
+//
+//    }
+//
+//    Span::SpanHeader Encoder<EncodingTypes::Json>::DeSerializeSpanHeader(EncoderContext &context) {
+//
+//    }
 }

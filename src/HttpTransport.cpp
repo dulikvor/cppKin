@@ -1,4 +1,3 @@
-#include <sstream>
 #include "HttpTransport.h"
 #include "ConfigParams.h"
 #include "Encoder.h"
@@ -10,21 +9,27 @@ using namespace apache::thrift;
 
 namespace cppkin
 {
+
+#ifdef THRIFT_FOUND
+    constexpr EncodingTypes::Enumeration _EncodingType = EncodingTypes::Thrift;
+#else
+    constexpr EncodingTypes::Enumeration _EncodingType = EncodingTypes::Json;
+#endif
+
     HttpTransport::HttpTransport() {
     }
 
     HttpTransport::~HttpTransport() {
     }
 
-    void HttpTransport::Submit(const std::vector<Span*> &spans) {
-        EncoderContextThrift context;
+    void HttpTransport::Submit(const std::vector<Span*>& spans) {
 
-        for (auto &span : spans)
-        {
-            Encoder<EncodingTypes::Thrift>::Serialize(context, *span);
-        }
+//        EncoderImpl<_EncodingType> encoder;
+//        EncoderContext context(spans, encoder);
+//        string buffer = context.ToString();
 
-        string buffer = context.ToString();
+        string buffer = EncoderImpl<_EncodingType>().ToString(spans);
+
         try {
 
             CURL* curl = curl_easy_init();

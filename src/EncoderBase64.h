@@ -9,8 +9,7 @@
 namespace cppkin
 {
     static const char* base64_padding[] = {"", "==","="};
-
-    inline std::string base64EncodeText(const std::string& data) {
+    static std::string base64EncodeText(const std::string& data) {
         using namespace boost::archive::iterators;
         typedef base64_from_binary<transform_width<std::string::const_iterator, 6, 8> > base64_enc;
         std::stringstream ss;
