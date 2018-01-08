@@ -18,5 +18,5 @@ before_install:
      - eval "${MATRIX_EVAL}"
 
 script:
-- ./INSTALL.sh
+- source INSTALL.sh
 

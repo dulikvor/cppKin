@@ -28,7 +28,6 @@ if(UNIX AND NOT APPLE)
 endif()
 
 if(3RD_PARTY_INSTALL_STEP)
-    set(ENV{BOOST_ROOT} ${PROJECT_3RD_LOC}/include)
     include(installThirdParty)
 endif()
 
