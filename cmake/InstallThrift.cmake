@@ -43,7 +43,25 @@ if (NOT THRIFT_FOUND)
 		ExternalProject_Add(Thrift
 				DOWNLOAD_NAME       thrift-0.10.0.tar.gz
 				URL                 http://archive.apache.org/dist/thrift/0.10.0/thrift-0.10.0.tar.gz
-				CONFIGURE_COMMAND   cd <SOURCE_DIR> && ./configure --prefix=<INSTALL_DIR> --exec-prefix=<INSTALL_DIR> --without-go --without-python --without-nodejs
+				CONFIGURE_COMMAND   cd <SOURCE_DIR> && ./configure --prefix=<INSTALL_DIR> --exec-prefix=<INSTALL_DIR>
+				--without-qt4
+				--without-qt5
+				--without-c_glib
+				--without-csharp
+				--without-java
+				--without-erlang
+				--without-nodejs
+				--without-lua
+				--without-python
+				--without-perl
+				--without-php
+				--without-php_extension
+				--without-dart
+				--without-ruby
+				--without-haskell
+				--without-go
+				--without-haxe
+				--without-d
 				BUILD_COMMAND       make -C <SOURCE_DIR>
 				INSTALL_COMMAND     make -C <SOURCE_DIR> install
 				TEST_COMMAND        ""
