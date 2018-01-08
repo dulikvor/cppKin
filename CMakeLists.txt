@@ -16,6 +16,7 @@ endif()
 
 set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
 set(PROJECT_DIR ${CMAKE_CURRENT_SOURCE_DIR})
+set(PROJECT_3RD_LOC ${CMAKE_CURRENT_SOURCE_DIR}/Third_Party)
 list(APPEND CMAKE_PREFIX_PATH ${EXTERNAL_PROJECT_DIR})
 
 find_package(SpdLog)
@@ -27,6 +28,7 @@ if(UNIX AND NOT APPLE)
 endif()
 
 if(3RD_PARTY_INSTALL_STEP)
+    set(ENV{BOOST_ROOT} ${PROJECT_3RD_LOC}/include)
     include(installThirdParty)
 endif()
 
@@ -50,7 +52,6 @@ if(COMPILATION_STEP)
     set(CMAKE_RUNTIME_OUTPUT_DIRECTORY  ${PROJECT_DIR}/bin)
     set(CMAKE_BINARY_DIR ${PROJECT_DIR}/bin)
     set(EXECUTABLE_OUTPUT_PATH ${PROJECT_DIR}/bin)
-    set(PROJECT_3RD_LOC ${CMAKE_CURRENT_SOURCE_DIR}/Third_Party)
     #Pre build step
     set(CORE_COMPILE True)
     set(CORE_SPDLOG_SUPPORT True)
