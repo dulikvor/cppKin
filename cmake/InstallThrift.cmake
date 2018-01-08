@@ -62,6 +62,7 @@ if (NOT THRIFT_FOUND)
 				--without-go
 				--without-haxe
 				--without-d
+				--with-boost-libdir=<INSTALL_DIR>/include/boost
 				BUILD_COMMAND       make -C <SOURCE_DIR>
 				INSTALL_COMMAND     make -C <SOURCE_DIR> install
 				TEST_COMMAND        ""
