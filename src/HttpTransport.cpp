@@ -10,11 +10,17 @@ using namespace apache::thrift;
 namespace cppkin
 {
 
-#ifdef THRIFT_FOUND
-    constexpr EncodingTypes::Enumeration _EncodingType = EncodingTypes::Thrift;
-#else
+//#ifdef THRIFT_FOUND
+//    constexpr EncodingTypes::Enumeration _EncodingType = EncodingTypes::Thrift;
+//    constexpr const char* _ContentType = "Content-Type: application/x-thrift";
+//#else
+//    constexpr EncodingTypes::Enumeration _EncodingType = EncodingTypes::Json;
+//    constexpr const char* _ContentType = "Content-Type: application/json";
+//#endif
+
     constexpr EncodingTypes::Enumeration _EncodingType = EncodingTypes::Json;
-#endif
+    constexpr const char* _ContentType = "Content-Type: application/json";
+
 
     HttpTransport::HttpTransport() {
     }
@@ -24,7 +30,12 @@ namespace cppkin
 
     void HttpTransport::Submit(const std::vector<Span*>& spans) {
 
-        string buffer = EncoderImpl<_EncodingType>().ToString(spans);
+        EncoderImpl<_EncodingType> encoder;
+        std::cout << "???" << std::endl;
+        string buffer = EncoderContext(spans, encoder).ToString();
+
+        std::cout << "----> " << buffer << std::endl;
+
         try {
 
             CURL* curl = curl_easy_init();
@@ -32,7 +43,8 @@ namespace cppkin
                 // TODO
             }
             struct curl_slist *headers = nullptr;
-            headers = curl_slist_append(headers, "Content-Type: application/x-thrift");
+
+            headers = curl_slist_append(headers, _ContentType);
             headers = curl_slist_append(headers, "Expect:");
             curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
 

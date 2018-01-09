@@ -1,9 +1,10 @@
 #include <string>
+#include <sstream>
 #include <boost/make_shared.hpp>
+#include "Poco/JSON/Array.h"
 
 #include "GeneratedFiles/zipkinCore_types.h"
 #include "Encoder.h"
-#include "Span.h"
 #include "SimpleAnnotation.h"
 #include "EncodingContext.h"
 #include "ConfigParams.h"
@@ -11,6 +12,7 @@
 using namespace apache::thrift;
 using namespace core;
 using namespace std;
+namespace json = Poco::JSON;
 
 namespace cppkin
 {
@@ -57,8 +59,7 @@ namespace cppkin
         return m_buffer->getBufferAsString();
     }
 
-    template <class T>
-    std::string EncoderImpl<EncodingTypes::Thrift>::SpansVectorToString(T& spans) const {
+    string EncoderImpl<EncodingTypes::Thrift>::ToString(const std::vector<EncoderContext::ContextElement>& spans) const {
         m_buffer->resetBuffer();
         m_protocol->writeListBegin(protocol::T_STRUCT, spans.size());
         for (auto &span : spans) {
@@ -69,66 +70,59 @@ namespace cppkin
         return m_buffer->getBufferAsString();
     }
 
-    string EncoderImpl<EncodingTypes::Thrift>::ToString(const std::vector<EncoderContext::ContextElement>& spans) const {
-        return SpansVectorToString(spans);
+    json::Object EncoderImpl<EncodingTypes::Json>::Serialize(const Span& span) {
+        json::Object jsonSpan;
+        jsonSpan.set("traceId", span.GetHeader().TraceID);
+        jsonSpan.set("name", span.GetHeader().Name);
+        jsonSpan.set("id", span.GetHeader().ID);
+        jsonSpan.set("debug", ConfigParams::Instance().GetDebug());
+        jsonSpan.set("timestamp", span.GetTimeStamp());
+        jsonSpan.set("duration", span.GetDuration());
+
+        if(span.GetHeader().ParentIDSet)
+            jsonSpan.set("parentId", span.GetHeader().ParentID);
+
+        json::Array jsonAnnotations;
+        for(auto& annotation : span.GetAnnotations())
+            if(annotation->GetType() == AnnotationType::Simple)
+                Serialize(jsonAnnotations, static_cast<const SimpleAnnotation&>(*annotation));
+        jsonSpan.set("annotations", jsonAnnotations);
+
+        return jsonSpan;
     }
 
-    string EncoderImpl<EncodingTypes::Thrift>::ToString(const std::vector<Span*>& spans) const {
-        return SpansVectorToString(spans);
+    void EncoderImpl<EncodingTypes::Json>::Serialize(json::Array& jsonAnnotations, const SimpleAnnotation &annotation) {
+        json::Object jsonAnnotation;
+        jsonAnnotation.set("value", annotation.GetEvent());
+        jsonAnnotation.set("timestamp", annotation.GetTimeStamp());
+
+        const Annotation::EndPoint& endPoint = annotation.GetEndPoint();
+        json::Object jsonEndPoint;
+        jsonEndPoint.set("serviceName", endPoint.ServiceName);
+        jsonEndPoint.set("ipv4", endPoint.Host);
+        jsonEndPoint.set("port", endPoint.Port);
+        jsonAnnotation.set( "endpoint", jsonEndPoint);
+
+        jsonAnnotations.add(jsonAnnotation);
     }
 
     string EncoderImpl<EncodingTypes::Json>::ToString(const Span& span) const {
-        return "not ready yet";
+        json::Object jsonSpan = EncoderImpl<EncodingTypes::Json>::Serialize(span);
+        ostringstream oss;
+        jsonSpan.stringify(oss);
+        return oss.str();
     }
 
-    string EncoderImpl<EncodingTypes::Json>::ToString(const std::vector<EncoderContext::ContextElement>&) const {
-        return "not ready yet";
+    string EncoderImpl<EncodingTypes::Json>::  ToString(const std::vector<EncoderContext::ContextElement>& spans) const {
+
+        json::Array jsonSpans;
+        for (auto& span : spans) {
+            json::Object jsonSpan = EncoderImpl<EncodingTypes::Json>::Serialize(*span);
+            jsonSpans.add(jsonSpan);
+        }
+
+        ostringstream oss;
+        jsonSpans.stringify(oss);
+        return oss.str();
     }
-
-    string EncoderImpl<EncodingTypes::Json>::ToString(const std::vector<Span*>& spans) const {
-        return "not ready yet";
-    }
-
-//
-
-//
-//    void Encoder<EncodingTypes::Thrift>::Serialize(EncoderContext& context, const Span::SpanHeader& spanHeader) {
-////        EncoderContextThrift& thriftContext = static_cast<EncoderContextThrift&>(context);
-////        ::Span thriftSpan;
-////        thriftSpan.__set_trace_id(spanHeader.TraceID);
-////        thriftSpan.__set_name(spanHeader.Name);
-////        thriftSpan.__set_id(spanHeader.ID);
-////        if(spanHeader.ParentIDSet)
-////            thriftSpan.__set_parent_id(spanHeader.ParentID);
-////        thriftContext.AddSpan(thriftSpan);
-//    }
-//
-//    Span::SpanHeader Encoder<EncodingTypes::Thrift>::DeSerializeSpanHeader(EncoderContext &context) {
-////        EncoderContextThrift& thriftContext = static_cast<EncoderContextThrift&>(context);
-////        ::Span thriftSpan = thriftContext.ToSpan();
-////        if(thriftSpan.__isset.parent_id == true) {
-////            Span::SpanHeader spanHeader(thriftSpan.name, thriftSpan.trace_id, thriftSpan.parent_id, thriftSpan.id);
-////            return spanHeader;
-////        }
-////        else{
-////            Span::SpanHeader spanHeader(thriftSpan.name, thriftSpan.trace_id, thriftSpan.id);
-////            return spanHeader;
-////        }
-//    }
-//
-//    void Encoder<EncodingTypes::Json>::Serialize(EncoderContext& context, const Span& span) {
-//
-//    }
-//
-//    void Encoder<EncodingTypes::Json>::Serialize(::Span& thriftSpan, const SimpleAnnotation &annotation) {
-//
-//    }
-//
-//    void Encoder<EncodingTypes::Json>::Serialize(EncoderContext& context, const Span::SpanHeader& spanHeader) {
-//
-//    }
-//
-//    Span::SpanHeader Encoder<EncodingTypes::Json>::DeSerializeSpanHeader(EncoderContext &context) {
-//
-//    }
 }

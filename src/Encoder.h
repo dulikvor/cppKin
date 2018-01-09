@@ -1,8 +1,9 @@
 #pragma once
 
 #include <string>
-
 #include "boost/shared_ptr.hpp"
+#include "Poco/JSON/Object.h"
+#include "Poco/JSON/Array.h"
 #include "thrift/protocol/TBinaryProtocol.h"
 #include "thrift/transport/TBufferTransports.h"
 
@@ -23,7 +24,6 @@ namespace cppkin
         virtual ~Encoder() {}
         virtual std::string ToString(const Span&) const = 0;
         virtual std::string ToString(const std::vector<EncoderContext::ContextElement>&) const = 0;
-        virtual std::string ToString(const std::vector<Span*>&) const = 0;
     };
 
     template<EncodingTypes::Enumeration>
@@ -31,15 +31,11 @@ namespace cppkin
     {
     public:
         EncoderImpl();
-        virtual std::string ToString(const Span&) const {
+        std::string ToString(const Span&) const override {
             throw core::Exception(SOURCE, "Unsupported method");
         }
 
-        virtual std::string ToString(const std::vector<EncoderContext::ContextElement>&) const {
-            throw core::Exception(SOURCE, "Unsupported method");
-        }
-
-        virtual std::string ToString(const std::vector<Span*>&) {
+        std::string ToString(const std::vector<EncoderContext::ContextElement>&) const override {
             throw core::Exception(SOURCE, "Unsupported method");
         }
     };
@@ -49,13 +45,10 @@ namespace cppkin
     {
     public:
         EncoderImpl();
-        virtual std::string ToString(const Span&) const;
-        virtual std::string ToString(const std::vector<EncoderContext::ContextElement>&) const;
-        virtual std::string ToString(const std::vector<Span*>&) const;
+        std::string ToString(const Span&) const override;
+        std::string ToString(const std::vector<EncoderContext::ContextElement>&) const override;
 
     private:
-        template <class T>
-        std::string SpansVectorToString(T& spans) const;
         static ::Span Serialize(const Span& span);
         static void Serialize(::Span& thriftSpan, const SimpleAnnotation &annotation);
     private:
@@ -67,9 +60,12 @@ namespace cppkin
     class EncoderImpl<EncodingTypes::Json>: public Encoder
     {
     public:
-        virtual std::string ToString(const Span&) const;
-        virtual std::string ToString(const std::vector<EncoderContext::ContextElement>&) const;
-        virtual std::string ToString(const std::vector<Span*>&) const;
+        virtual std::string ToString(const Span&) const override;
+        virtual std::string ToString(const std::vector<EncoderContext::ContextElement>&) const override;
+
+    private:
+        static Poco::JSON::Object Serialize(const Span& span);
+        static void Serialize(Poco::JSON::Array& jsonSpan, const SimpleAnnotation &annotation);
     };
 }
 
