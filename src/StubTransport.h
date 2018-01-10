@@ -9,6 +9,6 @@ namespace cppkin
     public:
         StubTransport(){}
         virtual ~StubTransport(){}
-        void Submit(const std::vector<Span *> &spans) override{}
+        void Submit(std::vector<std::unique_ptr<Span>>& spans) override {}
     };
 }

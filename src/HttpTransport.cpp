@@ -1,3 +1,6 @@
+#include <iostream>
+#include "curl/curl.h"
+
 #include "HttpTransport.h"
 #include "ConfigParams.h"
 #include "Encoder.h"
@@ -5,35 +8,12 @@
 #include "EncoderBase64.h"
 
 using namespace std;
-using namespace apache::thrift;
 
 namespace cppkin
 {
+    void HttpTransport::Submit(std::vector<std::unique_ptr<Span>>& spans) {
 
-//#ifdef THRIFT_FOUND
-//    constexpr EncodingTypes::Enumeration _EncodingType = EncodingTypes::Thrift;
-//    constexpr const char* _ContentType = "Content-Type: application/x-thrift";
-//#else
-//    constexpr EncodingTypes::Enumeration _EncodingType = EncodingTypes::Json;
-//    constexpr const char* _ContentType = "Content-Type: application/json";
-//#endif
-
-    constexpr EncodingTypes::Enumeration _EncodingType = EncodingTypes::Json;
-    constexpr const char* _ContentType = "Content-Type: application/json";
-
-
-    HttpTransport::HttpTransport() {
-    }
-
-    HttpTransport::~HttpTransport() {
-    }
-
-    void HttpTransport::Submit(const std::vector<Span*>& spans) {
-
-        EncoderImpl<_EncodingType> encoder;
-        std::cout << "???" << std::endl;
-        string buffer = EncoderContext(spans, encoder).ToString();
-
+        string buffer = EncoderContext(spans).ToString();
         std::cout << "----> " << buffer << std::endl;
 
         try {
@@ -44,7 +24,11 @@ namespace cppkin
             }
             struct curl_slist *headers = nullptr;
 
-            headers = curl_slist_append(headers, _ContentType);
+            if (ConfigParams::Instance().GetEncodingType() == EncodingType::Thrift)
+                headers = curl_slist_append(headers, "Content-Type: application/x-thrift");
+            else
+                headers = curl_slist_append(headers, "Content-Type: application/json");
+
             headers = curl_slist_append(headers, "Expect:");
             curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
 
@@ -64,7 +48,7 @@ namespace cppkin
             curl_slist_free_all(headers);
             curl_easy_cleanup(curl);
         }
-        catch(apache::thrift::transport::TTransportException& exc){
+        catch(...){
         }
     }
 }

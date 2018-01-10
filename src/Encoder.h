@@ -1,18 +1,9 @@
 #pragma once
 
+#include <unordered_map>
 #include <string>
-#include "boost/shared_ptr.hpp"
-#include "Poco/JSON/Object.h"
-#include "Poco/JSON/Array.h"
-#include "thrift/protocol/TBinaryProtocol.h"
-#include "thrift/transport/TBufferTransports.h"
-
-#include "Core/src/Enumeration.h"
 #include "EncodingTypes.h"
 #include "EncodingContext.h"
-#include "Span.h"
-
-class Span;
 
 namespace cppkin
 {
@@ -26,7 +17,7 @@ namespace cppkin
         virtual std::string ToString(const std::vector<EncoderContext::ContextElement>&) const = 0;
     };
 
-    template<EncodingTypes::Enumeration>
+    template<EncodingType::Enumeration>
     class EncoderImpl: public Encoder
     {
     public:
@@ -40,32 +31,34 @@ namespace cppkin
         }
     };
 
-    template<>
-    class EncoderImpl<EncodingTypes::Thrift>: public Encoder
+    class EncoderCreator
     {
     public:
-        EncoderImpl();
-        std::string ToString(const Span&) const override;
-        std::string ToString(const std::vector<EncoderContext::ContextElement>&) const override;
-
-    private:
-        static ::Span Serialize(const Span& span);
-        static void Serialize(::Span& thriftSpan, const SimpleAnnotation &annotation);
-    private:
-        std::unique_ptr<apache::thrift::protocol::TBinaryProtocol> m_protocol;
-        boost::shared_ptr<apache::thrift::transport::TMemoryBuffer> m_buffer;
+        virtual ~EncoderCreator() {}
+        virtual std::unique_ptr<Encoder> Create() = 0;
     };
 
-    template<>
-    class EncoderImpl<EncodingTypes::Json>: public Encoder
+    template<typename ConcreteEncoder>
+    class ConcreteEncoderCreator : public EncoderCreator
     {
     public:
-        virtual std::string ToString(const Span&) const override;
-        virtual std::string ToString(const std::vector<EncoderContext::ContextElement>&) const override;
-
-    private:
-        static Poco::JSON::Object Serialize(const Span& span);
-        static void Serialize(Poco::JSON::Array& jsonSpan, const SimpleAnnotation &annotation);
+        virtual ~ConcreteEncoderCreator() {}
+        std::unique_ptr<Encoder> Create() override {
+            return std::unique_ptr<Encoder>(new ConcreteEncoder());
+        }
     };
+
+    class EncoderFactory
+    {
+    public:
+        static const EncoderFactory& Instance();
+        ~EncoderFactory() {}
+        std::unique_ptr<Encoder> Create(EncodingType type) const;
+    private:
+        EncoderFactory();
+    private:
+        std::unordered_map<EncodingType, std::unique_ptr<EncoderCreator>, EncodingType::Hash> m_encoders;
+    };
+
 }
 

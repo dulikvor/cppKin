@@ -2,13 +2,16 @@
 
 #include "Core/src/Enumeration.h"
 
-class EncodingTypes
+namespace cppkin
 {
-public:
-    enum Enumeration
+    class EncodingType
     {
-        Thrift,
-        Json
+    public:
+        enum Enumeration
+        {
+            Thrift,
+            Json
+        };
+        ENUMERATION(EncodingType)
     };
-    ENUMERATION(EncodingTypes)
-};
+}

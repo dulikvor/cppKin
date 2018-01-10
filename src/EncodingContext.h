@@ -20,7 +20,7 @@ namespace cppkin
         public:
 
             typedef const Span& reference;
-            ContextElement(Span* span, const Encoder& encoder);
+            ContextElement(std::unique_ptr<Span>&& span, const Encoder& encoder);
             std::string ToString() const;
             reference operator*() const { return *m_span; }
 
@@ -34,17 +34,16 @@ namespace cppkin
         typedef ContextElementVector::const_iterator const_iterator;
 
         EncoderContext();
-        EncoderContext(const std::vector<Span*>& spans, const Encoder& encoder);
+        EncoderContext(std::vector<std::unique_ptr<Span>>& spans);
         virtual ~EncoderContext();
         iterator begin();
         iterator end();
         const_iterator begin() const;
         const_iterator end() const;
         std::string ToString() const;
-        void AddSpan(const Span* span);
 
     private:
-        std::vector<ContextElement> m_spans;
-        const Encoder&              m_encoder;
+        std::vector<ContextElement>    m_spans;
+        const std::unique_ptr<Encoder> m_encoder;
     };
 }

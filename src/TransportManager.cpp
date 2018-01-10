@@ -48,8 +48,8 @@ namespace cppkin
                 unique_lock<mutex> lock(m_mut);
                 m_cv.wait_until(lock, chrono::system_clock::now() + chrono::seconds(10), [this]{ return m_batchReached; });
             }
-            static vector<Span*> retrievedSpans;
-            m_spanQueue.consume_all([](Span* span){retrievedSpans.push_back(span);});
+            static vector<std::unique_ptr<Span>> retrievedSpans;
+            m_spanQueue.consume_all([](Span* span){retrievedSpans.emplace_back(span);});
             if(retrievedSpans.size() > 0) {
                 m_transport->Submit(retrievedSpans);
             }

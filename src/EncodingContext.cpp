@@ -1,13 +1,13 @@
+#include "Span.h"
 #include "Encoder.h"
-#include "GeneratedFiles/zipkinCore_types.h"
+#include "ConfigParams.h"
 
 using namespace std;
-using namespace apache::thrift;
 
 namespace cppkin
 {
-    EncoderContext::ContextElement::ContextElement(Span* span, const Encoder& encoder):
-        m_span(span), m_encoder(encoder) {
+    EncoderContext::ContextElement::ContextElement(unique_ptr<Span>&& span, const Encoder& encoder):
+        m_span(std::move(span)), m_encoder(encoder) {
     }
 
     string EncoderContext::ContextElement::ToString() const {
@@ -16,11 +16,11 @@ namespace cppkin
 
     EncoderContext::~EncoderContext() {}
 
-    EncoderContext::EncoderContext(const std::vector<Span*>& spans, const Encoder& encoder):
-        m_encoder(encoder)
+    EncoderContext::EncoderContext(vector<unique_ptr<Span>>& spans):
+        m_encoder(EncoderFactory::Instance().Create(ConfigParams::Instance().GetEncodingType()))
     {
         for (auto& span : spans) {
-            m_spans.emplace_back(span, m_encoder);
+            m_spans.emplace_back(std::move(span), *m_encoder);
         }
     }
 
@@ -41,10 +41,7 @@ namespace cppkin
     }
 
     string EncoderContext::ToString() const {
-        return m_encoder.ToString(m_spans);
+        return m_encoder->ToString(m_spans);
     }
 
-    void EncoderContext::AddSpan(const Span* span) {
-        m_spans.emplace_back(const_cast<Span*>(span), m_encoder); //, *m_protocol, *m_buffer);
-    }
 }
