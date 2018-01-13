@@ -13,9 +13,9 @@ namespace cppkin
         return instance;
     }
 
-    ConfigParams::~ConfigParams(){}
-
-    ConfigParams::ConfigParams():m_transportType(TransportType::Stub){}
+    ConfigParams::ConfigParams():
+            m_transportType(TransportType::Stub), m_encodingType(EncodingType::Thrift)
+    {}
 
     void ConfigParams::Load(const GeneralParams& configParams)
     {
@@ -25,26 +25,6 @@ namespace cppkin
         m_serviceName = StringConverter::Convert(configParams.GetValue(ConfigTags::SERVICE_NAME));
         m_debug = configParams.GetValue(ConfigTags::DEBUG);
         m_sampleCount = configParams.GetValue(ConfigTags::SAMPLE_COUNT);
+        m_encodingType = EncodingType::FromString(configParams.GetValue(ConfigTags::ENCODING_TYPE));
     }
-
-    const string& ConfigParams::GetHostAddress() const{
-        return m_hostAddress;
-    }
-
-
-    int ConfigParams::GetPort() const{
-        return m_port;
-    }
-    TransportType ConfigParams::GetTransportType() const{
-        return m_transportType;
-    }
-    const std::string& ConfigParams::GetServiceName() const{
-        return m_serviceName;
-    }
-    bool ConfigParams::GetDebug() const{
-        return m_debug;
-    }
-    int ConfigParams::GetSampleCount() const{
-        return m_sampleCount;
-    };
 }

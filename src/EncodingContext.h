@@ -2,117 +2,46 @@
 
 #include <string>
 #include <memory>
-#include <list>
-#include <sstream>
-#include "boost/shared_ptr.hpp"
-#include "thrift/protocol/TBinaryProtocol.h"
-#include "thrift/transport/TBufferTransports.h"
+#include <vector>
 #include "EncodingTypes.h"
-#include "Encoder.h"
-
-class Span;
 
 namespace cppkin
 {
     class Span;
-    class SimpleAnnotation;
+    class Encoder;
 
     class EncoderContext
     {
+
     public:
-        virtual ~EncoderContext();
-        virtual std::string ToString() = 0;
-    };
 
-    class EncoderContextThrift : public EncoderContext
-    {
+        class ContextElement {
 
-    private:
-        class ContextElement
-        {
         public:
-            typedef ::Span* pointer;
-            typedef ::Span& reference;
-            typedef apache::thrift::protocol::TBinaryProtocol protocol;
-            typedef apache::thrift::transport::TMemoryBuffer buffer;
-
-            ContextElement(reference span, protocol& _protocol, buffer& _buffer);
-            ~ContextElement();
-            ContextElement(const ContextElement& obj) = delete;
-            ContextElement& operator=(const ContextElement& obj) = delete;
+            ContextElement(std::unique_ptr<Span>&& span, const Encoder& encoder);
             std::string ToString() const;
-
-            reference operator*() const;
-            pointer operator->() const;
-        private:
-            std::unique_ptr<::Span> m_span;
-            protocol& m_protocol;
-            buffer& m_buffer;
-        };
-
-    public:
-        class EncoderContextThriftIterator
-        {
-        public:
-            typedef EncoderContextThriftIterator self;
-            typedef ContextElement* pointer;
-            typedef ContextElement& reference;
-
-            EncoderContextThriftIterator(const std::list<ContextElement>::iterator& it);
-            ~EncoderContextThriftIterator();
-            reference operator*() const;
-            pointer operator->() const;
-            self& operator++(int);
-            bool operator==(const self& obj) const;
-            bool operator!=(const self& obj) const;
-
+            const Span& operator*() const { return *m_span; }
 
         private:
-            std::list<ContextElement>::iterator m_it;
+            std::unique_ptr<Span> m_span;
+            const Encoder&        m_encoder;
         };
 
+        typedef std::vector<ContextElement> ContextElementVector;
+        typedef ContextElementVector::iterator iterator;
+        typedef ContextElementVector::const_iterator const_iterator;
 
-        class EncoderContextThriftConstIterator
-        {
-        public:
-            typedef EncoderContextThriftConstIterator self;
-            typedef const ContextElement* pointer;
-            typedef const ContextElement& reference;
-
-            EncoderContextThriftConstIterator(const std::list<ContextElement>::const_iterator& it);
-            ~EncoderContextThriftConstIterator();
-            reference operator*() const;
-            pointer operator->() const;
-            self& operator++(int);
-            bool operator==(const self& obj) const;
-            bool operator!=(const self& obj) const;
-
-
-        private:
-            std::list<ContextElement>::const_iterator m_it;
-        };
-
-    public:
-        typedef EncoderContextThriftIterator iterator;
-        typedef EncoderContextThriftConstIterator const_iterator;
-
-        EncoderContextThrift();
-        EncoderContextThrift(const char* buf, uint32_t sz);
-        virtual ~EncoderContextThrift();
+        EncoderContext();
+        EncoderContext(std::vector<std::unique_ptr<Span>>& spans);
+        virtual ~EncoderContext();
         iterator begin();
         iterator end();
         const_iterator begin() const;
         const_iterator end() const;
-        std::string ToString();
-        ::Span ToSpan();
+        std::string ToString() const;
 
     private:
-        friend class Encoder<EncodingTypes::Thrift>;
-        void AddSpan(const ::Span& thriftSpan);
-
-    private:
-        std::list<ContextElement> m_spans;
-        std::unique_ptr<apache::thrift::protocol::TBinaryProtocol> m_protocol;
-        boost::shared_ptr<apache::thrift::transport::TMemoryBuffer> m_buffer;
+        std::vector<ContextElement>    m_spans;
+        const std::unique_ptr<Encoder> m_encoder;
     };
 }

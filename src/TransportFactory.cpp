@@ -10,9 +10,6 @@ using namespace core;
 namespace cppkin
 {
     TransportFactory::~TransportFactory() {
-        for(auto& creatorPair : m_transports)
-            delete creatorPair.second;
-        m_transports.clear();
     }
 
     const TransportFactory& TransportFactory::Instance() {
@@ -21,15 +18,14 @@ namespace cppkin
     }
 
     TransportFactory::TransportFactory() {
-        m_transports.insert(make_pair(TransportType::Stub, new ConcreteTransportCreator<StubTransport>()));
-        m_transports.insert(make_pair(TransportType::Scribe, new ConcreteTransportCreator<ScribeTransport>()));
-        m_transports.insert(make_pair(TransportType::Http, new ConcreteTransportCreator<HttpTransport>()));
+        m_transports.emplace(TransportType::Stub, unique_ptr<ConcreteTransportCreator<StubTransport>>(new ConcreteTransportCreator<StubTransport>()));
+        m_transports.emplace(TransportType::Scribe, unique_ptr<ConcreteTransportCreator<ScribeTransport>>(new ConcreteTransportCreator<ScribeTransport>()));
+        m_transports.emplace(TransportType::Http, unique_ptr<ConcreteTransportCreator<HttpTransport>>(new ConcreteTransportCreator<HttpTransport>()));
     }
 
     unique_ptr<Transport> TransportFactory::Create(TransportType type) const{
-        using dictionary = std::unordered_map<TransportType, TransportCreator*, TransportType::Hash>;
-        dictionary::const_iterator it = m_transports.find(type);
-        if(it == m_transports.end())
+        auto it = m_transports.find(type);
+        if (it == m_transports.end())
             throw Exception(SOURCE, "Requested transport type - %s is not supported", type.ToString().c_str());
         return it->second->Create();
     }

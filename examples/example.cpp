@@ -1,17 +1,12 @@
 #include <string>
 #include <boost/program_options.hpp>
-#include "src/cppkin.h"
 #include "Core/src/Logger.h"
 #include "Core/src/TraceListener.h"
+#include "src/cppkin.h"
 
 using namespace std;
 using namespace core;
 using namespace boost::program_options;
-
-void on_age(int age)
-{
-  std::cout << "On age: " << age << '\n';
-}
 
 int main( int argc, const char *argv[] )
 {
@@ -32,9 +27,6 @@ int main( int argc, const char *argv[] )
         return 0;
     }
 
-    Logger::Instance().AddListener(make_shared<FileRotationListener>(TraceSeverity::Info, "./example", 50 * 1024 * 1024, 20));
-    Logger::Instance().Start(TraceSeverity::Info);
-
     int port = 9411;
     auto transportType = cppkin::TransportType::Http;
     if (vm["transport"].as<string>() == "scribe") {
@@ -51,6 +43,7 @@ int main( int argc, const char *argv[] )
     cppkinParams.AddParam(cppkin::ConfigTags::DEBUG, true);
     cppkinParams.AddParam(cppkin::ConfigTags::SAMPLE_COUNT, 1);
     cppkinParams.AddParam(cppkin::ConfigTags::TRANSPORT_TYPE, cppkin::TransportType(transportType).ToString());
+    cppkinParams.AddParam(cppkin::ConfigTags::ENCODING_TYPE, cppkin::EncodingType(cppkin::EncodingType::Thrift).ToString());
     INIT(cppkinParams);
 
     CREATE_TRACE("Test");
@@ -60,6 +53,6 @@ int main( int argc, const char *argv[] )
     TRACE_EVENT("Event2");
     SUBMIT_SPAN();
 
-    ::sleep(10);
+    ::sleep(5);
     return 0;
 }

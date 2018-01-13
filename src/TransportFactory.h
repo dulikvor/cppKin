@@ -12,16 +12,15 @@ namespace cppkin
     {
     public:
         virtual ~TransportCreator(){}
-        virtual std::unique_ptr<Transport> Create(){
-            throw core::Exception(SOURCE, "Method is not supported");
-        }
+        virtual std::unique_ptr<Transport> Create() = 0;
     };
+
     template<typename ConcreteTransport>
     class ConcreteTransportCreator : public TransportCreator
     {
     public:
         virtual ~ConcreteTransportCreator(){}
-        std::unique_ptr<Transport> Create() override{
+        std::unique_ptr<Transport> Create() override {
             return std::unique_ptr<Transport>(new ConcreteTransport());
         }
     };
@@ -35,6 +34,6 @@ namespace cppkin
     private:
         TransportFactory();
     private:
-        std::unordered_map<TransportType, TransportCreator*, TransportType::Hash> m_transports;
+        std::unordered_map<TransportType, std::unique_ptr<TransportCreator>, TransportType::Hash> m_transports;
     };
 }

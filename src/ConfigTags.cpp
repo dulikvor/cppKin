@@ -8,4 +8,5 @@ namespace cppkin
     const char* ConfigTags::SERVICE_NAME = "Service Name";
     const char* ConfigTags::DEBUG = "Debug";
     const char* ConfigTags::SAMPLE_COUNT = "Sample Count";
+    const char* ConfigTags::ENCODING_TYPE = "Encoding Type";
 }

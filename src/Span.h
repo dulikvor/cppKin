@@ -52,7 +52,7 @@ namespace cppkin
 
     private:
         friend class Trace;
-        friend class EncoderContextThrift;
+
         Span(const std::string& name, int_fast64_t traceID, int_fast64_t parentID, int_fast64_t id);
         Span(const std::string& name, int_fast64_t traceID);
         int_fast64_t GetCurrentTime();

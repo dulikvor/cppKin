@@ -27,10 +27,10 @@ namespace cppkin
         m_worker->Join();
     }
 
-    void TransportManager::PushSpan(unique_ptr<Span> span){
+    void TransportManager::PushSpan(unique_ptr<Span> span) {
         m_spanQueue.push(span.release());
         //fetch_add returns previous value, this is why an addition of 1 was commenced
-        if(atomic_fetch_add(&m_currentSpanCount, 1) + 1 == BATCH_SIZE){
+        if(atomic_fetch_add(&m_currentSpanCount, 1) + 1 == BATCH_SIZE) {
             m_currentSpanCount-=BATCH_SIZE;
             m_batchReached = true;
             {
@@ -46,15 +46,12 @@ namespace cppkin
         {
             {
                 unique_lock<mutex> lock(m_mut);
-                m_cv.wait_until(lock, chrono::system_clock::now() + chrono::seconds(10), [this]{return m_batchReached; });
+                m_cv.wait_until(lock, chrono::system_clock::now() + chrono::seconds(10), [this]{ return m_batchReached; });
             }
-            static vector<Span*> retrievedSpans;
-            m_spanQueue.consume_all([](Span* span){retrievedSpans.push_back(span);});
+            static vector<std::unique_ptr<Span>> retrievedSpans;
+            m_spanQueue.consume_all([](Span* span){retrievedSpans.emplace_back(span);});
             if(retrievedSpans.size() > 0) {
                 m_transport->Submit(retrievedSpans);
-                for (Span *span : retrievedSpans) {
-                    delete span;
-                }
             }
             retrievedSpans.clear();
         }
