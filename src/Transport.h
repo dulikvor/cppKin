@@ -1,5 +1,6 @@
 #pragma once
 
+#include <memory>
 #include <vector>
 
 namespace cppkin
@@ -10,7 +11,7 @@ namespace cppkin
     {
     public:
         virtual ~Transport(){}
-        virtual void Submit(const std::vector<Span*>& spans) = 0;
+        virtual void Submit(std::vector<std::unique_ptr<Span>>& spans) = 0;
     };
 }
 

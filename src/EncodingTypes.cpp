@@ -1,6 +1,8 @@
 #include "EncodingTypes.h"
 
-ENUMERATION_NAMING_BEGIN(EncodingTypes)
-{Thrift, "Thrift"},
-{ByteStream, "Byte Stream"}
-ENUMERATION_NAMING_END(EncodingTypes)
+namespace cppkin {
+    ENUMERATION_NAMING_BEGIN(EncodingType)
+                    {Thrift, "Thrift"},
+                    {Json, "Json"}
+    ENUMERATION_NAMING_END(EncodingType)
+}

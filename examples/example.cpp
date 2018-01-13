@@ -9,11 +9,6 @@ using namespace std;
 using namespace core;
 using namespace boost::program_options;
 
-void on_age(int age)
-{
-  std::cout << "On age: " << age << '\n';
-}
-
 int main( int argc, const char *argv[] )
 {
     options_description desc{"Options"};
@@ -53,6 +48,7 @@ int main( int argc, const char *argv[] )
     cppkinParams.AddParam(cppkin::ConfigTags::DEBUG, true);
     cppkinParams.AddParam(cppkin::ConfigTags::SAMPLE_COUNT, 1);
     cppkinParams.AddParam(cppkin::ConfigTags::TRANSPORT_TYPE, cppkin::TransportType(transportType).ToString());
+    cppkinParams.AddParam(cppkin::ConfigTags::ENCODING_TYPE, cppkin::EncodingType(cppkin::EncodingType::Thrift).ToString());
     INIT(cppkinParams);
 
     CREATE_TRACE("Test");

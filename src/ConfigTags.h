@@ -12,6 +12,7 @@ namespace  cppkin {
         static const char *SERVICE_NAME;
         static const char *DEBUG;
         static const char *SAMPLE_COUNT;
+        static const char *ENCODING_TYPE;
     private:
         ConfigTags();
     };

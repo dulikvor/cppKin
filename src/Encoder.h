@@ -1,42 +1,79 @@
 #pragma once
 
-#include "Core/src/Enumeration.h"
-#include "EncodingTypes.h"
-#include "Span.h"
+#include <unordered_map>
+#include <string>
+#include <sstream>
+#include "boost/archive/iterators/base64_from_binary.hpp"
+#include "boost/archive/iterators/binary_from_base64.hpp"
+#include "boost/archive/iterators/transform_width.hpp"
 
-class Span;
+#include "EncodingTypes.h"
+#include "EncodingContext.h"
 
 namespace cppkin
 {
     class Span;
     class SimpleAnnotation;
-    class EncoderContext;
 
-    template<EncodingTypes::Enumeration >
-    class Encoder
+    class Encoder {
+        static const char* base64_padding[];
+    public:
+        static std::string base64EncodeText(const std::string& data) {
+            using namespace boost::archive::iterators;
+            typedef base64_from_binary<transform_width<std::string::const_iterator, 6, 8> > base64_enc;
+            std::stringstream ss;
+            std::copy(base64_enc(data.begin()), base64_enc(data.end()), std::ostream_iterator<char>(ss));
+            ss << base64_padding[data.size() % 3];
+            return ss.str();
+        }
+
+        virtual ~Encoder() {}
+        virtual std::string ToString(const Span&) const = 0;
+        virtual std::string ToString(const std::vector<EncoderContext::ContextElement>&) const = 0;
+    };
+
+    template<EncodingType::Enumeration>
+    class EncoderImpl: public Encoder
     {
     public:
-        static void Serialize(EncoderContext& context, const Span::SpanHeader& spanHeader){
+        EncoderImpl();
+        std::string ToString(const Span&) const override {
             throw core::Exception(SOURCE, "Unsupported method");
         }
-        static void Serialize(EncoderContext& context, const Span& span){
-            throw core::Exception(SOURCE, "Unsupported method");
-        }
-        static Span::SpanHeader DeSerializeSpanHeader(EncoderContext& context){
+
+        std::string ToString(const std::vector<EncoderContext::ContextElement>&) const override {
             throw core::Exception(SOURCE, "Unsupported method");
         }
     };
 
-    template<>
-    class Encoder<EncodingTypes::Thrift>
+    class EncoderCreator
     {
     public:
-        static void Serialize(EncoderContext& context, const Span::SpanHeader& spanHeader);
-        static void Serialize(EncoderContext& context, const Span& span);
-        static Span::SpanHeader DeSerializeSpanHeader(EncoderContext& context);
+        virtual ~EncoderCreator() {}
+        virtual std::unique_ptr<Encoder> Create() = 0;
+    };
 
+    template<typename ConcreteEncoder>
+    class ConcreteEncoderCreator : public EncoderCreator
+    {
+    public:
+        virtual ~ConcreteEncoderCreator() {}
+        std::unique_ptr<Encoder> Create() override {
+            return std::unique_ptr<Encoder>(new ConcreteEncoder());
+        }
+    };
+
+    class EncoderFactory
+    {
+    public:
+        static const EncoderFactory& Instance();
+        ~EncoderFactory() {}
+        std::unique_ptr<Encoder> Create(EncodingType type) const;
     private:
-        static void Serialize(::Span& thriftSpan, const SimpleAnnotation& annotation);
+        EncoderFactory();
+    private:
+        std::unordered_map<EncodingType, std::unique_ptr<EncoderCreator>, EncodingType::Hash> m_encoders;
     };
+
 }
 

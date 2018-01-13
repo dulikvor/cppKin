@@ -10,6 +10,7 @@
 #include "Trace.h"
 #include "TransportManager.h"
 #include "EncodingContext.h"
+#include "EncodingTypes.h"
 #include "Encoder.h"
 #include "Sampler.h"
 
@@ -59,7 +60,7 @@
         if(cppkin::Sampler::ShouldSample()){ \
             cppkin::Span& span = cppkin::SpanContainer::Instance().GetSpan(); \
             cppkin::EncoderContext##encodingType context; \
-            cppkin::Encoder<EncodingTypes::encodingType>::Serialize(context, span.GetHeader()); \
+            cppkin::Encoder<EncodingType::encodingType>::Serialize(context, span.GetHeader()); \
             outputData = std::move(context.ToString()); \
         } \
         else \
@@ -71,7 +72,7 @@
     {   \
         if(length > 0){ \
             cppkin::EncoderContext##decodingType context(data, length); \
-            outputHeader = cppkin::Encoder<EncodingTypes::decodingType>::DeSerializeSpanHeader(context); \
+            outputHeader = cppkin::Encoder<EncodingType::decodingType>::DeSerializeSpanHeader(context); \
         } \
     }while(0)
 

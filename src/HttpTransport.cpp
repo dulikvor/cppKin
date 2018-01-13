@@ -1,30 +1,19 @@
-#include <sstream>
+#include <iostream>
+#include "curl/curl.h"
+
 #include "HttpTransport.h"
 #include "ConfigParams.h"
 #include "Encoder.h"
 #include "EncodingContext.h"
-#include "EncoderBase64.h"
 
 using namespace std;
-using namespace apache::thrift;
 
 namespace cppkin
 {
-    HttpTransport::HttpTransport() {
-    }
+    void HttpTransport::Submit(std::vector<std::unique_ptr<Span>>& spans) {
 
-    HttpTransport::~HttpTransport() {
-    }
+        string buffer = EncoderContext(spans).ToString();
 
-    void HttpTransport::Submit(const std::vector<Span*> &spans) {
-        EncoderContextThrift context;
-
-        for (auto &span : spans)
-        {
-            Encoder<EncodingTypes::Thrift>::Serialize(context, *span);
-        }
-
-        string buffer = context.ToString();
         try {
 
             CURL* curl = curl_easy_init();
@@ -32,7 +21,12 @@ namespace cppkin
                 // TODO
             }
             struct curl_slist *headers = nullptr;
-            headers = curl_slist_append(headers, "Content-Type: application/x-thrift");
+
+            if (ConfigParams::Instance().GetEncodingType() == EncodingType::Thrift)
+                headers = curl_slist_append(headers, "Content-Type: application/x-thrift");
+            else
+                headers = curl_slist_append(headers, "Content-Type: application/json");
+
             headers = curl_slist_append(headers, "Expect:");
             curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
 
@@ -52,7 +46,7 @@ namespace cppkin
             curl_slist_free_all(headers);
             curl_easy_cleanup(curl);
         }
-        catch(apache::thrift::transport::TTransportException&){
+        catch(...){
         }
     }
 }
