@@ -4,6 +4,7 @@
 #include <cinttypes>
 #include <vector>
 #include <memory>
+#include "Core/src/Export.h"
 #include "Annotation.h"
 
 namespace cppkin
@@ -11,11 +12,11 @@ namespace cppkin
     class Trace;
     class EncoderContextThrift;
 
-    class Span
+    class A_EXPORT Span
     {
     public:
         typedef std::vector<std::unique_ptr<Annotation>> Annotations;
-        struct SpanHeader
+        struct A_EXPORT SpanHeader
         {
         public:
             SpanHeader(const std::string& name, int_fast64_t traceID, int_fast64_t parentID, int_fast64_t id);
@@ -31,24 +32,16 @@ namespace cppkin
 
     public:
         ~Span(){}
-        const SpanHeader& GetHeader() const{
-            return m_header;
-        }
-        const Annotations& GetAnnotations() const{
-            return m_events;
-        }
+        Span(const Span&) = delete;
+        Span& operator=(const Span&) = delete;
+        const SpanHeader& GetHeader() const;
+        const Annotations& GetAnnotations() const;
         void CreateSimpleAnnotation(const std::string& event);
         template<typename T>
-        void CreateBinaryAnnotation(const std::string& key, const T& value);
-        int_fast64_t GetTimeStamp() const{
-            return m_timeStamp;
-        }
-        int_fast64_t GetDuration() const{
-            return m_duration;
-        }
-        void SetEndTime(){
-            m_duration = GetCurrentTime() - m_timeStamp;
-        }
+		inline void CreateBinaryAnnotation(const std::string& key, const T& value){}
+		int_fast64_t GetTimeStamp() const;
+		int_fast64_t GetDuration() const;
+		void SetEndTime();
 
     private:
         friend class Trace;

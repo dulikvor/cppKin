@@ -13,7 +13,6 @@ namespace cppkin
     void HttpTransport::Submit(std::vector<std::unique_ptr<Span>>& spans) {
 
         string buffer = EncoderContext(spans).ToString();
-        std::cout << "----> " << buffer << std::endl;
 
         try {
 

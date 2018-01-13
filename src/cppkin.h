@@ -1,7 +1,7 @@
 #pragma once
 
 #include <memory>
-#include "Core/src/Environment.h"
+#include "Init.h"
 #include "ConfigParams.h"
 #include "ConfigTags.h"
 #include "GeneralParams.h"
@@ -16,8 +16,7 @@
 
 
 #define INIT(params) \
-    core::Environment::Instance().Init(); \
-    cppkin::ConfigParams::Instance().Load(params);
+    cppkin::Init(params);
 
 #define CREATE_TRACE(operationName) \
     do \
@@ -87,11 +86,11 @@
         } \
     }while(0)
 
-#define TRACE_EVENT(event) \
+#define TRACE_EVENT(eventName) \
     do  \
     {   \
         if(cppkin::Sampler::ShouldSample()){ \
             cppkin::Span& span = cppkin::SpanContainer::Instance().GetSpan();   \
-            span.CreateSimpleAnnotation(event); \
+            span.CreateSimpleAnnotation(eventName); \
         } \
     }while(0)

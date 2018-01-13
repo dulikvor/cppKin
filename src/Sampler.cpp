@@ -7,7 +7,8 @@ namespace cppkin
 {
 #if defined(WIN32)
     atomic_int Sampler::sampler{ 0 };
-    _declspec(thread) int Sampler::currentSample = 0;
+    _declspec(thread) int tlsCurrentSample = 0;
+    int& Sampler::currentSample = tlsCurrentSample;
 #else
     atomic_int Sampler::sampler(0);
     thread_local int Sampler::currentSample = 0;
