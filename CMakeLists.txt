@@ -68,7 +68,7 @@ if(COMPILATION_STEP)
         add_definitions(-DCURL_STATICLIB)
         set(TO_LINK_LIBS thriftmd libcurl)
     else()
-        set(TO_LINK_LIBS pthread thrift curl PocoJSON)
+        set(TO_LINK_LIBS pthread thrift curl ) # PocoJSON - temporary removing
     endif()
     target_link_libraries(cppkin Core ${TO_LINK_LIBS})    
 endif()
