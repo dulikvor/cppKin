@@ -18,8 +18,9 @@ namespace cppkin {
         virtual std::string ToString(const std::vector<EncoderContext::ContextElement> &) const override;
 
     private:
+        friend ConcreteEncoderCreator<EncoderImpl<EncodingType::Json>>;
+        EncoderImpl() {}
         static Poco::JSON::Object Serialize(const Span &span);
-
         static void Serialize(Poco::JSON::Array &jsonSpan, const SimpleAnnotation &annotation);
     };
 

@@ -18,11 +18,9 @@ namespace cppkin
         class ContextElement {
 
         public:
-
-            typedef const Span& reference;
             ContextElement(std::unique_ptr<Span>&& span, const Encoder& encoder);
             std::string ToString() const;
-            reference operator*() const { return *m_span; }
+            const Span& operator*() const { return *m_span; }
 
         private:
             std::unique_ptr<Span> m_span;

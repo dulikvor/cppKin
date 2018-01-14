@@ -5,7 +5,6 @@
 #include "ConfigParams.h"
 #include "Encoder.h"
 #include "EncodingContext.h"
-#include "EncoderBase64.h"
 
 using namespace std;
 

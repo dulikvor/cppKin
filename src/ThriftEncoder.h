@@ -16,11 +16,12 @@ namespace cppkin {
     class EncoderImpl<EncodingType::Thrift>: public Encoder
     {
     public:
-        EncoderImpl();
         std::string ToString(const Span&) const override;
         std::string ToString(const std::vector<EncoderContext::ContextElement>&) const override;
 
     private:
+        friend ConcreteEncoderCreator<EncoderImpl<EncodingType::Thrift>>;
+        EncoderImpl();
         static ::Span Serialize(const Span& span);
         static void Serialize(::Span& thriftSpan, const SimpleAnnotation &annotation);
     private:

@@ -2,7 +2,6 @@
 #include "ConfigParams.h"
 #include "Encoder.h"
 #include "EncodingContext.h"
-#include "EncoderBase64.h"
 
 using namespace std;
 using namespace apache::thrift;
@@ -30,7 +29,7 @@ namespace cppkin
         vector<Entry> entries;
 
         for (auto& span : context) {
-            string buffer = base64EncodeText(span.ToString());
+            string buffer = Encoder::base64EncodeText(span.ToString());
 
             Entry entry;
             entry.__set_category("zipkin");

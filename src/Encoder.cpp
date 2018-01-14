@@ -9,6 +9,8 @@ using namespace std;
 
 namespace cppkin
 {
+    const char* Encoder::base64_padding[] = {"", "==","="};
+
     const EncoderFactory& EncoderFactory::Instance() {
         static EncoderFactory instance;
         return instance;
@@ -29,5 +31,4 @@ namespace cppkin
             throw Exception(SOURCE, "Requested encoder type - %s is not supported", type.ToString().c_str());
         return it->second->Create();
     }
-
 }
