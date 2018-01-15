@@ -10,7 +10,9 @@
 #include "Core/src/Export.h"
 #include "Span.h"
 
+#if defined(WIN32)
 #pragma warning (disable : 4251)
+#endif
 
 namespace cppkin
 {
