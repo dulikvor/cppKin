@@ -18,7 +18,7 @@ namespace cppkin
 
         m_currentSpanCount = 0;
         m_transport = TransportFactory::Instance().Create(ConfigParams::Instance().GetTransportType());
-        m_worker = make_unique<Thread>("TransportManager", bind(&TransportManager::TransportWorker, this));
+        m_worker = unique_ptr<Thread>(new Thread("TransportManager", bind(&TransportManager::TransportWorker, this)));
         m_worker->Start();
     }
 

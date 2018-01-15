@@ -7,7 +7,7 @@ meant to be used by distributed services in order to measure latency across clus
 
 ## Linux Requirements
 
-* c++14.
+* c++11.
 * Cmake version > 3.8.
 * OpenSSL-dev.
 
