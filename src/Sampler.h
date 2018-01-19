@@ -20,7 +20,7 @@ namespace cppkin
 #  if __GNUC_PREREQ(4,8)
         static thread_local int currentSample;
 #else
-        __thread int Sampler::currentSample = 0;
+        static __thread int currentSample;
 #endif
 
 #endif
