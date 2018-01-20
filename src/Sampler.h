@@ -15,7 +15,14 @@ namespace cppkin
 #if defined(WIN32)
         static int& currentSample;
 #else
+
+#  include <features.h>
+#  if __GNUC_PREREQ(4,8)
         static thread_local int currentSample;
+#else
+        __thread int Sampler::currentSample = 0;
+#endif
+
 #endif
     };
 }

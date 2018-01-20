@@ -12,7 +12,6 @@ namespace cppkin
 #else
     atomic_int Sampler::sampler{0};
 
-#  include <features.h>
 #  if __GNUC_PREREQ(4,8)
     thread_local int Sampler::currentSample = 0;
 #else
