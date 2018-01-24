@@ -10,6 +10,11 @@ namespace cppkin
         m_span(std::move(span)), m_encoder(encoder) {
     }
 
+    EncoderContext::ContextElement::ContextElement(ContextElement&& obj):
+        m_span(std::move(obj.m_span)), m_encoder(obj.m_encoder){
+
+    }
+
     string EncoderContext::ContextElement::ToString() const {
         return m_encoder.ToString(*m_span);
     }

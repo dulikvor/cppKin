@@ -19,6 +19,10 @@ namespace cppkin
 
         public:
             ContextElement(std::unique_ptr<Span>&& span, const Encoder& encoder);
+            ContextElement(ContextElement&& obj);
+            ContextElement(ContextElement&) = delete;
+            ContextElement& operator=(ContextElement&) = delete;
+            ContextElement& operator=(ContextElement&&) = delete;
             std::string ToString() const;
             const Span& operator*() const { return *m_span; }
 
