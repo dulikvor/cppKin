@@ -1,3 +1,6 @@
+#if defined(WIN32)
+#include <windows.h>
+#endif
 #include <string>
 #include <boost/program_options.hpp>
 #include "src/cppkin.h"
@@ -59,7 +62,7 @@ int main( int argc, const char *argv[] )
     SUBMIT_SPAN();
 
 #if defined(WIN32)
-    ::Sleep(50);
+    ::Sleep(100);
 #else
     ::sleep(1);
 #endif

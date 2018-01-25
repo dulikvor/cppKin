@@ -9,7 +9,13 @@ namespace cppkin
 #if defined(WIN32)
     static __declspec(thread) Span* m_span = nullptr; //Not unique ptr due to limitation on static initialization for TLS object.
 #else
+
+#  include <features.h>
+#  if __GNUC_PREREQ(4,8)
     static thread_local Span* m_span = nullptr;
+#else
+    static __thread Span* m_span = nullptr;
+#endif
 #endif
 
     SpanContainer& SpanContainer::Instance(){

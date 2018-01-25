@@ -1,13 +1,13 @@
 # cppkin
 
-[![Join the chat at https://gitter.im/cppKin/Lobby](https://badges.gitter.im/cppKin/Lobby.svg)](https://gitter.im/cppKin/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+[![Join the chat at https://gitter.im/cppKin/Lobby](https://badges.gitter.im/cppKin/Lobby.svg)](https://gitter.im/cppKin/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge) [![Build Status](https://travis-ci.org/Dudi119/cppKin.svg?branch=master)](https://travis-ci.org/Dudi119/cppKin)
 
 `cppkin` is an instrumentation client library for `zipkin` written in C++.
 meant to be used by distributed services in order to measure latency across clusters.
 
 ## Linux Requirements
 
-* c++14.
+* c++11.
 * Cmake version > 3.8.
 * OpenSSL-dev.
 

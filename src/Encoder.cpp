@@ -1,4 +1,8 @@
+#include "Encoder.h"
+
+#ifdef THRIFT_FOUND
 #include "ThriftEncoder.h"
+#endif
 
 #ifdef POCO_JSON_FOUND
 #include "JsonEncoder.h"
@@ -17,8 +21,12 @@ namespace cppkin
     }
 
     EncoderFactory::EncoderFactory() {
+
+#ifdef THRIFT_FOUND
         m_encoders.emplace(EncodingType::Thrift,
                            unique_ptr<ConcreteEncoderCreator<EncoderImpl<EncodingType::Thrift>>>(new ConcreteEncoderCreator<EncoderImpl<EncodingType::Thrift>>()));
+#endif
+
 #ifdef POCO_JSON_FOUND
         m_encoders.emplace(EncodingType::Json,
                            unique_ptr<ConcreteEncoderCreator<EncoderImpl<EncodingType::Json>>>(new ConcreteEncoderCreator<EncoderImpl<EncodingType::Json>>()));
