@@ -6,3 +6,4 @@ CMD /C msbuild Thrift.vcxproj /p:Configuration=Release
 CMD /C msbuild CURL.vcxproj /p:Configuration=Release
 CMD /C msbuild THRIFT_BUILD.vcxproj /p:Configuration=Release
 CMD /C msbuild cppkin.vcxproj /p:Configuration=Release
+CMD /C msbuild examples/example.vcxproj /p:Configuration=Release
