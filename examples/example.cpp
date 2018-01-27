@@ -44,7 +44,7 @@ int main( int argc, const char *argv[] )
         }
     }
 
-    cppkin::GeneralParams cppkinParams;
+    cppkin::CppkinParams cppkinParams;
     cppkinParams.AddParam(cppkin::ConfigTags::HOST_ADDRESS, vm["host"].as<string>());
     cppkinParams.AddParam(cppkin::ConfigTags::PORT, port);
     cppkinParams.AddParam(cppkin::ConfigTags::SERVICE_NAME, vm["service"].as<string>());
