@@ -1,10 +1,10 @@
 #pragma once
 
 #include <memory>
+#include "Core/src/GeneralParams.h"
 #include "Init.h"
 #include "ConfigParams.h"
 #include "ConfigTags.h"
-#include "GeneralParams.h"
 #include "SpanContainer.h"
 #include "Span.h"
 #include "Trace.h"
@@ -14,6 +14,10 @@
 #include "Encoder.h"
 #include "Sampler.h"
 
+namespace cppkin
+{
+    typedef core::GeneralParams CppkinParams;
+}
 
 #define INIT(params) \
     cppkin::Init(params);
