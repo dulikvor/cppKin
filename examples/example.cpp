@@ -63,6 +63,7 @@ int main( int argc, const char *argv[] )
     CppKin::TraceEvent("Event2");
     {
         CppKin::SpanGuard("Guard");
+        CppKin::TraceEvent("GuardEvent");
         sleep(1);
     }
     CppKin::SubmitSpan();

@@ -12,7 +12,6 @@ static void BM_SpanCreation(benchmark::State& state){
     }
 }
 
-
 static void BM_EventCreation(benchmark::State& state){
     CppKin::CreateTrace("BenchMark_Span");
     for(auto _ : state){
@@ -20,14 +19,12 @@ static void BM_EventCreation(benchmark::State& state){
     }
 }
 
-
 static void BM_EventCreationSubmit(benchmark::State& state){
     for(auto _ : state){
         CppKin::CreateTrace("BenchMark_Span");
         CppKin::SubmitSpan();
     }
 }
-
 
 int main(int argc, char** argv)
 {

@@ -41,18 +41,25 @@ inline void CppKin::CreateTrace(const char* operationName){
         return;
     uint_fast64_t id = cppkin::Trace::Instance().GenerateTraceID();
     std::unique_ptr<cppkin::Span> span = std::move(cppkin::Trace::Instance().CreateSpan(operationName, id));
-    cppkin::SpanContainer::Instance().SetSpan(span.release());
+    cppkin::SpanContainer::Instance().PushSpan(span.release());
 }
 
 inline void CppKin::CreateSpan(const char* operationName){
-    cppkin::Span* currentSpan = cppkin::SpanContainer::Instance().GetSpan();
-    if(!currentSpan) // No parent available. Span always has to have a parent. Skipping
+    cppkin::SpanContainer& spanContainer = cppkin::SpanContainer::Instance();
+    const cppkin::Span::SpanHeader* parentHeader = spanContainer.GetRootHeader();
+    if(!parentHeader) // No parent available. Span always has to have a parent. Skipping
         return;
 
-    const cppkin::Span::SpanHeader& currentSpanHeader = currentSpan->GetHeader();
+    const cppkin::Span* currentSpan = spanContainer.TopSpan();
+//    const cppkin::Span::SpanHeader& currentSpanHeader
+    if(currentSpan) {
+        parentHeader = &currentSpan->GetHeader();
+    }
+
+   // const cppkin::Span::SpanHeader& currentSpanHeader = currentSpan->GetHeader();
     uint_fast64_t id = cppkin::Trace::Instance().GenerateSpanID();
-    std::unique_ptr<cppkin::Span> span = cppkin::Trace::Instance().CreateSpan(operationName, currentSpanHeader.TraceID, currentSpanHeader.ID, id);
-    cppkin::SpanContainer::Instance().SetSpan(span.release());
+    std::unique_ptr<cppkin::Span> span = cppkin::Trace::Instance().CreateSpan(operationName, parentHeader->TraceID, parentHeader->ID, id);
+    spanContainer.PushSpan(span.release());
 }
 
 inline void CppKin::JoinSpan(const cppkin::Span::SpanHeader& spanHeader) {
@@ -63,15 +70,15 @@ inline void CppKin::JoinSpan(const cppkin::Span::SpanHeader& spanHeader) {
              span = std::move(cppkin::Trace::Instance().CreateSpan(spanHeader.Name.c_str(), spanHeader.TraceID, spanHeader.ParentID, spanHeader.ID));
         else
             span = std::move(cppkin::Trace::Instance().CreateSpan(spanHeader.Name.c_str(), spanHeader.TraceID));
-        cppkin::SpanContainer::Instance().SetSpan(span.release());
+        cppkin::SpanContainer::Instance().PushSpan(span.release());
     }
 }
 
 static std::string SerializeTracingHeader() {
-    cppkin::Span* span = cppkin::SpanContainer::Instance().GetSpan();
-    if(!span){
-        return std::string();
-    }
+//    cppkin::Span* span = cppkin::SpanContainer::Instance().GetRootHeader();
+//    if(!span){
+//        return std::string();
+//    }
 
     // Temporary disabled
 //    cppkin::EncoderContext##encodingType context;
@@ -91,17 +98,17 @@ static void SetTracingHeader(char* data, size_t length) {
 }
 
 inline void CppKin::SubmitSpan() {
-    cppkin::SpanContainer& spanContainer = cppkin::SpanContainer::Instance();
-    if(spanContainer.GetSpan()) { // Always release existing span. Do not check for ShouldSample. It was already checked on creation
-        std::unique_ptr<cppkin::Span> span = spanContainer.ReleaseSpan();
+    cppkin::Span* currentSpan = cppkin::SpanContainer::Instance().PopSpan();
+    if(currentSpan) {
+        std::unique_ptr<cppkin::Span> span(currentSpan);
         span->SetEndTime();
         cppkin::TransportManager::Instance().PushSpan(std::move(span));
     }
 }
 
 inline void CppKin::TraceEvent(const char* eventName) {
-    cppkin::Span* span = cppkin::SpanContainer::Instance().GetSpan();
+    const cppkin::Span* span = cppkin::SpanContainer::Instance().TopSpan();
     if(span) {
-        span->CreateSimpleAnnotation(eventName);
+        const_cast<cppkin::Span*>(span)->CreateSimpleAnnotation(eventName);
     }
 }
