@@ -1,5 +1,4 @@
 language: cpp
-branch 
 matrix:
   include:
     # works on Precise and Trusty
