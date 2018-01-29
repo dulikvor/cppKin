@@ -51,12 +51,10 @@ inline void CppKin::CreateSpan(const char* operationName){
         return;
 
     const cppkin::Span* currentSpan = spanContainer.TopSpan();
-//    const cppkin::Span::SpanHeader& currentSpanHeader
     if(currentSpan) {
         parentHeader = &currentSpan->GetHeader();
     }
 
-   // const cppkin::Span::SpanHeader& currentSpanHeader = currentSpan->GetHeader();
     uint_fast64_t id = cppkin::Trace::Instance().GenerateSpanID();
     std::unique_ptr<cppkin::Span> span = cppkin::Trace::Instance().CreateSpan(operationName, parentHeader->TraceID, parentHeader->ID, id);
     spanContainer.PushSpan(span.release());
@@ -75,15 +73,17 @@ inline void CppKin::JoinSpan(const cppkin::Span::SpanHeader& spanHeader) {
 }
 
 static std::string SerializeTracingHeader() {
-//    cppkin::Span* span = cppkin::SpanContainer::Instance().GetRootHeader();
-//    if(!span){
-//        return std::string();
-//    }
 
     // Temporary disabled
-//    cppkin::EncoderContext##encodingType context;
-//    cppkin::Encoder<EncodingType::encodingType>::Serialize(context, span.GetHeader());
-//    return std::move(context.ToString());
+
+    //    cppkin::Span* span = cppkin::SpanContainer::Instance().GetRootHeader();
+    //    if(!span){
+    //        return std::string();
+    //    }
+
+    //    cppkin::EncoderContext##encodingType context;
+    //    cppkin::Encoder<EncodingType::encodingType>::Serialize(context, span.GetHeader());
+    //    return std::move(context.ToString());
 
     return std::string();
 }

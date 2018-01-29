@@ -62,20 +62,11 @@ int main( int argc, const char *argv[] )
     sleep(1);
     CppKin::TraceEvent("Event2");
     {
-        CppKin::SpanGuard("Guard");
+        CppKin::SpanGuard guard("Guard");
         CppKin::TraceEvent("GuardEvent");
         sleep(1);
     }
     CppKin::SubmitSpan();
-
-//    INIT(cppkinParams);
-//
-//    CREATE_TRACE("Test");
-//    TRACE_EVENT("Event1");
-//    SUBMIT_SPAN();
-//    CREATE_TRACE("Test2");
-//    TRACE_EVENT("Event2");
-//    SUBMIT_SPAN();
 
 #if defined(WIN32)
     ::Sleep(100);
