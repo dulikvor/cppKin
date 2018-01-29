@@ -1,4 +1,3 @@
-#include <iostream>
 #include "curl/curl.h"
 
 #include "HttpTransport.h"
@@ -13,8 +12,6 @@ namespace cppkin
     void HttpTransport::Submit(std::vector<std::unique_ptr<Span>>& spans) {
 
         string buffer = EncoderContext(spans).ToString();
-
-        std::cout << "--->" << buffer << std::endl;
         try {
 
             CURL* curl = curl_easy_init();
