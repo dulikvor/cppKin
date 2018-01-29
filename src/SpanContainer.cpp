@@ -13,8 +13,10 @@ namespace cppkin
 #  include <features.h>
 #  if __GNUC_PREREQ(4,8)
     static thread_local Span* m_span = nullptr;
+    static thread_local std::unique_ptr<Span::SpanHeader> m_rootHeader = nullptr;
 #else
     static __thread Span* m_span = nullptr;
+    static __thread std::unique_ptr<Span::SpanHeader> m_rootHeader = nullptr;
 #endif
 #endif
 
@@ -27,14 +29,16 @@ namespace cppkin
         delete m_span;
     }
 
-    Span& SpanContainer::GetSpan() const{
-        return *m_span;
+    Span* SpanContainer::GetSpan() const{
+        return m_span;
     }
 
     SpanContainer::SpanContainer(){}
 
     void SpanContainer::SetSpan(Span* span) {
         swap(m_span, span);
+        if(m_span->IsRootSpan())
+            m_rootHeader.reset( new Span::SpanHeader(m_span->GetHeader()));
         delete span;
     }
 

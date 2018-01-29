@@ -20,11 +20,9 @@ namespace cppkin
 
 #endif
 
-    void Sampler::AdvanceSampler() {
-        currentSample = atomic_fetch_add(&sampler, 1) + 1;
-    }
-    bool Sampler::ShouldSample() {
+    bool Sampler::AdvanceSampler() {
         static int sampleCount = ConfigParams::Instance().GetSampleCount();
-        return  currentSample % sampleCount == 0;
+        currentSample = atomic_fetch_add(&sampler, 1) + 1;
+        return currentSample % sampleCount == 0;
     }
 }

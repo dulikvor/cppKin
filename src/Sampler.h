@@ -8,8 +8,7 @@ namespace cppkin
     class A_EXPORT Sampler
     {
     public:
-        static void AdvanceSampler();
-        static bool ShouldSample();
+        static bool AdvanceSampler();
     private:
         static std::atomic_int sampler;
 #if defined(WIN32)

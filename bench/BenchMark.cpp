@@ -8,23 +8,23 @@ using namespace std;
 
 static void BM_SpanCreation(benchmark::State& state){
     for(auto _ : state){
-        CREATE_TRACE("BenchMark_Span");
+        CppKin::CreateTrace("BenchMark_Span");
     }
 }
 
 
 static void BM_EventCreation(benchmark::State& state){
-    CREATE_TRACE("BenchMark_Span");
+    CppKin::CreateTrace("BenchMark_Span");
     for(auto _ : state){
-        TRACE_EVENT("BenchMark_Event");
+        CppKin::CreateTrace("BenchMark_Event");
     }
 }
 
 
 static void BM_EventCreationSubmit(benchmark::State& state){
     for(auto _ : state){
-        CREATE_TRACE("BenchMark_Span");
-        SUBMIT_SPAN();
+        CppKin::CreateTrace("BenchMark_Span");
+        CppKin::SubmitSpan();
     }
 }
 
@@ -39,7 +39,7 @@ int main(int argc, char** argv)
     cppkinParams.AddParam(cppkin::ConfigTags::DEBUG, false);
     cppkinParams.AddParam(cppkin::ConfigTags::SAMPLE_COUNT, 1);
 	cppkinParams.AddParam(cppkin::ConfigTags::ENCODING_TYPE, cppkin::EncodingType(cppkin::EncodingType::Thrift).ToString());
-    INIT(cppkinParams);
+    CppKin::Init(cppkinParams);
 
     ::benchmark::Initialize(&argc, argv);
     if (::benchmark::ReportUnrecognizedArguments(argc, argv)) return 1;

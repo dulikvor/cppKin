@@ -12,7 +12,8 @@ namespace cppkin
     public:
         static SpanContainer& Instance();
         ~SpanContainer();
-        Span& GetSpan() const;
+        Span* GetSpan() const;
+        Span::SpanHeader* GetRootHeader() const;
         void SetSpan(Span* span);
         std::unique_ptr<Span> ReleaseSpan();
     private:

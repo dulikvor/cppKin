@@ -51,15 +51,30 @@ int main( int argc, const char *argv[] )
     cppkinParams.AddParam(cppkin::ConfigTags::DEBUG, true);
     cppkinParams.AddParam(cppkin::ConfigTags::SAMPLE_COUNT, 1);
     cppkinParams.AddParam(cppkin::ConfigTags::TRANSPORT_TYPE, cppkin::TransportType(transportType).ToString());
-    cppkinParams.AddParam(cppkin::ConfigTags::ENCODING_TYPE, cppkin::EncodingType(cppkin::EncodingType::Thrift).ToString());
-    INIT(cppkinParams);
+    cppkinParams.AddParam(cppkin::ConfigTags::ENCODING_TYPE, cppkin::EncodingType(cppkin::EncodingType::Json).ToString());
 
-    CREATE_TRACE("Test");
-    TRACE_EVENT("Event1");
-    SUBMIT_SPAN();
-    CREATE_TRACE("Test2");
-    TRACE_EVENT("Event2");
-    SUBMIT_SPAN();
+    CppKin::Init(cppkinParams);
+
+    CppKin::CreateTrace("Test");
+    CppKin::TraceEvent("Event1");
+    CppKin::SubmitSpan();
+    CppKin::CreateSpan("Event1");
+    sleep(1);
+    CppKin::TraceEvent("Event2");
+    {
+        CppKin::SpanGuard("Guard");
+        sleep(1);
+    }
+    CppKin::SubmitSpan();
+
+//    INIT(cppkinParams);
+//
+//    CREATE_TRACE("Test");
+//    TRACE_EVENT("Event1");
+//    SUBMIT_SPAN();
+//    CREATE_TRACE("Test2");
+//    TRACE_EVENT("Event2");
+//    SUBMIT_SPAN();
 
 #if defined(WIN32)
     ::Sleep(100);

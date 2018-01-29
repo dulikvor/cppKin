@@ -14,6 +14,7 @@ namespace cppkin
 
         string buffer = EncoderContext(spans).ToString();
 
+        std::cout << "--->" << buffer << std::endl;
         try {
 
             CURL* curl = curl_easy_init();

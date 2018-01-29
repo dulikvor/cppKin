@@ -14,87 +14,94 @@
 #include "Encoder.h"
 #include "Sampler.h"
 
-namespace cppkin
-{
+namespace cppkin {
     typedef core::GeneralParams CppkinParams;
 }
 
-#define INIT(params) \
-    cppkin::Init(params);
+class CppKin {
+public:
+    static void Init(const cppkin::CppkinParams& params) { cppkin::Init(params); }
+    static void CreateTrace(const char* operationName);
+    static void CreateSpan(const char* operationName);
+    static void JoinSpan(const cppkin::Span::SpanHeader& spanHeader);
+    static void TraceEvent(const char* eventName);
+    static void SubmitSpan();
+    static std::string SerializeTracingHeader();
+    static void SetTracingHeader(char* data, size_t length);
 
-#define CREATE_TRACE(operationName) \
-    do \
-    { \
-        cppkin::Sampler::AdvanceSampler(); \
-        if(cppkin::Sampler::ShouldSample()){ \
-            uint_fast64_t id = cppkin::Trace::Instance().GenerateTraceID(); \
-            std::unique_ptr<cppkin::Span> span = cppkin::Trace::Instance().CreateSpan(operationName, id); \
-            cppkin::SpanContainer::Instance().SetSpan(span.release()); \
-        } \
-    }while(0)
+    class SpanGuard {
+    public:
+        SpanGuard(const char* operationName) { CppKin::CreateSpan(operationName); }
+        ~SpanGuard() { CppKin::SubmitSpan(); }
+    };
+};
 
-#define CREATE_SPAN(operationName, traceID, parentID)  \
-    do  \
-    {   \
-        cppkin::Sampler::AdvanceSampler(); \
-        if(cppkin::Sampler::ShouldSample()){ \
-            uint_fast64_t id = cppkin::Trace::Instance().GenerateSpanID(); \
-            std::unique_ptr<cppkin::Span> span = cppkin::Trace::Instance().CreateSpan(operationName, traceID, parentID, id); \
-            cppkin::SpanContainer::Instance().SetSpan(span.release()); \
-        } \
-    }while(0)
+inline void CppKin::CreateTrace(const char* operationName){
+    if(!cppkin::Sampler::AdvanceSampler())
+        return;
+    uint_fast64_t id = cppkin::Trace::Instance().GenerateTraceID();
+    std::unique_ptr<cppkin::Span> span = std::move(cppkin::Trace::Instance().CreateSpan(operationName, id));
+    cppkin::SpanContainer::Instance().SetSpan(span.release());
+}
 
-#define JOIN_SPAN(spanHeader) \
-    do  \
-    {   \
-        cppkin::Sampler::AdvanceSampler(); \
-        if(cppkin::Sampler::ShouldSample()){ \
-            std::unique_ptr<cppkin::Span> span; \
-            if(spanHeader.ParentIDSet)  \
-                 span = std::move(cppkin::Trace::Instance().CreateSpan(spanHeader.Name.c_str(), spanHeader.TraceID, spanHeader.ParentID, spanHeader.ID)); \
-            else \
-                span = std::move(cppkin::Trace::Instance().CreateSpan(spanHeader.Name.c_str(), spanHeader.TraceID)); \
-            cppkin::SpanContainer::Instance().SetSpan(span.release()); \
-        } \
-    }while(0)
+inline void CppKin::CreateSpan(const char* operationName){
+    cppkin::Span* currentSpan = cppkin::SpanContainer::Instance().GetSpan();
+    if(!currentSpan) // No parent available. Span always has to have a parent. Skipping
+        return;
 
-#define SERIALIZE_TRACING_HEADER(encodingType, outputData) \
-    do  \
-    {   \
-        if(cppkin::Sampler::ShouldSample()){ \
-            cppkin::Span& span = cppkin::SpanContainer::Instance().GetSpan(); \
-            cppkin::EncoderContext##encodingType context; \
-            cppkin::Encoder<EncodingType::encodingType>::Serialize(context, span.GetHeader()); \
-            outputData = std::move(context.ToString()); \
-        } \
-        else \
-            outputData = std::string(); \
-    }while(0)
+    const cppkin::Span::SpanHeader& currentSpanHeader = currentSpan->GetHeader();
+    uint_fast64_t id = cppkin::Trace::Instance().GenerateSpanID();
+    std::unique_ptr<cppkin::Span> span = cppkin::Trace::Instance().CreateSpan(operationName, currentSpanHeader.TraceID, currentSpanHeader.ID, id);
+    cppkin::SpanContainer::Instance().SetSpan(span.release());
+}
 
-#define DESERIALIZE_TRACING_HEADER(decodingType, data, length, outputHeader) \
-    do  \
-    {   \
-        if(length > 0){ \
-            cppkin::EncoderContext##decodingType context(data, length); \
-            outputHeader = cppkin::Encoder<EncodingType::decodingType>::DeSerializeSpanHeader(context); \
-        } \
-    }while(0)
+inline void CppKin::JoinSpan(const cppkin::Span::SpanHeader& spanHeader) {
 
-#define SUBMIT_SPAN()  \
-    do  \
-    {   \
-        if(cppkin::Sampler::ShouldSample()){ \
-            std::unique_ptr<cppkin::Span> span = cppkin::SpanContainer::Instance().ReleaseSpan();   \
-            span->SetEndTime(); \
-            cppkin::TransportManager::Instance().PushSpan(std::move(span)); \
-        } \
-    }while(0)
+    if(cppkin::Sampler::AdvanceSampler()){
+        std::unique_ptr<cppkin::Span> span;
+        if(spanHeader.ParentIDSet)
+             span = std::move(cppkin::Trace::Instance().CreateSpan(spanHeader.Name.c_str(), spanHeader.TraceID, spanHeader.ParentID, spanHeader.ID));
+        else
+            span = std::move(cppkin::Trace::Instance().CreateSpan(spanHeader.Name.c_str(), spanHeader.TraceID));
+        cppkin::SpanContainer::Instance().SetSpan(span.release());
+    }
+}
 
-#define TRACE_EVENT(eventName) \
-    do  \
-    {   \
-        if(cppkin::Sampler::ShouldSample()){ \
-            cppkin::Span& span = cppkin::SpanContainer::Instance().GetSpan();   \
-            span.CreateSimpleAnnotation(eventName); \
-        } \
-    }while(0)
+static std::string SerializeTracingHeader() {
+    cppkin::Span* span = cppkin::SpanContainer::Instance().GetSpan();
+    if(!span){
+        return std::string();
+    }
+
+    // Temporary disabled
+//    cppkin::EncoderContext##encodingType context;
+//    cppkin::Encoder<EncodingType::encodingType>::Serialize(context, span.GetHeader());
+//    return std::move(context.ToString());
+
+    return std::string();
+}
+
+static void SetTracingHeader(char* data, size_t length) {
+    if(length == 0)
+        return;
+
+    // Set parent into SpanContainer
+    //cppkin::EncoderContext##decodingType context(data, length);
+    // outputHeader = cppkin::Encoder<EncodingType::decodingType>::DeSerializeSpanHeader(context);
+}
+
+inline void CppKin::SubmitSpan() {
+    cppkin::SpanContainer& spanContainer = cppkin::SpanContainer::Instance();
+    if(spanContainer.GetSpan()) { // Always release existing span. Do not check for ShouldSample. It was already checked on creation
+        std::unique_ptr<cppkin::Span> span = spanContainer.ReleaseSpan();
+        span->SetEndTime();
+        cppkin::TransportManager::Instance().PushSpan(std::move(span));
+    }
+}
+
+inline void CppKin::TraceEvent(const char* eventName) {
+    cppkin::Span* span = cppkin::SpanContainer::Instance().GetSpan();
+    if(span) {
+        span->CreateSimpleAnnotation(eventName);
+    }
+}
