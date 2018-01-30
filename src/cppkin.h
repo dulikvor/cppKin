@@ -17,23 +17,11 @@
 namespace cppkin {
     typedef core::GeneralParams CppkinParams;
 
-//class CppKin {
-//public:
-//    static void Init(const cppkin::CppkinParams& params) { cppkin::Init(params); }
-//    static void CreateTrace(const char* operationName);
-//    static void CreateSpan(const char* operationName);
-//    static void JoinSpan(const cppkin::Span::SpanHeader& spanHeader);
-//    static void TraceEvent(const char* eventName);
-//    static void SubmitSpan();
-//    static std::string SerializeTracingHeader();
-//    static void SetTracingHeader(char* data, size_t length);
-//
-//
-//};
-
     static inline void CreateTrace(const char* operationName){
-        if(!cppkin::Sampler::AdvanceSampler())
+        if(!cppkin::Sampler::AdvanceSampler()) {
+            cppkin::SpanContainer::Instance().ResetRootHeader();
             return;
+        }
         uint_fast64_t id = cppkin::Trace::Instance().GenerateTraceID();
         std::unique_ptr<cppkin::Span> span = std::move(cppkin::Trace::Instance().CreateSpan(operationName, id));
         cppkin::SpanContainer::Instance().PushSpan(std::move(span));
