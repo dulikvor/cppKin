@@ -1,47 +1,61 @@
-#include "SpanContainer.h"
 #include "Core/src/Assert.h"
+#include "SpanContainer.h"
 
 using namespace std;
 using namespace core;
 
 namespace cppkin
 {
+
+
 #if defined(WIN32)
-    static __declspec(thread) Span* m_span = nullptr; //Not unique ptr due to limitation on static initialization for TLS object.
+    static __declspec(thread) SpanContainer* m_container = nullptr;
 #else
 
 #  include <features.h>
 #  if __GNUC_PREREQ(4,8)
-    static thread_local Span* m_span = nullptr;
+    static thread_local SpanContainer* m_container = nullptr;
 #else
-    static __thread Span* m_span = nullptr;
+    static __thread SpanContainer* m_container = nullptr;
 #endif
 #endif
 
     SpanContainer& SpanContainer::Instance(){
-        static SpanContainer instance;
-        return instance;
+        if(!m_container){
+            m_container = new SpanContainer();
+        }
+        return *m_container;
     }
 
-    SpanContainer::~SpanContainer(){
-        delete m_span;
+    SpanContainer::SpanContainer() {}
+    SpanContainer::~SpanContainer(){}
+
+    const Span* SpanContainer::TopSpan() const{
+        if (m_spans.empty()){
+            return nullptr;
+        }
+        return m_spans.front().get();
     }
 
-    Span& SpanContainer::GetSpan() const{
-        return *m_span;
+    const Span::SpanHeader* SpanContainer::GetRootHeader() const {
+        if(m_rootHeader)
+            return m_rootHeader.get();
+        return nullptr;
     }
 
-    SpanContainer::SpanContainer(){}
-
-    void SpanContainer::SetSpan(Span* span) {
-        swap(m_span, span);
-        delete span;
+    void SpanContainer::PushSpan(std::unique_ptr<Span>&& span) {
+        if(span->IsRootSpan())
+            m_rootHeader.reset( new Span::SpanHeader(span->GetHeader()));
+        m_spans.emplace_front(std::move(span));
     }
 
-    unique_ptr<Span> SpanContainer::ReleaseSpan(){
-        Span* returnSpan = nullptr;
-        VERIFY(m_span != nullptr, "Storage contains no span");
-        swap(m_span, returnSpan);
-        return unique_ptr<Span>(returnSpan);
+    std::unique_ptr<Span> SpanContainer::PopSpan(){
+        if (m_spans.empty()) {
+            return std::unique_ptr<Span>();
+        }
+
+        std::unique_ptr<Span> returnSpan(std::move(m_spans.front()));
+        m_spans.pop_front();
+        return returnSpan;
     }
 }
