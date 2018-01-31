@@ -87,13 +87,13 @@ In order to initialize `cppkin` (the first step you would like to take) two oper
 
 A full example:
 ```c++
-cppkin::GeneralParams cppkinParams;
+cppkin::CppkinParams cppkinParams;
 cppkinParams.AddParam(cppkin::ConfigTags::HOST_ADDRESS, string("127.0.0.1"));
 cppkinParams.AddParam(cppkin::ConfigTags::PORT, 9410);
 cppkinParams.AddParam(cppkin::ConfigTags::SERVICE_NAME, string("Index_Builder"));
 cppkinParams.AddParam(cppkin::ConfigTags::DEBUG, false);
 cppkinParams.AddParam(cppkin::ConfigTags::SAMPLE_COUNT, 1000);
-INIT(cppkinParams);
+cppkin::Init(cppkinParams);
 ```
 
 ### Storage
@@ -102,40 +102,41 @@ Each new span (acting as the new context), is referenced by using the current th
 by creating a new span in the context of the current thread, it will be elected as the new context.
 
 #### Tracing
-In order to trace use the `CREATE_TRACE` command:
+In order to trace use the `cppkin::CreateTrace` command:
 ```c++
-CREATE_TRACE("Scheduling tasks");
+cppkin::CreateTrace("Scheduling tasks");
 ```
-`CREATE_TRACE` takes a single argument - the `"Operation name"` which needs to be provided as `const char*`  argument type.
+`cppkin::CreateTrace` takes a single argument - the `"Operation name"` which needs to be provided as `const char*`  argument type.
 
 ### Child Span
-In order to create a child span use the `CREATE_SPAN` command:
+In order to create a child span use the `cppkin::CreateSpan` command:
 ```c++
-CREATE_SPAN("Processing Task", spanHeader.TraceID, spanHeader.ID);
+cppkin::CreateSpan("Processing Task");
 ```
-`CREATE_SPAN` takes the following arguments:
+`cppkin::CreateSpan` takes the following arguments:
 * Operation name - `const char*` type.
-* The current trace id - retrieved from the previous span header.
-* Parent span id - retrieved from the previous span header.
+
+<!--- * The current trace id - retrieved from the previous span header. 
+ * Parent span id - retrieved from the previous span header. ---> 
+
 
 ### Trace simple events
-In order to trace an event use the `TRACE_EVENT` command:
+In order to trace an event use the `cppkin::TraceEvent` command:
 ```c++
-TRACE_EVENT("Trace an event");
+cppkin::TraceEvent("Trace an event");
 ```
-`TRACE_EVENT` takes a single argument - the `"Event value"` which needs to be provided as `const char*`  argument type.
+`cppkin::TraceEvent` takes a single argument - the `"Event value"` which needs to be provided as `const char*`  argument type.
 
 ### Transportation
 `cppkin` contains a specified `transportation` layer, providing the following capabilities:
 * Serializing the received data.
 * Transporting it to a specific zipkin collector out stream.
 
-As of now only `scribe` collector is supported in the transportation layer, which uses `Thrift` for both `serializing` and as a `RPC` solution.
 
 ### OutStream Communication
 Outstream communication is done by using a single simple command - `SUBMIT_SPAN'.
 ```c++
-SUBMIT_SPAN();
+cppkin::CreateSpan();
 ```
 once called the current span in `context` will be out streamed to the designated collector. the `context` will be cleared after the completion of the command.
 
