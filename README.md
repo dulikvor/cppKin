@@ -134,9 +134,9 @@ cppkin::TraceEvent("Trace an event");
 
 
 ### OutStream Communication
-Outstream communication is done by using a single simple command - `SUBMIT_SPAN'.
+Outstream communication is done by using a single simple command - `cppkin::SubmitSpan'.
 ```c++
-cppkin::CreateSpan();
+cppkin::SubmitSpan();
 ```
 once called the current span in `context` will be out streamed to the designated collector. the `context` will be cleared after the completion of the command.
 
