@@ -67,7 +67,7 @@ namespace cppkin {
         return oss.str();
     }
 
-    string EncoderImpl<EncodingType::Json>::  ToString(const std::vector<EncoderContext::ContextElement>& spans) const {
+    string EncoderImpl<EncodingType::Json>::ToString(const std::vector<EncoderContext::ContextElement>& spans) const {
 
         json::Array jsonSpans;
         for (auto& span : spans) {

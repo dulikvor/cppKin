@@ -1,5 +1,4 @@
 language: cpp
-
 matrix:
   include:
     # works on Precise and Trusty
@@ -14,6 +13,10 @@ matrix:
             - libboost-dev
       env:
          - MATRIX_EVAL="CC=gcc-5 && CXX=g++-5"
+
+branches:
+  only:
+  - master
 
 before_install:
      - eval "${MATRIX_EVAL}"

@@ -24,9 +24,9 @@ namespace cppkin
             SpanHeader(){}
         public:
             std::string Name;
-            int_fast64_t ID;
-            int_fast64_t ParentID;
-            int_fast64_t TraceID;
+            uint_fast64_t ID;
+            uint_fast64_t ParentID;
+            uint_fast64_t TraceID;
             bool ParentIDSet;
         };
 
@@ -42,6 +42,7 @@ namespace cppkin
 		int_fast64_t GetTimeStamp() const;
 		int_fast64_t GetDuration() const;
 		void SetEndTime();
+        bool IsRootSpan() const { return !m_header.ParentIDSet; }
 
     private:
         friend class Trace;
