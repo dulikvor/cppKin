@@ -45,7 +45,7 @@ if(PRE_COMPILE_STEP)
 endif()
 
 if(COMPILATION_STEP)
-    set (CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "-fPIC -DSPDLOG_FOUND=${SPDLOG_FOUND} -DTHRIFT_FOUND=${THRIFT_FOUND}")
+    set (CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "-fPIC -DSPDLOG_FOUND=${SPDLOG_FOUND} -DTHRIFT_FOUND=${THRIFT_FOUND} -DPOCO_JSON_FOUND")
     set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
     set(PROJECT_DIR ${CMAKE_CURRENT_SOURCE_DIR})
     set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_DIR}/bin)
@@ -69,7 +69,11 @@ if(COMPILATION_STEP)
         add_definitions(-DCURL_STATICLIB)
         set(TO_LINK_LIBS thriftmd libcurl)
     else()
-        set(TO_LINK_LIBS pthread thrift curl ) # PocoJSON - temporary removing
+        set(TO_LINK_LIBS pthread thrift curl PocoJSON) # PocoJSON - temporary removing
     endif()
     target_link_libraries(cppkin Core ${TO_LINK_LIBS})
+endif()
+
+if(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Werror -pedantic")
 endif()
