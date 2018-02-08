@@ -36,7 +36,7 @@ namespace cppkin
     unique_ptr<Encoder> EncoderFactory::Create(EncodingType type) const{
         auto it = m_encoders.find(type);
         if (it == m_encoders.end())
-            throw Exception(SOURCE, "Requested encoder type - %s is not supported", type.ToString().c_str());
+            throw Exception(__CORE_SOURCE, "Requested encoder type - %s is not supported", type.ToString().c_str());
         return it->second->Create();
     }
 }
