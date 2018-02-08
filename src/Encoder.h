@@ -38,11 +38,11 @@ namespace cppkin
     public:
         EncoderImpl();
         std::string ToString(const Span&) const override {
-            throw core::Exception(SOURCE, "Unsupported method");
+            throw core::Exception(__CORE_SOURCE, "Unsupported method");
         }
 
         std::string ToString(const std::vector<EncoderContext::ContextElement>&) const override {
-            throw core::Exception(SOURCE, "Unsupported method");
+            throw core::Exception(__CORE_SOURCE, "Unsupported method");
         }
     };
 

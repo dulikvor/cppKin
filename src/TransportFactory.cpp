@@ -31,7 +31,7 @@ namespace cppkin
     unique_ptr<Transport> TransportFactory::Create(TransportType type) const{
         auto it = m_transports.find(type);
         if (it == m_transports.end())
-            throw Exception(SOURCE, "Requested transport type - %s is not supported", type.ToString().c_str());
+            throw Exception(__CORE_SOURCE, "Requested transport type - %s is not supported", type.ToString().c_str());
         return it->second->Create();
     }
 }
