@@ -23,6 +23,10 @@ namespace cppkin
     }
 
     TransportManager::~TransportManager() {
+        Stop();
+    }
+
+    void TransportManager::Stop() {
         m_terminate = true;
         m_worker->Join();
     }

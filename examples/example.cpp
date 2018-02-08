@@ -56,6 +56,7 @@ int main( int argc, const char *argv[] )
     cppkin::Init(cppkinParams);
 
     cppkin::CreateTrace("Test");
+    sleep(1);
     cppkin::TraceEvent("Event1");
     cppkin::SubmitSpan();
     cppkin::CreateSpan("Span1");
