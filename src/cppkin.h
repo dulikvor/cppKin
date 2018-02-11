@@ -19,7 +19,7 @@ namespace cppkin {
 
     static inline void CreateTrace(const char* operationName){
         if(!cppkin::Sampler::AdvanceSampler()) {
-            cppkin::SpanContainer::Instance().ResetRootHeader();
+            cppkin::SpanContainer::Instance().Reset();
             return;
         }
         uint_fast64_t id = cppkin::Trace::Instance().GenerateTraceID();
