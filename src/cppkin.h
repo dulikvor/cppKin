@@ -24,6 +24,7 @@ namespace cppkin {
         }
         uint_fast64_t id = cppkin::Trace::Instance().GenerateTraceID();
         std::unique_ptr<cppkin::Span> span = std::move(cppkin::Trace::Instance().CreateSpan(operationName, id));
+        span->CreateSimpleAnnotation(operationName);
         cppkin::SpanContainer::Instance().PushSpan(std::move(span));
     }
 
@@ -44,6 +45,7 @@ namespace cppkin {
 
         uint_fast64_t id = cppkin::Trace::Instance().GenerateSpanID();
         std::unique_ptr<cppkin::Span> span = cppkin::Trace::Instance().CreateSpan(operationName, parentHeader->TraceID, parentHeader->ID, id);
+        span->CreateSimpleAnnotation(operationName);
         spanContainer.PushSpan(std::move(span));
     }
 
