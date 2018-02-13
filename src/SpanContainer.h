@@ -11,19 +11,27 @@ namespace cppkin
     class A_EXPORT SpanContainer
     {
     public:
+
+        struct TraceInfo {
+            std::unique_ptr<Span::SpanHeader>        m_rootHeader;
+            std::forward_list<std::unique_ptr<Span>> m_spans;
+        };
+
         static SpanContainer& Instance();
         ~SpanContainer();
         const Span* TopSpan() const;
-        void ResetRootHeader() { m_rootHeader.reset(); }
         const Span::SpanHeader* GetRootHeader() const;
         void PushSpan(std::unique_ptr<Span>&& span);
         std::unique_ptr<Span> PopSpan();
+
+        void Init(std::unique_ptr<TraceInfo>&& traceInfo) { m_traceInfo = std::move(traceInfo); }
+        void Reset() { m_traceInfo = std::make_shared<TraceInfo>(); }
+        std::shared_ptr<TraceInfo> GetTraceInfo() { return m_traceInfo; }
     private:
         SpanContainer();
 
     private:
-        std::forward_list<std::unique_ptr<Span>> m_spans;
-        std::unique_ptr<Span::SpanHeader>        m_rootHeader;
+        std::shared_ptr<TraceInfo> m_traceInfo;
     };
 }
 
