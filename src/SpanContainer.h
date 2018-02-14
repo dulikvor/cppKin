@@ -27,7 +27,8 @@ namespace cppkin
         void Init(std::unique_ptr<TraceInfo>&& traceInfo) { m_traceInfo = std::move(traceInfo); }
         void Reset() { m_traceInfo = std::make_shared<TraceInfo>(); }
         std::shared_ptr<TraceInfo> GetTraceInfo() { return m_traceInfo; }
-    private:
+        void SetTraceInfo( std::shared_ptr<TraceInfo>& traceInfo ) { m_traceInfo = traceInfo; }
+     private:
         SpanContainer();
 
     private:
