@@ -67,10 +67,12 @@ int main( int argc, const char *argv[] )
         cppkin::TraceEvent("GuardEvent");
         sleep(1);
     }
-    cppkin::SubmitSpan();
     sleep(1);
     cppkin::TraceEvent("TraceEvent2");
-    cppkin::SubmitSpan();
+    sleep(1);
+    cppkin::CreateSpan("Span2");
+    sleep(1);
+    cppkin::SubmitTrace();
 
 #if defined(WIN32)
     ::Sleep(100);

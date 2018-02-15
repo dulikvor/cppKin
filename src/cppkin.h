@@ -96,6 +96,16 @@ namespace cppkin {
         }
     }
 
+    static inline void SubmitTrace() {
+        auto& spanContainer = cppkin::SpanContainer::Instance();
+        std::unique_ptr<cppkin::Span> span;
+        while(span = spanContainer.PopSpan()) {
+            span->SetEndTime();
+            cppkin::TransportManager::Instance().PushSpan(std::move(span));
+        }
+        spanContainer.Reset();
+    }
+
     static inline void TraceEvent(const char* eventName) {
         const cppkin::Span* span = cppkin::SpanContainer::Instance().TopSpan();
         if(span) {
