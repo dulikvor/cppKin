@@ -50,8 +50,11 @@ namespace cppkin
     }
 
     void SpanContainer::PushSpan(std::unique_ptr<Span>&& span) {
-        if(span->IsRootSpan())
-            m_traceInfo->m_rootHeader.reset( new Span::SpanHeader(span->GetHeader()));
+        if(span->IsRootSpan()) {
+            m_traceInfo = std::make_shared<TraceInfo>();
+            m_traceInfo->m_rootHeader.reset(new Span::SpanHeader(span->GetHeader()));
+        }
+
         m_traceInfo->m_spans.emplace_front(std::move(span));
     }
 
