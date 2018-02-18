@@ -27,35 +27,44 @@ namespace cppkin
         return *m_container;
     }
 
-    SpanContainer::SpanContainer() {}
+    SpanContainer::SpanContainer() { Reset(); }
     SpanContainer::~SpanContainer(){}
 
     const Span* SpanContainer::TopSpan() const{
-        if (m_spans.empty()){
+
+        if (!m_traceInfo.get()) {
             return nullptr;
         }
-        return m_spans.front().get();
+
+        if (m_traceInfo->m_spans.empty()) {
+            return nullptr;
+        }
+
+        return m_traceInfo->m_spans.front().get();
     }
 
     const Span::SpanHeader* SpanContainer::GetRootHeader() const {
-        if(m_rootHeader)
-            return m_rootHeader.get();
+        if(m_traceInfo.get() && m_traceInfo->m_rootHeader.get())
+            return m_traceInfo->m_rootHeader.get();
         return nullptr;
     }
 
     void SpanContainer::PushSpan(std::unique_ptr<Span>&& span) {
-        if(span->IsRootSpan())
-            m_rootHeader.reset( new Span::SpanHeader(span->GetHeader()));
-        m_spans.emplace_front(std::move(span));
+        if(span->IsRootSpan()) {
+            m_traceInfo = std::make_shared<TraceInfo>();
+            m_traceInfo->m_rootHeader.reset(new Span::SpanHeader(span->GetHeader()));
+        }
+
+        m_traceInfo->m_spans.emplace_front(std::move(span));
     }
 
     std::unique_ptr<Span> SpanContainer::PopSpan(){
-        if (m_spans.empty()) {
+        if (!m_traceInfo.get() || ( m_traceInfo.get() && m_traceInfo->m_spans.empty()) ) {
             return std::unique_ptr<Span>();
         }
 
-        std::unique_ptr<Span> returnSpan(std::move(m_spans.front()));
-        m_spans.pop_front();
+        std::unique_ptr<Span> returnSpan(std::move(m_traceInfo->m_spans.front()));
+        m_traceInfo->m_spans.pop_front();
         return returnSpan;
     }
 }

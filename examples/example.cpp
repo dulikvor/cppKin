@@ -55,10 +55,10 @@ int main( int argc, const char *argv[] )
 
     cppkin::Init(cppkinParams);
 
-    cppkin::CreateTrace("Test");
+    cppkin::CreateTrace("TestTrace");
     sleep(1);
-    cppkin::TraceEvent("Event1");
-    cppkin::SubmitSpan();
+    cppkin::TraceEvent("TraceEvent1");
+
     cppkin::CreateSpan("Span1");
     sleep(1);
     cppkin::TraceEvent("Event2");
@@ -67,6 +67,9 @@ int main( int argc, const char *argv[] )
         cppkin::TraceEvent("GuardEvent");
         sleep(1);
     }
+    cppkin::SubmitSpan();
+    sleep(1);
+    cppkin::TraceEvent("TraceEvent2");
     cppkin::SubmitSpan();
 
 #if defined(WIN32)
