@@ -1,5 +1,6 @@
 #include "Core/src/Assert.h"
 #include "SpanContainer.h"
+#include "Sampler.h"
 
 using namespace std;
 using namespace core;
@@ -27,44 +28,49 @@ namespace cppkin
         return *m_container;
     }
 
-    SpanContainer::SpanContainer() { Reset(); }
+    SpanContainer::SpanContainer() {}
     SpanContainer::~SpanContainer(){}
 
-    const Span* SpanContainer::TopSpan() const{
+    const Span& SpanContainer::TopSpan() const{
+        if(m_traceInfo.get() == nullptr || m_traceInfo->Spans.empty() == true)
+            throw Exception(__CORE_SOURCE, "Container is empty");
 
-        if (!m_traceInfo.get()) {
-            return nullptr;
-        }
-
-        if (m_traceInfo->m_spans.empty()) {
-            return nullptr;
-        }
-
-        return m_traceInfo->m_spans.front().get();
+        return *m_traceInfo->Spans.front();
     }
 
-    const Span::SpanHeader* SpanContainer::GetRootHeader() const {
-        if(m_traceInfo.get() && m_traceInfo->m_rootHeader.get())
-            return m_traceInfo->m_rootHeader.get();
-        return nullptr;
+    Span& SpanContainer::TopSpan(){
+        if(m_traceInfo.get() == nullptr || m_traceInfo->Spans.empty() == true)
+            throw Exception(__CORE_SOURCE, "Container is empty");
+
+        return *m_traceInfo->Spans.front();
+    }
+
+    const Span::SpanHeader& SpanContainer::GetRootHeader() const {
+        if(m_traceInfo.get() == nullptr || m_traceInfo->RootHeader.get() == nullptr)
+            throw Exception(__CORE_SOURCE, "Container is missing root's header");
+
+        return *m_traceInfo->RootHeader;
+    }
+
+    bool SpanContainer::ShouldSample() const {
+        return m_traceInfo->Sampled;
     }
 
     void SpanContainer::PushSpan(std::unique_ptr<Span>&& span) {
         if(span->IsRootSpan()) {
-            m_traceInfo = std::make_shared<TraceInfo>();
-            m_traceInfo->m_rootHeader.reset(new Span::SpanHeader(span->GetHeader()));
+            Reset();
+            m_traceInfo->RootHeader.reset(new Span::SpanHeader(span->GetHeader()));
+            m_traceInfo->Sampled = Sampler::ShouldSample();
         }
-
-        m_traceInfo->m_spans.emplace_front(std::move(span));
+        m_traceInfo->Spans.emplace_front(std::move(span));
     }
 
     std::unique_ptr<Span> SpanContainer::PopSpan(){
-        if (!m_traceInfo.get() || ( m_traceInfo.get() && m_traceInfo->m_spans.empty()) ) {
-            return std::unique_ptr<Span>();
-        }
+        if (m_traceInfo.get() == nullptr || m_traceInfo->Spans.empty() == true )
+            throw Exception(__CORE_SOURCE, "Container is empty");
 
-        std::unique_ptr<Span> returnSpan(std::move(m_traceInfo->m_spans.front()));
-        m_traceInfo->m_spans.pop_front();
+        std::unique_ptr<Span> returnSpan(std::move(m_traceInfo->Spans.front()));
+        m_traceInfo->Spans.pop_front();
         return returnSpan;
     }
 }

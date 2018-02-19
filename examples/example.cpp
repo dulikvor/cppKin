@@ -72,6 +72,12 @@ int main( int argc, const char *argv[] )
     cppkin::TraceEvent("TraceEvent2");
     cppkin::SubmitSpan();
 
+
+    cppkin::CreateTrace("TestTrace2");
+    sleep(1);
+    cppkin::TraceEvent("TraceEvent12");
+    cppkin::SubmitSpan();
+
 #if defined(WIN32)
     ::Sleep(100);
 #else
