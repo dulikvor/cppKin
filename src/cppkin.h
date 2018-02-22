@@ -17,7 +17,7 @@
 namespace cppkin {
     typedef core::GeneralParams CppkinParams;
 
-    static inline void CreateTrace(const char* operationName){
+    static void CreateTrace(const char* operationName){
         if(!cppkin::Sampler::AdvanceSampler()) {
             cppkin::SpanContainer::Instance().Reset();
             return;
@@ -28,30 +28,22 @@ namespace cppkin {
         cppkin::SpanContainer::Instance().PushSpan(std::move(span));
     }
 
-    static inline void CreateSpan(const char* operationName){
-
-        if (!cppkin::Sampler::ShouldSample())
-            return;
-
+    static void CreateSpan(const char* operationName){
         cppkin::SpanContainer& spanContainer = cppkin::SpanContainer::Instance();
-        const cppkin::Span::SpanHeader* parentHeader = spanContainer.GetRootHeader();
-        if(!parentHeader) // No parent available. Span always has to have a parent. Skipping
+        if (spanContainer.ShouldSample() == false)
             return;
 
-        const cppkin::Span* currentSpan = spanContainer.TopSpan();
-        if(currentSpan) {
-            parentHeader = &currentSpan->GetHeader();
-        }
+        const cppkin::Span::SpanHeader& parentHeader = spanContainer.TopSpan().GetHeader();
 
         uint_fast64_t id = cppkin::Trace::Instance().GenerateSpanID();
-        std::unique_ptr<cppkin::Span> span = cppkin::Trace::Instance().CreateSpan(operationName, parentHeader->TraceID, parentHeader->ID, id);
+        std::unique_ptr<cppkin::Span> span = cppkin::Trace::Instance().CreateSpan(operationName, parentHeader.TraceID, parentHeader.ID, id);
         span->CreateSimpleAnnotation(operationName);
         spanContainer.PushSpan(std::move(span));
     }
 
-    static inline void JoinSpan(const cppkin::Span::SpanHeader& spanHeader) {
-
-        if (!cppkin::Sampler::ShouldSample())
+    static void JoinSpan(const cppkin::Span::SpanHeader& spanHeader) {
+        cppkin::SpanContainer& spanContainer = cppkin::SpanContainer::Instance();
+        if (spanContainer.ShouldSample() == false) //Even if we are dealing with trace, since we might be engadged in different service, the (ShouldSample) condition is retrieved from the sample context.
             return;
 
         std::unique_ptr<cppkin::Span> span;
@@ -59,11 +51,11 @@ namespace cppkin {
              span = std::move(cppkin::Trace::Instance().CreateSpan(spanHeader.Name.c_str(), spanHeader.TraceID, spanHeader.ParentID, spanHeader.ID));
         else
             span = std::move(cppkin::Trace::Instance().CreateSpan(spanHeader.Name.c_str(), spanHeader.TraceID));
-        cppkin::SpanContainer::Instance().PushSpan(std::move(span));
 
+        spanContainer.PushSpan(std::move(span));
     }
 
-    static inline std::string SerializeTracingHeader() {
+    static std::string SerializeTracingHeader() {
 
         // Temporary disabled
 
@@ -79,7 +71,7 @@ namespace cppkin {
         return std::string();
     }
 
-    static inline void SetTracingHeader(const char* data, size_t length) {
+    static void SetTracingHeader(const char* data, size_t length) {
         if(length == 0)
             return;
 
@@ -88,19 +80,24 @@ namespace cppkin {
         // outputHeader = cppkin::Encoder<EncodingType::decodingType>::DeSerializeSpanHeader(context);
     }
 
-    static inline void SubmitSpan() {
-        std::unique_ptr<cppkin::Span> span = cppkin::SpanContainer::Instance().PopSpan();
+    static void SubmitSpan() {
+        cppkin::SpanContainer& spanContainer = cppkin::SpanContainer::Instance();
+        if (spanContainer.ShouldSample() == false)
+            return;
+
+        std::unique_ptr<cppkin::Span> span = spanContainer.PopSpan();
         if(span) {
             span->SetEndTime();
             cppkin::TransportManager::Instance().PushSpan(std::move(span));
         }
     }
 
-    static inline void TraceEvent(const char* eventName) {
-        const cppkin::Span* span = cppkin::SpanContainer::Instance().TopSpan();
-        if(span) {
-            const_cast<cppkin::Span*>(span)->CreateSimpleAnnotation(eventName);
-        }
+    static void TraceEvent(const char* eventName) {
+        cppkin::SpanContainer& spanContainer = cppkin::SpanContainer::Instance();
+        if (spanContainer.ShouldSample() == false)
+            return;
+        cppkin::Span& span = spanContainer.TopSpan();
+        span.CreateSimpleAnnotation(eventName);
     }
 
     class SpanGuard {
