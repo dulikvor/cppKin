@@ -1,11 +1,11 @@
 #pragma once
 
 #include "Core/src/Enumeration.h"
-#include "Core/src/Export.h"
+#include "Export.h"
 
 namespace cppkin
 {
-    class A_EXPORT AnnotationType
+    class CPPKIN_EXPORT AnnotationType
     {
     public:
         enum Enumeration

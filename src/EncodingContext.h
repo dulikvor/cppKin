@@ -7,7 +7,7 @@
 
 namespace cppkin
 {
-    class Span;
+    class span_impl;
     class Encoder;
 
     class EncoderContext
@@ -18,16 +18,16 @@ namespace cppkin
         class ContextElement {
 
         public:
-            ContextElement(std::unique_ptr<Span>&& span, const Encoder& encoder);
+            ContextElement(std::unique_ptr<span_impl>&& span, const Encoder& encoder);
             ContextElement(ContextElement&& obj);
             ContextElement(ContextElement&) = delete;
             ContextElement& operator=(ContextElement&) = delete;
             ContextElement& operator=(ContextElement&&) = delete;
             std::string ToString() const;
-            const Span& operator*() const { return *m_span; }
+            const span_impl& operator*() const { return *m_span; }
 
         private:
-            std::unique_ptr<Span> m_span;
+            std::unique_ptr<span_impl> m_span;
             const Encoder&        m_encoder;
         };
 
@@ -36,7 +36,7 @@ namespace cppkin
         typedef ContextElementVector::const_iterator const_iterator;
 
         EncoderContext();
-        EncoderContext(std::vector<std::unique_ptr<Span>>& spans);
+        EncoderContext(std::vector<std::unique_ptr<span_impl>>& spans);
         virtual ~EncoderContext();
         iterator begin();
         iterator end();

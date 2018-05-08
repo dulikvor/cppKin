@@ -1,7 +1,7 @@
 # pragma once
 
 #include <string>
-#include "Core/src/Export.h"
+#include "Export.h"
 #include "TransportType.h"
 #include "EncodingTypes.h"
 #if defined(WIN32)
@@ -15,7 +15,7 @@ namespace core
 
 namespace cppkin
 {
-    class A_EXPORT ConfigParams
+    class CPPKIN_EXPORT ConfigParams
     {
     public:
         static ConfigParams& Instance();
@@ -29,6 +29,7 @@ namespace cppkin
         bool GetDebug() const { return m_debug; }
         int GetSampleCount() const { return m_sampleCount; }
         EncodingType GetEncodingType() const { return m_encodingType; }
+        int GetBatchSize() const { return m_batchSize; }
 
     private:
         ConfigParams();
@@ -41,5 +42,6 @@ namespace cppkin
         bool m_debug;
         int m_sampleCount;
         EncodingType m_encodingType;
+        int m_batchSize;
     };
 }

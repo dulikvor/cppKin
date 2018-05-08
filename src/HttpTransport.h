@@ -9,6 +9,6 @@ namespace cppkin
     public:
         HttpTransport() {}
         virtual ~HttpTransport() {}
-        void Submit(std::vector<std::unique_ptr<Span>>& spans) override;
+        void Submit(std::vector<std::unique_ptr<span_impl>>& spans) override;
     };
 }

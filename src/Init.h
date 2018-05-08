@@ -1,9 +1,9 @@
 #pragma once
 
-#include "Core/src/Export.h"
+#include "Export.h"
 #include "Core/src/GeneralParams.h"
 
 namespace cppkin
 {
-    A_EXPORT void Init(const core::GeneralParams& params);
+    CPPKIN_EXPORT void Init(const core::GeneralParams& params);
 }

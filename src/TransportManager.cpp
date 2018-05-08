@@ -6,7 +6,6 @@
 #include "ConfigParams.h"
 
 using namespace core;
-using namespace std;
 
 namespace cppkin
 {
@@ -18,7 +17,9 @@ namespace cppkin
 
         m_currentSpanCount = 0;
         m_transport = TransportFactory::Instance().Create(ConfigParams::Instance().GetTransportType());
-        m_worker = unique_ptr<Thread>(new Thread("TransportManager", bind(&TransportManager::TransportWorker, this)));
+        m_batchSize = ConfigParams::Instance().GetBatchSize();
+        m_spanQueue.reset(new LockFreeSpansQueue( m_batchSize * 3 ));
+        m_worker = std::unique_ptr<Thread>(new Thread("TransportManager", std::bind(&TransportManager::TransportWorker, this)));
         m_worker->Start();
     }
 
@@ -31,14 +32,15 @@ namespace cppkin
         m_worker->Join();
     }
 
-    void TransportManager::PushSpan(unique_ptr<Span> span) {
-        m_spanQueue.push(span.release());
+    void TransportManager::PushSpan(const std::shared_ptr<span_impl>& span) {
+        span_impl* spanPtr = new span_impl(*span.get());
+        while(m_spanQueue->push(spanPtr) == false);
         //fetch_add returns previous value, this is why an addition of 1 was commenced
-        if(atomic_fetch_add(&m_currentSpanCount, 1) + 1 == BATCH_SIZE) {
-            m_currentSpanCount-=BATCH_SIZE;
+        if(m_currentSpanCount.fetch_add(1, std::memory_order_relaxed) + 1 == m_batchSize) {
+            m_currentSpanCount.fetch_sub(m_batchSize, std::memory_order_relaxed);
             m_batchReached = true;
             {
-                unique_lock<mutex> lock(m_mut);
+                std::unique_lock<std::mutex> lock(m_mut);
                 m_cv.notify_one();
             }
         }
@@ -49,14 +51,15 @@ namespace cppkin
         while(!m_terminate)
         {
             {
-                unique_lock<mutex> lock(m_mut);
-                m_cv.wait_until(lock, chrono::system_clock::now() + chrono::seconds(10), [this]{ return m_batchReached; });
+                std::unique_lock<std::mutex> lock(m_mut);
+                m_cv.wait_for(lock, std::chrono::seconds(2), [this]{ return m_batchReached; });
             }
-            static vector<std::unique_ptr<Span>> retrievedSpans;
-            m_spanQueue.consume_all([](Span* span){retrievedSpans.emplace_back(span);});
+            static std::vector<std::unique_ptr<span_impl>> retrievedSpans;
+            m_spanQueue->consume_all([](span_impl* span){retrievedSpans.emplace_back(span);});
             if(retrievedSpans.size() > 0) {
                 m_transport->Submit(retrievedSpans);
             }
+            m_batchReached = false;
             retrievedSpans.clear();
         }
     }

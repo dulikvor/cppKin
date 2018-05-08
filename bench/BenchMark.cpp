@@ -6,23 +6,23 @@
 
 using namespace std;
 
-static void BM_SpanCreation(benchmark::State& state){
+static void BM_TraceCreation(benchmark::State& state){
     for(auto _ : state){
-        cppkin::CreateTrace("BenchMark_Span");
+        auto trace = cppkin::Trace("BenchMark_Trace");
     }
 }
 
-static void BM_EventCreation(benchmark::State& state){
-    cppkin::CreateTrace("BenchMark_Span");
+static void BM_ChildSpanCreation(benchmark::State& state){
+    cppkin::Trace trace("BenchMark_Trace");
     for(auto _ : state){
-        cppkin::CreateTrace("BenchMark_Event");
+        auto span = trace.CreateSpan("BenchMark_Event");
     }
 }
 
-static void BM_EventCreationSubmit(benchmark::State& state){
+static void BM_TraceCreationSubmit(benchmark::State& state){
     for(auto _ : state){
-        cppkin::CreateTrace("BenchMark_Span");
-        cppkin::SubmitSpan();
+        cppkin::Trace trace("BenchMark_Trace");
+        trace.Submit();
     }
 }
 
@@ -43,7 +43,7 @@ int main(int argc, char** argv)
     ::benchmark::RunSpecifiedBenchmarks();
   }
 
-BENCHMARK(BM_SpanCreation);
-BENCHMARK(BM_EventCreation);
-BENCHMARK(BM_EventCreationSubmit);
-BENCHMARK(BM_EventCreationSubmit)->Threads(10);
+BENCHMARK(BM_TraceCreation);
+BENCHMARK(BM_ChildSpanCreation);
+BENCHMARK(BM_TraceCreationSubmit);
+BENCHMARK(BM_TraceCreationSubmit)->Threads(10);
