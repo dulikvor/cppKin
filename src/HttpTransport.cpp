@@ -9,7 +9,7 @@ using namespace std;
 
 namespace cppkin
 {
-    void HttpTransport::Submit(std::vector<std::unique_ptr<Span>>& spans) {
+    void HttpTransport::Submit(std::vector<std::unique_ptr<span_impl>>& spans) {
 
         string buffer = EncoderContext(spans).ToString();
         try {

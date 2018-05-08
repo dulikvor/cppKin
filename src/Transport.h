@@ -5,13 +5,13 @@
 
 namespace cppkin
 {
-    class Span;
+    class span_impl;
 
     class Transport
     {
     public:
         virtual ~Transport(){}
-        virtual void Submit(std::vector<std::unique_ptr<Span>>& spans) = 0;
+        virtual void Submit(std::vector<std::unique_ptr<span_impl>>& spans) = 0;
     };
 }
 

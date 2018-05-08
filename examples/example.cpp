@@ -55,28 +55,21 @@ int main( int argc, const char *argv[] )
 
     cppkin::Init(cppkinParams);
 
-    cppkin::CreateTrace("TestTrace");
+    cppkin::Trace trace("TestTrace");
     sleep(1);
-    cppkin::TraceEvent("TraceEvent1");
+    trace.AddAnnotation("TraceEvent1");
 
-    cppkin::CreateSpan("Span1");
+    auto span_1 = trace.CreateSpan("Span1");
     sleep(1);
-    cppkin::TraceEvent("Event2");
+    span_1.AddAnnotation("Event2");
     {
-        cppkin::SpanGuard guard("GuardSpan");
-        cppkin::TraceEvent("GuardEvent");
+        auto span_2 = trace.CreateSpan("Span2");
         sleep(1);
+        span_2.Submit();
     }
-    cppkin::SubmitSpan();
+    span_1.Submit();
     sleep(1);
-    cppkin::TraceEvent("TraceEvent2");
-    cppkin::SubmitSpan();
-
-
-    cppkin::CreateTrace("TestTrace2");
-    sleep(1);
-    cppkin::TraceEvent("TraceEvent12");
-    cppkin::SubmitSpan();
+    trace.Submit();
 
 #if defined(WIN32)
     ::Sleep(100);

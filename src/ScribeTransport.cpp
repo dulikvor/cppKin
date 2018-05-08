@@ -22,7 +22,7 @@ namespace cppkin
         m_socket->close();
     }
 
-    void ScribeTransport::Submit(vector<unique_ptr<Span>>& spans) {
+    void ScribeTransport::Submit(vector<unique_ptr<span_impl>>& spans) {
 
         EncoderContext context(spans);
         using Entry = scribe::thrift::LogEntry;

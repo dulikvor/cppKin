@@ -12,7 +12,7 @@
 
 namespace cppkin
 {
-    class Span;
+    class span_impl;
     class SimpleAnnotation;
 
     class Encoder {
@@ -28,7 +28,7 @@ namespace cppkin
         }
 
         virtual ~Encoder() {}
-        virtual std::string ToString(const Span&) const = 0;
+        virtual std::string ToString(const span_impl&) const = 0;
         virtual std::string ToString(const std::vector<EncoderContext::ContextElement>&) const = 0;
     };
 
@@ -37,7 +37,7 @@ namespace cppkin
     {
     public:
         EncoderImpl();
-        std::string ToString(const Span&) const override {
+        std::string ToString(const span_impl&) const override {
             throw core::Exception(__CORE_SOURCE, "Unsupported method");
         }
 

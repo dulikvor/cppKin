@@ -5,7 +5,7 @@
 #include "GeneratedFiles/zipkinCore_types.h"
 #include "Encoder.h"
 #include "ConfigParams.h"
-#include "Span.h"
+#include "span_impl.h"
 #include "SimpleAnnotation.h"
 
 using namespace apache::thrift;
@@ -16,13 +16,13 @@ namespace cppkin {
     class EncoderImpl<EncodingType::Thrift>: public Encoder
     {
     public:
-        std::string ToString(const Span&) const override;
+        std::string ToString(const span_impl&) const override;
         std::string ToString(const std::vector<EncoderContext::ContextElement>&) const override;
 
     private:
         friend ConcreteEncoderCreator<EncoderImpl<EncodingType::Thrift>>;
         EncoderImpl();
-        static ::Span Serialize(const Span& span);
+        static ::Span Serialize(const span_impl& span);
         static void Serialize(::Span& thriftSpan, const SimpleAnnotation &annotation);
     private:
         std::unique_ptr<apache::thrift::protocol::TBinaryProtocol> m_protocol;
@@ -33,7 +33,7 @@ namespace cppkin {
         m_protocol.reset(new protocol::TBinaryProtocol(m_buffer));
     }
 
-    ::Span EncoderImpl<EncodingType::Thrift>::Serialize(const Span& span) {
+    ::Span EncoderImpl<EncodingType::Thrift>::Serialize(const span_impl& span) {
         ::Span thriftSpan;
         thriftSpan.__set_trace_id(span.GetHeader().TraceID);
         thriftSpan.__set_name(span.GetHeader().Name);
@@ -41,7 +41,7 @@ namespace cppkin {
         thriftSpan.__set_debug(ConfigParams::Instance().GetDebug());
         thriftSpan.__set_timestamp(span.GetTimeStamp());
         thriftSpan.__set_duration(span.GetDuration());
-        if(span.GetHeader().ParentIDSet)
+        if(span.GetHeader().ParentIdSet)
             thriftSpan.__set_parent_id(span.GetHeader().ParentID);
         for(auto& annotation : span.GetAnnotations())
             if(annotation->GetType() == AnnotationType::Simple)
@@ -65,7 +65,7 @@ namespace cppkin {
         thriftSpan.annotations.emplace_back(thriftAnnotation);
     }
 
-    string EncoderImpl<EncodingType::Thrift>::ToString(const Span& span) const {
+    string EncoderImpl<EncodingType::Thrift>::ToString(const span_impl& span) const {
         ::Span thriftSpan = EncoderImpl<EncodingType::Thrift>::Serialize(span);
         m_buffer->resetBuffer();
         thriftSpan.write(m_protocol.get());

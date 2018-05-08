@@ -1,11 +1,10 @@
 #pragma once
 
 #include <atomic>
-#include "Core/src/Export.h"
 
 namespace cppkin
 {
-    class A_EXPORT Sampler
+    class Sampler
     {
     public:
         static bool AdvanceSampler();

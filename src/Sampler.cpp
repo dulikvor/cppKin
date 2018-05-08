@@ -20,7 +20,7 @@ namespace cppkin
 #endif
 
     bool Sampler::AdvanceSampler() {
-        t_currentSample = atomic_fetch_add(&sampler, 1) + 1;
+        t_currentSample = sampler.fetch_add(1, std::memory_order_relaxed) + 1;
         return Sampler::ShouldSample();
     }
 

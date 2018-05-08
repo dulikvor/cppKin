@@ -1,60 +1,26 @@
 #pragma once
 
-#include <string>
-#include <cinttypes>
-#include <vector>
+#include <cstdint>
 #include <memory>
-#include "Core/src/Export.h"
 #include "Annotation.h"
+#include "Export.h"
 
 namespace cppkin
 {
     class Trace;
-    class EncoderContextThrift;
+    class span_impl;
 
-    class A_EXPORT Span
+    class CPPKIN_EXPORT Span
     {
     public:
-        typedef std::vector<std::unique_ptr<Annotation>> Annotations;
-        struct A_EXPORT SpanHeader
-        {
-        public:
-            SpanHeader(const std::string& name, int_fast64_t traceID, int_fast64_t parentID, int_fast64_t id);
-            SpanHeader(const std::string& name, int_fast64_t traceID, int_fast64_t id);
-            SpanHeader(){}
-        public:
-            std::string Name;
-            uint_fast64_t ID;
-            uint_fast64_t ParentID;
-            uint_fast64_t TraceID;
-            bool ParentIDSet;
-        };
-
-    public:
-        ~Span(){}
-        Span(const Span&) = delete;
-        Span& operator=(const Span&) = delete;
-        const SpanHeader& GetHeader() const;
-        const Annotations& GetAnnotations() const;
-        void CreateSimpleAnnotation(const std::string& event);
-        template<typename T>
-		inline void CreateBinaryAnnotation(const std::string& key, const T& value){}
-		int_fast64_t GetTimeStamp() const;
-		int_fast64_t GetDuration() const;
-		void SetEndTime();
-        bool IsRootSpan() const { return !m_header.ParentIDSet; }
+        Span CreateSpan(const char* operationName, const char* value = Annotation::Value::SERVER_RECEIVE);
+        void AddAnnotation(const char* value);
+        void Submit(const char* value = Annotation::Value::CLIENT_SEND);
+    protected:
+        Span(const char* operationName, uint_fast64_t traceId, bool sampled);
+        Span(const char* operationName, uint_fast64_t traceId, uint_fast64_t parentId, bool sampled);
 
     private:
-        friend class Trace;
-
-        Span(const std::string& name, int_fast64_t traceID, int_fast64_t parentID, int_fast64_t id);
-        Span(const std::string& name, int_fast64_t traceID);
-        int_fast64_t GetCurrentTime();
-
-    private:
-        SpanHeader m_header;
-        Annotations m_events;
-        int_fast64_t m_timeStamp;
-        int_fast64_t m_duration;
+        std::shared_ptr<span_impl> m_span;
     };
 }

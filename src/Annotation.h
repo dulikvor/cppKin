@@ -6,10 +6,10 @@
 
 namespace cppkin
 {
-    class A_EXPORT Annotation
+    class Annotation
     {
     public:
-        struct A_EXPORT EndPoint
+        struct EndPoint
         {
         public:
             EndPoint(const std::string& serviceName, std::string host, uint_fast16_t port);
@@ -17,6 +17,15 @@ namespace cppkin
             int32_t Host;
             int_fast16_t Port;
             std::string ServiceName;
+        };
+
+        struct Value
+        {
+        public:
+            static const char* SERVER_SEND;
+            static const char* SERVER_RECEIVE;
+            static const char* CLIENT_SEND;
+            static const char* CLIENT_RECEIVE;
         };
 
     public:

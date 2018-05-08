@@ -2,7 +2,7 @@
 #include "Poco/JSON/Object.h"
 #include "Poco/JSON/Array.h"
 #include "Encoder.h"
-#include "Span.h"
+#include "span_impl.h"
 #include "ConfigParams.h"
 #include "SimpleAnnotation.h"
 
@@ -14,17 +14,17 @@ namespace cppkin {
     template<>
     class EncoderImpl<EncodingType::Json> : public Encoder {
     public:
-        virtual std::string ToString(const Span &) const override;
+        virtual std::string ToString(const span_impl &) const override;
         virtual std::string ToString(const std::vector<EncoderContext::ContextElement> &) const override;
 
     private:
         friend ConcreteEncoderCreator<EncoderImpl<EncodingType::Json>>;
         EncoderImpl() {}
-        static Poco::JSON::Object Serialize(const Span &span);
+        static Poco::JSON::Object Serialize(const span_impl &span);
         static void Serialize(Poco::JSON::Array &jsonSpan, const SimpleAnnotation &annotation);
     };
 
-    json::Object EncoderImpl<EncodingType::Json>::Serialize(const Span& span) {
+    json::Object EncoderImpl<EncodingType::Json>::Serialize(const span_impl& span) {
         json::Object jsonSpan;
         jsonSpan.set("traceId", span.GetHeader().TraceID);
         jsonSpan.set("name", span.GetHeader().Name);
@@ -33,7 +33,7 @@ namespace cppkin {
         jsonSpan.set("timestamp", span.GetTimeStamp());
         jsonSpan.set("duration", span.GetDuration());
 
-        if(span.GetHeader().ParentIDSet)
+        if(span.GetHeader().ParentIdSet)
             jsonSpan.set("parentId", span.GetHeader().ParentID);
 
         json::Array jsonAnnotations;
@@ -60,7 +60,7 @@ namespace cppkin {
         jsonAnnotations.add(jsonAnnotation);
     }
 
-    string EncoderImpl<EncodingType::Json>::ToString(const Span& span) const {
+    string EncoderImpl<EncodingType::Json>::ToString(const span_impl& span) const {
         json::Object jsonSpan = EncoderImpl<EncodingType::Json>::Serialize(span);
         ostringstream oss;
         jsonSpan.stringify(oss);
