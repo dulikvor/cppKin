@@ -70,7 +70,7 @@ namespace cppkin {
     string EncoderImpl<EncodingType::Json>::ToString(const std::vector<EncoderContext::ContextElement>& spans) const {
 
         json::Array jsonSpans;
-        for (auto& span : spans) {
+        for (const auto& span : spans) {
             json::Object jsonSpan = EncoderImpl<EncodingType::Json>::Serialize(*span);
             jsonSpans.add(jsonSpan);
         }

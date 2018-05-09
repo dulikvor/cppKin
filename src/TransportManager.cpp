@@ -55,7 +55,8 @@ namespace cppkin
                 m_cv.wait_for(lock, std::chrono::seconds(2), [this]{ return m_batchReached; });
             }
             static std::vector<std::unique_ptr<span_impl>> retrievedSpans;
-            m_spanQueue->consume_all([](span_impl* span){retrievedSpans.emplace_back(span);});
+            m_spanQueue->consume_all([](span_impl* span){
+                retrievedSpans.emplace_back(span);});
             if(retrievedSpans.size() > 0) {
                 m_transport->Submit(retrievedSpans);
             }

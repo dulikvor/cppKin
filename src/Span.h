@@ -13,14 +13,16 @@ namespace cppkin
     class CPPKIN_EXPORT Span
     {
     public:
-        Span CreateSpan(const char* operationName, const char* value = Annotation::Value::SERVER_RECEIVE);
+        Span CreateSpan(const char* operationName, const char* value = Annotation::Value::SERVER_RECEIVE) const;
         void AddAnnotation(const char* value);
-        void Submit(const char* value = Annotation::Value::CLIENT_SEND);
+        void AddAnnotation(const char* value, int_fast64_t timeStamp);
+        void Submit();
+        bool IsSampled() const;
     protected:
         Span(const char* operationName, uint_fast64_t traceId, bool sampled);
         Span(const char* operationName, uint_fast64_t traceId, uint_fast64_t parentId, bool sampled);
 
-    private:
+    protected:
         std::shared_ptr<span_impl> m_span;
     };
 }
