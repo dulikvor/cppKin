@@ -1,18 +1,18 @@
 #include "span_impl.h"
 #include "Encoder.h"
 #include "ConfigParams.h"
+#include <iostream>
 
 using namespace std;
 
 namespace cppkin
 {
-    EncoderContext::ContextElement::ContextElement(unique_ptr<span_impl>&& span, const Encoder& encoder):
-        m_span(std::move(span)), m_encoder(encoder) {
+    EncoderContext::ContextElement::ContextElement(span_impl*const span, const Encoder& encoder):
+        m_span(span), m_encoder(encoder) {
     }
 
-    EncoderContext::ContextElement::ContextElement(ContextElement&& obj):
-        m_span(std::move(obj.m_span)), m_encoder(obj.m_encoder){
-
+    EncoderContext::ContextElement::ContextElement(const ContextElement& obj):
+        m_span(obj.m_span), m_encoder(obj.m_encoder){
     }
 
     string EncoderContext::ContextElement::ToString() const {
@@ -21,11 +21,11 @@ namespace cppkin
 
     EncoderContext::~EncoderContext() {}
 
-    EncoderContext::EncoderContext(vector<unique_ptr<span_impl>>& spans):
+    EncoderContext::EncoderContext(const vector<unique_ptr<span_impl>>& spans):
         m_encoder(EncoderFactory::Instance().Create(ConfigParams::Instance().GetEncodingType()))
     {
         for (auto& span : spans) {
-            m_spans.emplace_back(std::move(span), *m_encoder);
+            m_spans.emplace_back(span.get(), *m_encoder);
         }
     }
 

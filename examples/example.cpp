@@ -74,7 +74,7 @@ int main( int argc, const char *argv[] )
 #if defined(WIN32)
     ::Sleep(100);
 #else
-    ::sleep(1);
+    ::sleep(2);
 #endif
     Logger::Instance().Terminate();
     return 0;

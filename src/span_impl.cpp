@@ -23,6 +23,20 @@ namespace cppkin
     span_impl::span_impl(const std::string &name, uint_fast64_t traceID, bool sampled) :
             m_header(name, traceID, traceID, sampled), m_timeStamp(GetCurrentTime()) {}
 
+    span_impl::span_impl(const span_impl& obj)
+    {
+        for(const auto& event : obj.m_events)
+        {
+            if( event->GetType() == AnnotationType::Simple) {
+                SimpleAnnotation &simpleAnnotation = static_cast<SimpleAnnotation &>(*event);
+                m_events.emplace_back(new SimpleAnnotation(simpleAnnotation));
+            }
+        }
+        m_timeStamp = obj.m_timeStamp;
+        m_duration = obj.m_duration;
+        m_header = obj.m_header;
+    }
+
     const span_impl::SpanHeader& span_impl::GetHeader() const{
         return m_header;
     }
@@ -37,6 +51,14 @@ namespace cppkin
                                       core::Environment::Instance().GetIPV4Addresses().back(),
                                       ConfigParams::Instance().GetPort());
         m_events.emplace_back(new SimpleAnnotation(endPoint, event, GetCurrentTime()));
+    }
+
+    void span_impl::CreateSimpleAnnotation(const std::string &event, int_fast64_t timeStamp) {
+        VERIFY(core::Environment::Instance().GetIPV4Addresses().size() > 0, "Missing IPV4 address");
+        static Annotation::EndPoint endPoint(ConfigParams::Instance().GetServiceName(),
+                                             core::Environment::Instance().GetIPV4Addresses().back(),
+                                             ConfigParams::Instance().GetPort());
+        m_events.emplace_back(new SimpleAnnotation(endPoint, event, timeStamp));
     }
 
     int_fast64_t span_impl::GetTimeStamp() const{

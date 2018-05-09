@@ -7,6 +7,6 @@ namespace  cppkin
     Trace::Trace(const char *operationName, const char* value):
         Span(operationName, span_impl::GenerateID(), Sampler::AdvanceSampler())
     {
-        AddAnnotation(value);
+        AddAnnotation(value, m_span->GetTimeStamp());
     }
 }

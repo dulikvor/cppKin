@@ -17,11 +17,11 @@ namespace cppkin
         m_span.reset(new span_impl(operationName, traceId, parentId, id, sampled));
     }
 
-    Span Span::CreateSpan(const char *operationName, const char* value)
+    Span Span::CreateSpan(const char *operationName, const char* value) const
     {
         const span_impl::SpanHeader& header = m_span->GetHeader();
         Span span( operationName, header.TraceID, header.ID, header.Sampled);
-        span.AddAnnotation(value);
+        span.AddAnnotation(value, m_span->GetTimeStamp());
         return span;
     }
 
@@ -32,12 +32,23 @@ namespace cppkin
         m_span->CreateSimpleAnnotation(value);
     }
 
-    void Span::Submit(const char* value)
+    void Span::AddAnnotation(const char* value, int_fast64_t timeStamp)
+    {
+        if(m_span->GetHeader().Sampled == false)
+            return;
+        m_span->CreateSimpleAnnotation(value, timeStamp);
+    }
+
+    void Span::Submit()
     {
         if(m_span->GetHeader().Sampled == false)
             return;
         m_span->SetEndTime();
-        AddAnnotation(value);
         TransportManager::Instance().PushSpan(m_span);
+    }
+
+    bool Span::IsSampled() const
+    {
+        return m_span->GetHeader().Sampled;
     }
 }

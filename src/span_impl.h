@@ -15,7 +15,7 @@ namespace cppkin
     class span_impl
     {
     public:
-        typedef std::vector<std::shared_ptr<Annotation>> Annotations;
+        typedef std::vector<std::unique_ptr<Annotation>> Annotations;
         struct SpanHeader
         {
         public:
@@ -33,10 +33,12 @@ namespace cppkin
 
     public:
         ~span_impl(){}
+        span_impl(const span_impl& obj);
         span_impl& operator=(const span_impl&) = delete;
         const SpanHeader& GetHeader() const;
         const Annotations& GetAnnotations() const;
         void CreateSimpleAnnotation(const std::string& event);
+        void CreateSimpleAnnotation(const std::string& event, int_fast64_t timeStamp);
         template<typename T>
 		inline void CreateBinaryAnnotation(const std::string& key, const T& value){}
 		int_fast64_t GetTimeStamp() const;
