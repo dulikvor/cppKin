@@ -51,4 +51,9 @@ namespace cppkin
     {
         return m_span->GetHeader().Sampled;
     }
+
+    uint_fast64_t  Span::GetTraceId() const
+    {
+        return m_span->GetHeader().TraceID;
+    }
 }

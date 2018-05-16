@@ -18,6 +18,7 @@ namespace cppkin
         void AddAnnotation(const char* value, int_fast64_t timeStamp);
         void Submit();
         bool IsSampled() const;
+        uint_fast64_t  GetTraceId() const;
     protected:
         Span(const char* operationName, uint_fast64_t traceId, bool sampled);
         Span(const char* operationName, uint_fast64_t traceId, uint_fast64_t parentId, bool sampled);
