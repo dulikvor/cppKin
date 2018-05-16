@@ -2,13 +2,13 @@
 
 #include <cstdint>
 #include <memory>
+#include "span_impl.h"
 #include "Annotation.h"
 #include "Export.h"
 
 namespace cppkin
 {
     class Trace;
-    class span_impl;
 
     class CPPKIN_EXPORT Span
     {
@@ -18,7 +18,7 @@ namespace cppkin
         void AddAnnotation(const char* value, int_fast64_t timeStamp);
         void Submit();
         bool IsSampled() const;
-        uint_fast64_t  GetTraceId() const;
+        const span_impl::SpanHeader&  GetHeader() const;
     protected:
         Span(const char* operationName, uint_fast64_t traceId, bool sampled);
         Span(const char* operationName, uint_fast64_t traceId, uint_fast64_t parentId, bool sampled);
