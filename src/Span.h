@@ -13,7 +13,9 @@ namespace cppkin
     class CPPKIN_EXPORT Span
     {
     public:
+        Span();
         Span CreateSpan(const char* operationName, const char* value = Annotation::Value::SERVER_RECEIVE) const;
+        void Join(const char* operationName, uint_fast64_t traceId, uint_fast64_t parentId, uint_fast64_t id, bool sampled);
         void AddAnnotation(const char* value);
         void AddAnnotation(const char* value, int_fast64_t timeStamp);
         void Submit();
