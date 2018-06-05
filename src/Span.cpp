@@ -5,6 +5,7 @@
 namespace cppkin
 {
 
+    Span::Span() {}
 
     Span::Span(const char* operationName, uint_fast64_t traceId, bool sampled)
     {
@@ -23,6 +24,11 @@ namespace cppkin
         Span span( operationName, header.TraceID, header.ID, header.Sampled);
         span.AddAnnotation(value, m_span->GetTimeStamp());
         return span;
+    }
+
+    void Span::Join(const char *operationName, uint_fast64_t traceId, uint_fast64_t parentId, uint_fast64_t id, bool sampled)
+    {
+        m_span.reset(new span_impl(operationName, traceId, parentId, id, sampled));
     }
 
     void Span::AddAnnotation(const char* value)
