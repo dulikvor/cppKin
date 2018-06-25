@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Core/src/Enumeration.h"
+#include "core/Enumeration.h"
 #include "Export.h"
 
 namespace cppkin

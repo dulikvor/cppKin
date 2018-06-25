@@ -4,7 +4,7 @@
 #include <cinttypes>
 #include <vector>
 #include <memory>
-#include "Core/src/Export.h"
+#include "core/Export.h"
 #include "Annotation.h"
 
 namespace cppkin

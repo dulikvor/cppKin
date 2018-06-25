@@ -1,5 +1,5 @@
 #include "Init.h"
-#include "Core/src/Environment.h"
+#include "core/Environment.h"
 #include "ConfigParams.h"
 
 using namespace core;

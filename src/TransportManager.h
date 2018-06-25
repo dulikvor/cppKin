@@ -6,7 +6,7 @@
 #include <mutex>
 #include "Transport.h"
 #include "boost/lockfree/queue.hpp"
-#include "Core/src/Thread.h"
+#include "core/Thread.h"
 #include "span_impl.h"
 
 #if defined(WIN32)
