@@ -57,17 +57,24 @@ In order to use cppkin include cppkin interface file - `cppkin.h`.
 ```c++
 #include "cppKin/src/cppkin.h"
 ```
-The file publish the following capabilities:
-1) Initialization.
-2) Create Trace.
-3) Create/Join Span.
-4) Trace simple events.
-5) Serialize/Deserialize span header.
+cppkin supports an object oriented style of coding.
+the header will publish two user types:
+- A Trace type.
+- A Span type.
 
-All capabilities are provided in Macro method style (semicolon is in need), for example:
-```c++
-CREATE_TRACE("Resource_Offer");
-```
+Trace type capabilities:
+- Create a Trace.
+- Creating a child span.
+- Join a span.
+- Adding simple annotations.
+- Submitting a trace.
+
+Span type capabilities:
+- Creating a child span.
+- Join a span.
+- Adding simple annotations.
+- Submitting a trace.
+
 ### Initialization
 In order to initialize `cppkin` (the first step you would like to take) two operations are in need:
 1) Composing `cppkin` configuration.
@@ -84,60 +91,88 @@ In order to initialize `cppkin` (the first step you would like to take) two oper
 | SERVICE_NAME    | The traced service name which will be displayed at Zipkin UI, provided as c++ string.  |
 | DEBUG           | Will mark all sampled spans as debug spans.  |
 | SAMPLE_COUNT    | Will sample every - n % SAMPLE_COUNT == 0 span.
+| BATCH_SIZE      | How many spans will be packed together when addressing the zipkin server. |
+| ENCODING_TYPE   | Dictates which encoder will be use to encode cppkin outgoing messages - json, thrift. |
+
 
 A full example:
 ```c++
 cppkin::CppkinParams cppkinParams;
-cppkinParams.AddParam(cppkin::ConfigTags::HOST_ADDRESS, string("127.0.0.1"));
+cppkinParams.AddParam(cppkin::ConfigTags::HOST_ADDRESS,"127.0.0.1");
 cppkinParams.AddParam(cppkin::ConfigTags::PORT, 9410);
-cppkinParams.AddParam(cppkin::ConfigTags::SERVICE_NAME, string("Index_Builder"));
+cppkinParams.AddParam(cppkin::ConfigTags::SERVICE_NAME,"Index_Builder");
 cppkinParams.AddParam(cppkin::ConfigTags::DEBUG, false);
 cppkinParams.AddParam(cppkin::ConfigTags::SAMPLE_COUNT, 1000);
 cppkin::Init(cppkinParams);
 ```
 
-### Storage
-Each new span (acting as the new context), is referenced by using the current thread TLS, all operation are acted upon the current context. 
-
-by creating a new span in the context of the current thread, it will be elected as the new context.
-
+##
 #### Tracing
-In order to trace use the `cppkin::CreateTrace` command:
+In order to create a trace initalize a new trace instance:
 ```c++
-cppkin::CreateTrace("Scheduling tasks");
+cppkin::Trace trace("Something");
 ```
-`cppkin::CreateTrace` takes a single argument - the `"Operation name"` which needs to be provided as `const char*`  argument type.
+`Trace constructor` takes a single argument - the `"Operation name"`.
 
 ### Child Span
-In order to create a child span use the `cppkin::CreateSpan` command:
+In order to create a child span use the `CreateSpan` method:
 ```c++
-cppkin::CreateSpan("Processing Task");
+trace.CreateSpan("Span1");
 ```
-`cppkin::CreateSpan` takes the following arguments:
-* Operation name - `const char*` type.
-
-<!--- * The current trace id - retrieved from the previous span header. 
- * Parent span id - retrieved from the previous span header. ---> 
-
+The same interface is also supported with the span type:
+```c++
+auto span = trace.CreateSpan("Span1");
+span.CreateSpan("Span2");
+```
+`CreateSpan` takes a single argument - the `"Operation name"`.
 
 ### Trace simple events
-In order to trace an event use the `cppkin::TraceEvent` command:
+In order to trace an event use the `AddAnnotation` method:
 ```c++
-cppkin::TraceEvent("Trace an event");
+trace.AddAnnotation("TraceEvent1");
+span.AddAnnotation("TraceEvent2");
 ```
-`cppkin::TraceEvent` takes a single argument - the `"Event value"` which needs to be provided as `const char*`  argument type.
+`AddAnnotation` takes a single argument - the `"Event value"`.
 
 ### Transportation
 `cppkin` contains a specified `transportation` layer, providing the following capabilities:
 * Serializing the received data.
 * Transporting it to a specific zipkin collector out stream.
 
+Supported transportation methods:
+| Transport      | Encoding |
+| -------------   | ------------- |
+| Thrift    | Thrift  |
+| Http      | Json  |
 
 ### OutStream Communication
-Outstream communication is done by using a single simple command - `cppkin::SubmitSpan'.
+Outstream communication is done by using the `Submit` method.
 ```c++
-cppkin::SubmitSpan();
+trace.Submit();
+span.Submit();
 ```
-once called the current span in `context` will be out streamed to the designated collector. the `context` will be cleared after the completion of the command.
+once called the current Trace/Span will be out streamed at some point to designated collector.
 
-Collector type and collector address are set by using `cppkin` configuration during the `init` step.
+### Span Header
+Every Trace/Span instances contains a span header.
+the header is used to contain the most important data depicting the current Trace/Span, including:
+- Trace id.
+- Span id (A trace is sharing its trace id with the span id).
+- Parent Span id.
+- Sampled - is the Trace/Span is sampled or not.
+
+The header is used to keep track of our current trace context across different processes, usually it will be the header which will be serialized and provided via, for example - an RPC to the designated process.
+
+in order to fetch the current Trace/Span header, use the following example:
+```c++
+auto traceHeader = trace.GetHeader();
+auto spanHeader = span.GetHeader();
+```
+### Join a Trace/Span
+In order to join an existing Trace/Span use the `Join` method and a received Trace/Span header:
+```c++
+Span span();
+span.Join(traceHeader.Name.c_str(), traceHeader.TraceID, traceHeader.ParentID, traceHeader.ID, traceHeader.Sampled);
+```
+
+Span will always be used at the receiving side.
