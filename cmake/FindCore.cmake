@@ -1,0 +1,12 @@
+message(STATUS "3rd party loc - ${PROJECT_3RD_LOC}")
+find_path(CORE_INCLUDE_DIR NAMES core/Exception.h PATHS ${PROJECT_3RD_LOC}/include NO_DEFAULT_PATH)
+find_program(CORE_LIBRARY_DIR NAMES libCore.so PATHS ${PROJECT_3RD_LOC}/lib NO_DEFAULT_PATH)
+include(FindPackageHandleStandardArgs)
+find_package_handle_standard_args(Core REQUIRED_VARS CORE_INCLUDE_DIR)
+
+if(Core_FOUND)
+    message(STATUS "Found Core include dir - ${CORE_INCLUDE_DIR}")
+    message(STATUS "Found Core library dir - ${CORE_LIBRARY_DIR}")
+else()
+    message(WARNING "Core not found")
+endif()

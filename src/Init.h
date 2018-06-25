@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Export.h"
-#include "Core/src/GeneralParams.h"
+#include "core/GeneralParams.h"
 
 namespace cppkin
 {

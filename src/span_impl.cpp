@@ -1,8 +1,8 @@
 #include "span_impl.h"
 #include <chrono>
 #include <random>
-#include "Core/src/Assert.h"
-#include "Core/src/Environment.h"
+#include "core/Assert.h"
+#include "core/Environment.h"
 #include "SimpleAnnotation.h"
 #include "ConfigTags.h"
 #include "ConfigParams.h"

@@ -4,9 +4,7 @@
 #include <string>
 #include <boost/program_options.hpp>
 #include "src/cppkin.h"
-#include "Core/src/Logger.h"
-#include "Core/src/SpdLogLogger.h"
-#include "Core/src/SpdLogTraceListener.h"
+#include "core/Logger.h"
 
 using namespace std;
 using namespace core;
@@ -31,8 +29,6 @@ int main( int argc, const char *argv[] )
         return 0;
     }
 
-    Logger::Instance().SetImpl(make_unique<SpdLogLogger>());
-    Logger::Instance().AddListener(make_shared<FileRotationTraceListener>(TraceSeverity::Info, "./example", 50 * 1024 * 1024, 20));
     Logger::Instance().Start(TraceSeverity::Info);
 
     int port = 9411;

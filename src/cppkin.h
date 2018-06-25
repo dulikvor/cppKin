@@ -2,7 +2,7 @@
 
 #include <memory>
 #include "Export.h"
-#include "Core/src/GeneralParams.h"
+#include "core/GeneralParams.h"
 #include "Init.h"
 #include "ConfigParams.h"
 #include "ConfigTags.h"
