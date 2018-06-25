@@ -107,7 +107,7 @@ cppkin::Init(cppkinParams);
 
 ##
 #### Tracing
-In order to create a trace initalize a new trace instance:
+In order to create a trace, initalize a new trace instance:
 ```c++
 cppkin::Trace trace("Something");
 ```
@@ -139,6 +139,7 @@ span.AddAnnotation("TraceEvent2");
 * Transporting it to a specific zipkin collector out stream.
 
 Supported transportation methods:
+
 | Transport      | Encoding |
 | -------------   | ------------- |
 | Thrift    | Thrift  |
