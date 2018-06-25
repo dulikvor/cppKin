@@ -65,7 +65,6 @@ the header will publish two user types:
 Trace type capabilities:
 - Create a Trace.
 - Creating a child span.
-- Join a span.
 - Adding simple annotations.
 - Submitting a trace.
 
