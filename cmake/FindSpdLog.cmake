@@ -3,8 +3,8 @@ include(FindPackageHandleStandardArgs)
 find_package_handle_standard_args(spdlog REQUIRED_VARS SPDLOG_INCLUDE_DIR)
 
 if(SPDLOG_FOUND)
-    message(STATUS "Found SpdLog include dir - ${SPDLOG_INCLUDE_DIR}")
+    message(STATUS ${Green}"Found SpdLog include dir - ${SPDLOG_INCLUDE_DIR}"${ColourReset})
 else()
-    message(WARNING "SpdLog not found")
+    message(WARNING ${Red}"SpdLog not found"${ColourReset})
 endif()
 

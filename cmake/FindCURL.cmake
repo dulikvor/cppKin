@@ -54,4 +54,8 @@ find_package_handle_standard_args(CURL
 if(CURL_FOUND)
   set(CURL_LIBRARIES ${CURL_LIBRARY})
   set(CURL_INCLUDE_DIRS ${CURL_INCLUDE_DIR})
+  message(STATUS ${Green}"Found CURL include dir - ${CURL_INCLUDE_DIR}"${ColourReset})
+  message(STATUS ${Green}"Found CURL library dir - ${CURL_LIBRARY}"${ColourReset})
+else()
+  message(WARNING ${Red}"CURL not found"${ColourReset})
 endif()
