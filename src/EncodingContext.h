@@ -20,9 +20,6 @@ namespace cppkin
         public:
             ContextElement(span_impl* const span, const Encoder& encoder);
             ContextElement(const ContextElement& obj);
-            ContextElement(ContextElement&&) = delete;
-            ContextElement& operator=(const ContextElement&) = delete;
-            ContextElement& operator=(ContextElement&&) = delete;
             std::string ToString() const;
             const span_impl& operator*() const { return *m_span; }
 
