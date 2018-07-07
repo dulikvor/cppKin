@@ -84,10 +84,10 @@ In order to initialize `cppkin` (the first step you would like to take) two oper
 
 | Config Tag      | Info |
 | -------------   | ------------- |
-| HOST_ADDRESS    | Zipkin server address in IPV4 format XXX.XXX.XXX.XXX provided as c++ string.  |
+| HOST_ADDRESS    | Zipkin server address in IPV4 format XXX.XXX.XXX.XXX.  |
 | PORT            | Zipkin server port value, usually 9410 for Scribe collector  |
-| TRANSPORT_TYPE  | Which transportaion to use, as of now only Scribe is supported and the tag is not in use. |
-| SERVICE_NAME    | The traced service name which will be displayed at Zipkin UI, provided as c++ string.  |
+| TRANSPORT_TYPE  | Which transportaion to use Scribe/Http, Http is default. |
+| SERVICE_NAME    | The traced service name which will be displayed at Zipkin UI.  |
 | DEBUG           | Will mark all sampled spans as debug spans.  |
 | SAMPLE_COUNT    | Will sample every - n % SAMPLE_COUNT == 0 span.
 | BATCH_SIZE      | How many spans will be packed together when addressing the zipkin server. |
