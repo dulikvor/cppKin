@@ -1,0 +1,10 @@
+set(BOOST_INCLUDEDIR ${PROJECT_DIR}/Third_Party/include)
+set(BOOST_LIBRARYDIR ${PROJECT_DIR}/Third_Party/lib)
+find_package(Boost 1.65.1 COMPONENTS program_options)
+
+if(Boost_FOUND)
+    message(STATUS ${Green}"Found Boost include dir - ${Boost_INCLUDE_DIR}"${ColourReset})
+    message(STATUS ${Green}"Found Boost library dir - ${Boost_LIBRARY_DIR_RELEASE}"${ColourReset})
+else()
+    message(WARNING ${Red}"Boost not found"${ColourReset})
+endif()
