@@ -5,5 +5,6 @@
 
 namespace cppkin
 {
+    typedef core::GeneralParams CppkinParams;
     CPPKIN_EXPORT void Init(const core::GeneralParams& params);
 }

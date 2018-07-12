@@ -15,7 +15,7 @@ namespace core
 
 namespace cppkin
 {
-    class CPPKIN_EXPORT ConfigParams
+    class ConfigParams
     {
     public:
         static ConfigParams& Instance();

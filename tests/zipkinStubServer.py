@@ -5,6 +5,7 @@ import Queue
 from threading import Thread
 import multiprocessing
 
+
 class Span:
     def __init__(self):
         self.id = -1
@@ -129,14 +130,5 @@ class ProcessGuard:
     def __exit__(self, exc_type, exc_val, exc_tb):
         pass
 
-def main():
-    outQueue = multiprocessing.Queue()
-    startEvent = multiprocessing.Event()
-    with ProcessGuard(ZipkinStubServer.spawn, outQueue, startEvent):
-        pass
-
-
-if __name__ == "__main__":
-    main()
 
 
