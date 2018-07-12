@@ -1,4 +1,4 @@
-if (NOT BOOST_FOUND)
+if (NOT Boost_FOUND)
 	if (WIN32)
 		include(cppkinMacro)
 		LinuxPath_ToWinPath(${CMAKE_CURRENT_SOURCE_DIR}/Third_Party INSTALL_DIR_WIN)
@@ -28,8 +28,8 @@ if (NOT BOOST_FOUND)
 
 ExternalProject_Get_Property(Boost INSTALL_DIR)
 
-set (BOOST_ROOT_DIR          ${INSTALL_DIR})
-set (BOOST_INCLUDE_DIR       ${INSTALL_DIR}/include)
-set (BOOST_FOUND             YES)
+set (Boost_ROOT_DIR          ${INSTALL_DIR})
+set (Boost_INCLUDE_DIR       ${INSTALL_DIR}/include)
+set (Boost_FOUND             YES)
 
 endif ()

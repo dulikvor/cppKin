@@ -33,7 +33,7 @@ list(APPEND CMAKE_PREFIX_PATH ${EXTERNAL_PROJECT_DIR})
 include_directories( ${PROJECT_DIR} ${PROJECT_DIR}/src ${PROJECT_DIR}/Third_Party/include)
 
 find_package(SpdLog)
-find_package(Boost)
+find_package(BOOST)
 find_package(Thrift)
 find_package(CURL)
 find_package(Core)
