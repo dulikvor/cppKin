@@ -1,4 +1,8 @@
-language: cpp
+language: python
+python:
+  - "2.7"
+sudo: required
+
 matrix:
   include:
     # works on Precise and Trusty
@@ -19,8 +23,18 @@ branches:
   - master
 
 before_install:
-     - eval "${MATRIX_EVAL}"
+- eval "${MATRIX_EVAL}"
+- sudo unlink /usr/bin/g++ && sudo ln -s /usr/bin/g++-5 /usr/bin/g++
+- g++ --version
+
+before_script:
+- ulimit -c unlimited -S       # enable core dumps
 
 script:
 - source INSTALL.sh
 
+after_failure:
+- COREFILE=$(find . -maxdepth 1 -name "core*" | head -n 1) # find core file
+- if [[ -f "$COREFILE" ]]; then gdb -c "$COREFILE" ./Tests/bin/sweetPyTests -ex "thread apply all bt" -ex "set pagination 0" -batch; fi
+notifications:
+  email: false
