@@ -13,6 +13,8 @@ if (NOT SweetPy_FOUND AND Core_FOUND)
             DEPENDEES   install
             )
 
+    add_dependencies(SweetPy Core)
+
     ExternalProject_Get_Property(SweetPy INSTALL_DIR)
 
     set (SweetPy_ROOT_DIR          ${INSTALL_DIR})

@@ -21,7 +21,7 @@ if (NOT Boost_FOUND)
 						URL                 https://dl.bintray.com/boostorg/release/1.65.1/source/boost_1_65_1.tar.gz
 						CONFIGURE_COMMAND   cd <SOURCE_DIR> && ./bootstrap.sh --prefix=<INSTALL_DIR> --exec-prefix=<INSTALL_DIR>
 						BUILD_COMMAND       ""
-						INSTALL_COMMAND     cd <SOURCE_DIR> && ./b2 install --with-program_options
+						INSTALL_COMMAND     cd <SOURCE_DIR> && ./b2 install --with-program_options --layout=system
 						TEST_COMMAND        ""
 		)
 	endif()

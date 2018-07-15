@@ -1,5 +1,5 @@
-find_path(SweetPy_INCLUDE_DIR NAMES sweetPy/CPythonClass.h PATHS ${PROJECT_DIR}/Third_Party/include NO_DEFAULT_PATH)
-find_program(SweetPy_LIBRARY_DIR NAMES libsweetPy.so PATHS ${PROJECT_DIR}/Third_Party/lib NO_DEFAULT_PATH)
+find_path(SweetPy_INCLUDE_DIR NAMES sweetPy/CPythonClass.h PATHS ${PROJECT_DIR}/Third_Party/include)
+find_program(SweetPy_LIBRARY_DIR NAMES libsweetPy.so PATHS ${PROJECT_DIR}/Third_Party/lib)
 include(FindPackageHandleStandardArgs)
 find_package_handle_standard_args(SweetPy REQUIRED_VARS SweetPy_INCLUDE_DIR)
 
