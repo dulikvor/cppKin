@@ -17,11 +17,11 @@
 #   CURL_VERSION_STRING - the version of curl found (since CMake 2.8.8)
 
 # Look for the header file.
-find_path(CURL_INCLUDE_DIR NAMES curl/curl.h PATHS ${PROJECT_DIR}/Third_Party/include NO_DEFAULT_PATH)
+find_path(CURL_INCLUDE_DIR NAMES curl/curl.h PATHS ${PROJECT_DIR}/Third_Party/include)
 mark_as_advanced(CURL_INCLUDE_DIR) 
 
 # Look for the library (sorted from most current/relevant entry to least).
-find_library(CURL_LIBRARY NAMES
+find_library(CURL_LIBRARY_DIR NAMES
     curl
   # Windows MSVC prebuilts:
     curllib
@@ -30,9 +30,8 @@ find_library(CURL_LIBRARY NAMES
   # Windows older "Win32 - MSVC" prebuilts (libcurl.lib, e.g. libcurl-7.15.5-win32-msvc.zip):
     libcurl
     PATHS ${PROJECT_DIR}/Third_Party/lib
-    NO_DEFAULT_PATH
 )
-mark_as_advanced(CURL_LIBRARY)
+mark_as_advanced(CURL_LIBRARY_DIR)
 
 if(CURL_INCLUDE_DIR)
   foreach(_curl_version_header curlver.h curl.h)
@@ -48,14 +47,12 @@ endif()
 
 include(FindPackageHandleStandardArgs)
 find_package_handle_standard_args(CURL
-                                  REQUIRED_VARS CURL_LIBRARY CURL_INCLUDE_DIR
+                                  REQUIRED_VARS CURL_LIBRARY_DIR CURL_INCLUDE_DIR
                                   VERSION_VAR CURL_VERSION_STRING)
 
 if(CURL_FOUND)
-  set(CURL_LIBRARIES ${CURL_LIBRARY})
-  set(CURL_INCLUDE_DIRS ${CURL_INCLUDE_DIR})
-  message(STATUS ${Green}"Found CURL include dir - ${CURL_INCLUDE_DIR}"${ColourReset})
-  message(STATUS ${Green}"Found CURL library dir - ${CURL_LIBRARY}"${ColourReset})
+  message(STATUS "Found CURL include dir - ${Green}${CURL_INCLUDE_DIR}${ColourReset}")
+  message(STATUS "Found CURL library dir - ${Green}${CURL_LIBRARY_DIR}${ColourReset}")
 else()
   message(WARNING ${Red}"CURL not found"${ColourReset})
 endif()
