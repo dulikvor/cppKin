@@ -1,9 +1,9 @@
-from bottle import post, run, request
+from bottle import post, Bottle, request
 import json
 import socket, struct
 import Queue
 from threading import Thread
-import multiprocessing
+import server
 
 
 class Span:
@@ -74,7 +74,6 @@ class JsonEncoder:
         return spans
 
 class ZipkinStubServer(object):
-
     def __init__(self, port = 9411):
         self._port = port
         self._messageQueue = Queue.Queue()
@@ -82,19 +81,22 @@ class ZipkinStubServer(object):
         self._thread = None
         self.outQueue = None
         self.startEvent = None
-        post('/api/v1/spans')(self.handleSpans)
+        self._app = Bottle()
+        self._app.route(path = '/api/v1/spans', method = 'POST', callback = self.handleSpans)
+        self._server = server.WSGIRefServerStoppable(host = 'localhost', port = port)
 
-    def __del__(self):
+    def stop(self):
         self._running = False
         self._messageQueue.put(('',''))
         self._thread.join()
+        self._server.stop()
 
     def start(self):
         self._running = True
         self._thread = Thread(None, self.eventLoop, 'event loop', (), {})
         self._thread.start()
         self.startEvent.set()
-        run(host = 'localhost', port=self._port)
+        self._app.run(server = self._server)
 
     def handleSpans(self):
         contentType = request.headers.get('Content-Type')
@@ -111,24 +113,23 @@ class ZipkinStubServer(object):
                 pass
 
     @staticmethod
-    def spawn(outQueue, startEvent):
-        server = ZipkinStubServer()
+    def spawn(server, outQueue, startEvent):
         server.outQueue = outQueue
         server.startEvent = startEvent
         server.start()
 
-class ProcessGuard:
+class ServerGuard:
     def __init__(self, entryPoint, *args):
-        self._serverProcess = None
+        self._thread = None
         self._entryPoint = entryPoint
         self._args = args
 
     def __enter__(self):
-        self._serverProcess = multiprocessing.Process( target = self._entryPoint, args=self._args )
-        self._serverProcess.start()
+        self._thread = Thread( target = self._entryPoint, args=self._args )
+        self._thread.start()
 
     def __exit__(self, exc_type, exc_val, exc_tb):
-        pass
+        self._thread.join()
 
 
 

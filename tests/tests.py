@@ -1,8 +1,9 @@
-from zipkinStubServer import ProcessGuard, ZipkinStubServer
+from zipkinStubServer import ServerGuard, ZipkinStubServer
 import _cppkin
 from _cppkin import Trace, CppkinParams, Logger
 import unittest
-import multiprocessing
+from Queue import Queue
+from threading import Event
 
 outQueue = None
 startEvent = None
@@ -32,10 +33,13 @@ class TestCppkinTrace(TestCppkin):
 def main():
     global outQueue
     global startEvent
-    outQueue = multiprocessing.Queue()
-    startEvent = multiprocessing.Event()
-    with ProcessGuard(ZipkinStubServer.spawn, outQueue, startEvent):
-        unittest.main()
+    server = ZipkinStubServer()
+    outQueue = Queue()
+    startEvent = Event()
+    with ServerGuard(ZipkinStubServer.spawn, server, outQueue, startEvent):
+        unittest.main(exit=False)
+        server.stop()
+
 
 if __name__ == "__main__":
     Logger.instance().start(_cppkin.TraceSeverity.Info)
