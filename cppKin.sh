@@ -49,7 +49,7 @@ while true; do
             then
                 exit 0
             else
-                return
+                return 0
             fi
         ;;
         --install)
@@ -58,7 +58,7 @@ while true; do
             then
                 exit 0
             else
-                return
+                return 0
             fi
         ;;
         *)
@@ -67,7 +67,7 @@ while true; do
             then
                 exit 0
             else
-                return
+                return 0
             fi
         ;;
     esac
