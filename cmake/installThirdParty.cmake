@@ -9,8 +9,6 @@ include(InstallPOCO)
 if(UNIX AND NOT APPLE AND TESTS_SUPPORT)
     include(InstallBottle)
     include(InstallSweetPy)
-endif()
-if(UNIX AND NOT APPLE)
     include(InstallBenchMark)
 endif()
 
