@@ -45,15 +45,30 @@ while true; do
     case $1 in 
         -h | --help)
             display_help
-           return
+            if [ "$0" = "$BASH_SOURCE" ]
+            then
+                exit 0
+            else
+                return
+            fi
         ;;
         --install)
             install $@
-           return
+            if [ "$0" = "$BASH_SOURCE" ]
+            then
+                exit 0
+            else
+                return
+            fi
         ;;
         *)
             echo "supported commands - --help, --install"
-           return
+            if [ "$0" = "$BASH_SOURCE" ]
+            then
+                exit 0
+            else
+                return
+            fi
         ;;
     esac
 done
