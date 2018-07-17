@@ -45,15 +45,15 @@ while true; do
     case $1 in 
         -h | --help)
             display_help
-            exit 0
+           return
         ;;
         --install)
             install $@
-            exit 0
+           return
         ;;
         *)
             echo "supported commands - --help, --install"
-            exit 0
+           return
         ;;
     esac
 done
