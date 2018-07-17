@@ -31,7 +31,7 @@ before_script:
 - ulimit -c unlimited -S       # enable core dumps
 
 script:
-- source INSTALL.sh
+- source cppkin.sh --install --with_scribe --with_tests
 
 after_failure:
 - COREFILE=$(find . -maxdepth 1 -name "core*" | head -n 1) # find core file

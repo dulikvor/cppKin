@@ -29,6 +29,25 @@ class TestCppkinTrace(TestCppkin):
         spans = outQueue.get()
         self.assertEqual(len(spans), 1, "The amount of received spans dosn't match expected {0} != {1}". format(len(spans), 1))
         self.assertEqual(spans[0].name, "TestTrace", "Trace name dosn't match {0} != {1}".format(spans[0].name, "TestTrace"))
+        self.assertEqual(spans[0].id, spans[0].traceId, "Trace id dosn't match id {0} != {1}".format(spans[0].id, spans[0].traceId))
+
+
+class TestCppkinTraceSpanRelation(TestCppkin):
+    def runTest(self):
+        trace = Trace("TestTrace")
+        span = trace.createSpan("TestSpan", _cppkin.SERVER_RECEIVE)
+        span.submit()
+        trace.submit()
+
+        global outQueue
+        spans = []
+        while(len(spans) != 2):
+            spans.extend(outQueue.get())
+
+        self.assertEqual(len(spans), 2, "The amount of received spans dosn't match expected {0} != {1}". format(len(spans), 1))
+        self.assertEqual(spans[0].name, "TestSpan", "Span name dosn't match {0} != {1}".format(spans[0].name, "TestSpan"))
+        self.assertEqual(spans[0].traceId, spans[1].id, "Span trace id dosn't match trace's id {0} != {1}".format(spans[0].traceId, spans[1].id))
+        self.assertEqual(spans[0].parentId, spans[1].id, "Span parent id dosn't match trace's id {0} != {1}".format(spans[0].parentId, spans[1].id))
 
 def main():
     global outQueue

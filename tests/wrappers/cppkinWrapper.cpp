@@ -15,6 +15,7 @@
 #include "src/Span.h"
 #include "src/Init.h"
 #include "src/ConfigTags.h"
+#include "src/Annotation.h"
 
 INIT_MODULE(_cppkin, "cppkin library wrapper")
 {
@@ -40,6 +41,7 @@ INIT_MODULE(_cppkin, "cppkin library wrapper")
 
     sweetPy::CPythonClass<cppkin::Trace> trace(module, "Trace", "cppkin trace");
     trace.AddConstructor<const char *>();
+    trace.AddMethod("createSpan", "creating a child span", &cppkin::Trace::CreateSpan);
     trace.AddMethod("submit", "the trace will be submitted to the collector", &cppkin::Trace::Submit);
 
     sweetPy::CPythonClass<cppkin::CppkinParams> params(module, "CppkinParams", "a general key value storage for cppkin params");
@@ -53,6 +55,8 @@ INIT_MODULE(_cppkin, "cppkin library wrapper")
     sweetPy::CPythonGlobalVariable(module, "DEBUG", cppkin::ConfigTags::DEBUG);
     sweetPy::CPythonGlobalVariable(module, "TRANSPORT_TYPE", cppkin::ConfigTags::TRANSPORT_TYPE);
     sweetPy::CPythonGlobalVariable(module, "SAMPLE_COUNT", cppkin::ConfigTags::SAMPLE_COUNT);
+
+    sweetPy::CPythonGlobalVariable(module, "SERVER_RECEIVE", cppkin::Annotation::Value::SERVER_RECEIVE);
 
     sweetPy::CPythonGlobalFunction(module, "init", "initializes cppkin", &cppkin::Init);
 }
