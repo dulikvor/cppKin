@@ -2,8 +2,8 @@
 
 display_help(){
     echo "############################cppkin help############################"
-    echo "#--with_scribe              ## Will dictate if cppkin supports    #"
-    echo "#                           ## providing data to scribe collector.#"
+    echo "#--with_thrift              ## Will dictate if cppkin supports    #"
+    echo "#                           ## the thrift transportation layer.   #"
     echo "#-----------------------------------------------------------------#"
     echo "#--with_tests               ## Will run cppkin tests              #"
     echo "#-----------------------------------------------------------------#"
@@ -16,14 +16,14 @@ clean_cmake_cache(){
 }
 
 install(){
-    WITH_SCRIBE=OFF
+    WITH_THRIFT=OFF
     WITH_TESTS=OFF
     WITH_EXAMPLES=OFF
     for argument in "${@:2}"
     do
         case $argument in
-            --with_scribe)
-                WITH_SCRIBE=ON
+            --with_thrift)
+                WITH_THRIFT=ON
             ;;
             --with_tests)
                 WITH_TESTS=ON
@@ -33,11 +33,11 @@ install(){
             ;;
         esac
     done
-    cmake -D 3RD_PARTY_INSTALL_STEP=ON -DWITH_SCRIBE=$WITH_SCRIBE -D TESTS_SUPPORT=$WITH_TESTS . && make
+    cmake -D 3RD_PARTY_INSTALL_STEP=ON -DWITH_THRIFT=$WITH_THRIFT -D WITH_TESTS=$WITH_TESTS -DWITH_EXAMPLES=$WITH_EXAMPLES . && make
     clean_cmake_cache
-    cmake -D PRE_COMPILE_STEP=ON -DWITH_SCRIBE=$WITH_SCRIBE . && make
+    cmake -D PRE_COMPILE_STEP=ON -DWITH_THRIFT=$WITH_THRIFT . && make
     clean_cmake_cache
-    cmake -D COMPILATION_STEP=ON -D -DWITH_SCRIBE=$WITH_SCRIBE -D TESTS_SUPPORT=$WITH_TESTS . && make
+    cmake -D COMPILATION_STEP=ON -DWITH_THRIFT=$WITH_THRIFT -D WITH_TESTS=$WITH_TESTS -DWITH_EXAMPLES=$WITH_EXAMPLES . && make
     clean_cmake_cache
 }
 
@@ -52,7 +52,7 @@ while true; do
                 return 0
             fi
         ;;
-        --install)
+        install)
             install $@
             if [ "$0" = "$BASH_SOURCE" ]
             then
@@ -62,7 +62,7 @@ while true; do
             fi
         ;;
         *)
-            echo "supported commands - --help, --install"
+            echo "supported commands - --help, install"
             if [ "$0" = "$BASH_SOURCE" ]
             then
                 exit 0
