@@ -61,8 +61,17 @@ while true; do
                 return 0
             fi
         ;;
+        clean_cache)
+            clean_cmake_cache
+            if [ "$0" = "$BASH_SOURCE" ]
+            then
+                exit 0
+            else
+                return 0
+            fi
+        ;;
         *)
-            echo "supported commands - --help, install"
+            echo "supported commands - --help, install, clean_cache"
             if [ "$0" = "$BASH_SOURCE" ]
             then
                 exit 0
