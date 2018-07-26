@@ -26,6 +26,7 @@ namespace cppkin
         Span(const char* operationName, uint_fast64_t traceId, uint_fast64_t parentId, bool sampled);
 
     protected:
+#pragma warning( suppress : 4251)
         std::shared_ptr<span_impl> m_span;
     };
 }

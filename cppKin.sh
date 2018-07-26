@@ -32,8 +32,10 @@ install(){
                 WITH_EXAMPLES=ON
             ;;
         esac
-    done
-    cmake -D 3RD_PARTY_INSTALL_STEP=ON -DWITH_THRIFT=$WITH_THRIFT -D WITH_TESTS=$WITH_TESTS -DWITH_EXAMPLES=$WITH_EXAMPLES . && make
+    done 
+    cmake -D 3RD_PARTY_INSTALL_STEP=ON -DWITH_THRIFT=$WITH_THRIFT  -DWITH_EXAMPLES=$WITH_EXAMPLES . && make
+    clean_cmake_cache
+    cmake -D 3RD_PARTY_INSTALL_STEP=ON -DWITH_TESTS=$WITH_TESTS . && make
     clean_cmake_cache
     cmake -D PRE_COMPILE_STEP=ON -DWITH_THRIFT=$WITH_THRIFT . && make
     clean_cmake_cache

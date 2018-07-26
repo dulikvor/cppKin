@@ -6,8 +6,9 @@ if (NOT Boost_FOUND)
 		ExternalProject_Add(Boost
 						DOWNLOAD_NAME       boost_1_65_1.tar.gz
 						URL                 https://dl.bintray.com/boostorg/release/1.65.1/source/boost_1_65_1.tar.gz
+						URL_MD5             ee64fd29a3fe42232c6ac3c419e523cf
 						CONFIGURE_COMMAND   cd ${SOURCE_DIR_WIN} && CMD /C bootstrap
-						BUILD_COMMAND       cd ${SOURCE_DIR_WIN} && .\\b2 install --prefix=${INSTALL_DIR_WIN} --exec-prefix=${INSTALL_DIR_WIN} --with-program_options toolset=msvc-12
+						BUILD_COMMAND       cd ${SOURCE_DIR_WIN} && .\\b2 install --prefix=${INSTALL_DIR_WIN} --exec-prefix=${INSTALL_DIR_WIN} --with-program_options toolset=msvc-12.0 -j4 link=shared threading=multi runtime-link=shared
 						INSTALL_COMMAND     ""
 						TEST_COMMAND        ""
 		)
@@ -19,9 +20,10 @@ if (NOT Boost_FOUND)
 		ExternalProject_Add(Boost
 						DOWNLOAD_NAME       boost_1_65_1.tar.gz
 						URL                 https://dl.bintray.com/boostorg/release/1.65.1/source/boost_1_65_1.tar.gz
+						URL_MD5             ee64fd29a3fe42232c6ac3c419e523cf
 						CONFIGURE_COMMAND   cd <SOURCE_DIR> && ./bootstrap.sh --prefix=<INSTALL_DIR> --exec-prefix=<INSTALL_DIR>
 						BUILD_COMMAND       ""
-						INSTALL_COMMAND     cd <SOURCE_DIR> && ./b2 install --with-program_options --layout=system
+						INSTALL_COMMAND     cd <SOURCE_DIR> && ./b2 install --with-program_options --layout=system link=shared threading=multi runtime-link=shared
 						TEST_COMMAND        ""
 		)
 	endif()

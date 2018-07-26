@@ -1,6 +1,6 @@
 #include "ScribeTransport.h"
 #include "ConfigParams.h"
-#include "Encoder.h"
+#include "ThriftEncoder.h"
 #include "EncodingContext.h"
 
 using namespace std;
