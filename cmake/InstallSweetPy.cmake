@@ -1,7 +1,7 @@
 if (NOT SweetPy_FOUND AND Core_FOUND)
 
     ExternalProject_Add(SweetPy
-            GIT_REPOSITORY      https://github.com/Dudi119/sweetPy
+            URL                 https://github.com/Dudi119/sweetPy/archive/v1.0.0.tar.gz
             CONFIGURE_COMMAND   cd <SOURCE_DIR> && cmake -DsweetPy_3RD_PARTY_DIR:STRING=<INSTALL_DIR> -DsweetPy_COMPILE_STEP=ON .
             BUILD_COMMAND       cd <SOURCE_DIR> && make
             INSTALL_COMMAND     cp <SOURCE_DIR>/bin/libsweetPy.so <INSTALL_DIR>/lib
@@ -13,7 +13,9 @@ if (NOT SweetPy_FOUND AND Core_FOUND)
             DEPENDEES   install
             )
 
-    add_dependencies(SweetPy Core)
+    if (NOT Core_FOUND)
+        add_dependencies(SweetPy Core_stub)
+    endif()
 
     ExternalProject_Get_Property(SweetPy INSTALL_DIR)
 
