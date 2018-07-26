@@ -1,8 +1,7 @@
 @echo off
 setlocal EnableDelayedExpansion
-ECHO "#########Starting to build#########"
-IF "%1" == "install" (call:clean && call:cppkin_install %*) ELSE ^
-IF "%1" == "--help" (call:display_help) ELSE (ECHO "supported commands - --help, install")
+IF "%1" == "install" (call :clean && call :install %*) ELSE ^
+IF "%1" == "--help" (call :display_help) ELSE (ECHO "supported commands - --help, install")
 exit /b 0
 
 :display_help
@@ -12,9 +11,9 @@ exit /b 0
     ECHO "#-----------------------------------------------------------------#"
     ECHO "#--with_examples            ## Will compile cppkin examples       #"
     ECHO "###################################################################"
-goto:eof
+goto :eof
 
-:cppkin_install
+:install
     SET WITH_THRIFT=OFF
     SET WITH_TESTS=OFF
     SET WITH_EXAMPLES=OFF
@@ -39,11 +38,11 @@ goto:eof
 	IF exist Boost.vcxproj (CMD /C msbuild Boost.vcxproj /property:Configuration=Release)
 	IF %WITH_EXAMPLES%==ON (IF exist examples/example.vcxproj (CMD /C msbuild examples/example.vcxproj /property:Configuration=Release))
 	IF exist cppkin.vcxproj (CMD /C msbuild cppkin.vcxproj /property:Configuration=Release)
-goto:eof
+goto :eof
 
 :clean
 	del "*.vcxproj"
 	del "*.vcxproj.filters"
 	RMDIR /S /Q CMakeFiles
 	del CMakeCache.txt
-goto:eof
+goto :eof
