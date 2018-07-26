@@ -1,5 +1,6 @@
 @echo off
 setlocal EnableDelayedExpansion
+ECHO "#########Starting to build#########"
 IF "%1" == "install" (call:clean && call:install %*) ELSE ^
 IF "%1" == "--help" (call:display_help) ELSE (ECHO "supported commands - --help, install")
 exit /b 0
