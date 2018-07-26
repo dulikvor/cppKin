@@ -1,7 +1,7 @@
 @echo off
 setlocal EnableDelayedExpansion
 ECHO "#########Starting to build#########"
-IF "%1" == "install" (call:install %*) ELSE ^
+IF "%1" == "install" (call:clean && call:cppkin_install %*) ELSE ^
 IF "%1" == "--help" (call:display_help) ELSE (ECHO "supported commands - --help, install")
 exit /b 0
 
@@ -14,7 +14,7 @@ exit /b 0
     ECHO "###################################################################"
 goto:eof
 
-:install
+:cppkin_install
     SET WITH_THRIFT=OFF
     SET WITH_TESTS=OFF
     SET WITH_EXAMPLES=OFF
