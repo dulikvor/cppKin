@@ -4,6 +4,7 @@ ECHO "#########Starting to build#########"
 IF "%1" == "install" (call:clean && call:install %*) ELSE ^
 IF "%1" == "--help" (call:display_help) ELSE (ECHO "supported commands - --help, install")
 exit /b 0
+
 :display_help
     ECHO "############################cppkin help############################"
     ECHO "#--with_thrift              ## Will dictate if cppkin supports    #"
@@ -12,6 +13,7 @@ exit /b 0
     ECHO "#--with_examples            ## Will compile cppkin examples       #"
     ECHO "###################################################################"
 goto:eof
+
 :install
     SET WITH_THRIFT=OFF
     SET WITH_TESTS=OFF
@@ -38,6 +40,7 @@ goto:eof
 	IF %WITH_EXAMPLES%==ON (IF exist examples/example.vcxproj (CMD /C msbuild examples/example.vcxproj /property:Configuration=Release))
 	IF exist cppkin.vcxproj (CMD /C msbuild cppkin.vcxproj /property:Configuration=Release)
 goto:eof
+
 :clean
 	del "*.vcxproj"
 	del "*.vcxproj.filters"
