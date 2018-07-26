@@ -23,6 +23,9 @@ install:
   - move C:\projects\deps\cmake-* C:\projects\deps\cmake # Move to a version-agnostic directory
   - set PATH=C:\projects\deps\cmake\bin;%PATH%
   - cmake --version
+  
+before_build:
+  - cd C:\projects\cppkin
 
 build_script:
   - cppkin.bat install --with_examples
