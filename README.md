@@ -35,11 +35,12 @@ In order to inspect cppKin available installation parameters, use the help comma
 
 In order to start the installation use the installation command:
 ```
-. cppKin.bash --install #add arguments of choice
+. cppKin.bash install #add arguments of choice
 ```
 The script will:
 1) Retrieve all 3rd party dependecies, compiling them and installing them locally (under cppkin directory structure).
 2) Compile cppkin into shared object.
+3) Will build tests and examples if requested.
 
 `cppkin` shared object will be available under the bin dir.
 

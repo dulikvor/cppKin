@@ -3,6 +3,7 @@ if (NOT SPDLOG_FOUND)
     ExternalProject_Add(SpdLog
             DOWNLOAD_NAME       spdlog-0.13.0.tar
             URL                 https://github.com/gabime/spdlog/archive/v0.13.0.tar.gz
+			URL_MD5             a0903d50ae1d58b484d9fc1a6ddf02f4
             CONFIGURE_COMMAND   ""
             BUILD_COMMAND       ""
             INSTALL_COMMAND     ""

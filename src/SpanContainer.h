@@ -20,6 +20,7 @@ namespace cppkin
         SpanContainer();
 
     private:
+#pragma warning( suppress : 4251)
         std::forward_list<Span*> m_spans;
     };
 }

@@ -2,9 +2,6 @@
 
 #include "core/Enumeration.h"
 #include "Export.h"
-#if defined(WIN32)
-#pragma warning (disable : 4251)
-#endif
 
 namespace cppkin
 {

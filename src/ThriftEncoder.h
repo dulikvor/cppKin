@@ -29,11 +29,11 @@ namespace cppkin {
         boost::shared_ptr<apache::thrift::transport::TMemoryBuffer> m_buffer;
     };
 
-    EncoderImpl<EncodingType::Thrift>::EncoderImpl(): m_buffer(boost::make_shared<transport::TMemoryBuffer>()) {
+    inline EncoderImpl<EncodingType::Thrift>::EncoderImpl(): m_buffer(boost::make_shared<transport::TMemoryBuffer>()) {
         m_protocol.reset(new protocol::TBinaryProtocol(m_buffer));
     }
 
-    ::Span EncoderImpl<EncodingType::Thrift>::Serialize(const span_impl& span) {
+    inline ::Span EncoderImpl<EncodingType::Thrift>::Serialize(const span_impl& span) {
         ::Span thriftSpan;
         thriftSpan.__set_trace_id(span.GetHeader().TraceID);
         thriftSpan.__set_name(span.GetHeader().Name);
@@ -50,7 +50,7 @@ namespace cppkin {
         return thriftSpan;
     }
 
-    void EncoderImpl<EncodingType::Thrift>::Serialize(::Span& thriftSpan, const SimpleAnnotation &annotation) {
+    inline void EncoderImpl<EncodingType::Thrift>::Serialize(::Span& thriftSpan, const SimpleAnnotation &annotation) {
         ::Annotation thriftAnnotation;
         thriftAnnotation.__set_value(annotation.GetEvent());
         thriftAnnotation.__set_timestamp(annotation.GetTimeStamp());
@@ -65,14 +65,14 @@ namespace cppkin {
         thriftSpan.annotations.emplace_back(thriftAnnotation);
     }
 
-    string EncoderImpl<EncodingType::Thrift>::ToString(const span_impl& span) const {
+    inline string EncoderImpl<EncodingType::Thrift>::ToString(const span_impl& span) const {
         ::Span thriftSpan = EncoderImpl<EncodingType::Thrift>::Serialize(span);
         m_buffer->resetBuffer();
         thriftSpan.write(m_protocol.get());
         return m_buffer->getBufferAsString();
     }
 
-    string EncoderImpl<EncodingType::Thrift>::ToString(const std::vector<EncoderContext::ContextElement>& spans) const {
+    inline string EncoderImpl<EncodingType::Thrift>::ToString(const std::vector<EncoderContext::ContextElement>& spans) const {
         m_buffer->resetBuffer();
         m_protocol->writeListBegin(protocol::T_STRUCT, spans.size());
         for (auto &span : spans) {
