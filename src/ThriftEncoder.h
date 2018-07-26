@@ -58,7 +58,7 @@ namespace cppkin {
         ::Endpoint thriftEndPoint;
         thriftEndPoint.__set_service_name(endPoint.ServiceName);
 
-        thriftEndPoint.__set_ipv4(endPoint.Host);
+        thriftEndPoint.__set_ipv4(endPoint.BinaryHost);
         thriftEndPoint.__set_port(endPoint.Port);
 
         thriftAnnotation.__set_host(thriftEndPoint);

@@ -15,9 +15,10 @@ namespace cppkin
         public:
             EndPoint(const std::string& serviceName, std::string host, uint_fast16_t port);
         public:
-            int32_t Host;
-            int_fast16_t Port;
             std::string ServiceName;
+            std::string Host;
+            int_fast16_t Port;
+            int32_t BinaryHost;
         };
 
         struct CPPKIN_EXPORT Value

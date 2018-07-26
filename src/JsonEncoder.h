@@ -26,15 +26,15 @@ namespace cppkin {
 
     inline json::Object EncoderImpl<EncodingType::Json>::Serialize(const span_impl& span) {
         json::Object jsonSpan;
-        jsonSpan.set("traceId", span.GetHeader().TraceID);
+        jsonSpan.set("traceId", std::to_string(span.GetHeader().TraceID));
         jsonSpan.set("name", span.GetHeader().Name);
-        jsonSpan.set("id", span.GetHeader().ID);
+        jsonSpan.set("id", std::to_string(span.GetHeader().ID));
         jsonSpan.set("debug", ConfigParams::Instance().GetDebug());
         jsonSpan.set("timestamp", span.GetTimeStamp());
         jsonSpan.set("duration", span.GetDuration());
 
         if(span.GetHeader().ParentIdSet)
-            jsonSpan.set("parentId", span.GetHeader().ParentID);
+            jsonSpan.set("parentId", std::to_string(span.GetHeader().ParentID));
 
         json::Array jsonAnnotations;
         for(auto& annotation : span.GetAnnotations())

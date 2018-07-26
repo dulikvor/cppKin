@@ -24,7 +24,8 @@ namespace cppkin
     }
 
     TransportManager::~TransportManager() {
-        Stop();
+        if(m_terminate == false)
+            Stop();
     }
 
     void TransportManager::Stop() {

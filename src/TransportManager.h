@@ -22,6 +22,7 @@ namespace cppkin
         static TransportManager& Instance();
         ~TransportManager();
         void PushSpan(const std::shared_ptr<span_impl>& span);
+        void Stop();
 
     private:
         TransportManager();
@@ -38,7 +39,5 @@ namespace cppkin
         bool m_terminate;
         std::mutex m_mut;
         std::condition_variable m_cv;
-
-        void Stop();
     };
 }

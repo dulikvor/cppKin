@@ -13,7 +13,7 @@
 #include "core/Logger.h"
 #include "src/Trace.h"
 #include "src/Span.h"
-#include "src/Init.h"
+#include "src/Control.h"
 #include "src/ConfigTags.h"
 #include "src/Annotation.h"
 

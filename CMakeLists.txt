@@ -95,7 +95,7 @@ if(COMPILATION_STEP)
         set(TO_LINK_LIBS pthread curl PocoJSON Core)
     endif()
 
-    add_library(cppkin SHARED src/Trace.h src/SpanContainer.h src/SpanContainer.cpp src/span_impl.cpp src/span_impl.h src/AnnotationType.cpp src/AnnotationType.h src/Annotation.h src/SimpleAnnotation.cpp src/SimpleAnnotation.h src/cppkin.h src/Trace.cpp src/Encoder.cpp src/Encoder.h src/EncodingTypes.cpp src/EncodingTypes.h src/EncodingContext.cpp src/EncodingContext.h src/TransportManager.cpp src/TransportManager.h src/Transport.cpp src/Transport.h src/HttpTransport.cpp src/HttpTransport.h src/ConfigTags.h src/TransportType.cpp src/TransportType.h src/TransportFactory.h src/TransportFactory.cpp src/ConfigParams.cpp src/ConfigTags.cpp src/Annotation.cpp src/Sampler.cpp src/JsonEncoder.h src/Init.cpp src/Export.h src/Span.cpp src/Span.h)
+    add_library(cppkin SHARED src/Trace.h src/SpanContainer.h src/SpanContainer.cpp src/span_impl.cpp src/span_impl.h src/AnnotationType.cpp src/AnnotationType.h src/Annotation.h src/SimpleAnnotation.cpp src/SimpleAnnotation.h src/cppkin.h src/Trace.cpp src/Encoder.cpp src/Encoder.h src/EncodingTypes.cpp src/EncodingTypes.h src/EncodingContext.cpp src/EncodingContext.h src/TransportManager.cpp src/TransportManager.h src/Transport.cpp src/Transport.h src/HttpTransport.cpp src/HttpTransport.h src/ConfigTags.h src/TransportType.cpp src/TransportType.h src/TransportFactory.h src/TransportFactory.cpp src/ConfigParams.cpp src/ConfigTags.cpp src/Annotation.cpp src/Sampler.cpp src/JsonEncoder.h src/Control.cpp src/Export.h src/Span.cpp src/Span.h)
 
     if(WITH_THRIFT)
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DTHRIFT_FOUND")

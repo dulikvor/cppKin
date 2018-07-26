@@ -46,4 +46,6 @@ namespace cppkin
         int m_batchSize;
     };
 }
-#pragma warning( pop ) 
+#if defined(WIN32)
+#pragma warning( pop )
+#endif
