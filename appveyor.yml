@@ -1,0 +1,10 @@
+environment:
+  matrix:
+    - VisualStudioVersion: 12.0
+      platform: "Win32"
+      configuration: "Release"
+      vcvarsall_platform: "x86"
+      PlatformToolset: "v120"
+
+build_script:
+  - cppkin.bat install --with_examples

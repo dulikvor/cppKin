@@ -1,7 +1,7 @@
+#include "EncodingContext.h"
 #include "span_impl.h"
 #include "Encoder.h"
 #include "ConfigParams.h"
-#include <iostream>
 
 using namespace std;
 

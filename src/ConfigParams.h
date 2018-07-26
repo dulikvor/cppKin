@@ -5,6 +5,7 @@
 #include "TransportType.h"
 #include "EncodingTypes.h"
 #if defined(WIN32)
+#pragma warning( push )
 #pragma warning (disable : 4251)
 #endif
 
@@ -15,7 +16,7 @@ namespace core
 
 namespace cppkin
 {
-    class ConfigParams
+    class CPPKIN_EXPORT ConfigParams
     {
     public:
         static ConfigParams& Instance();
@@ -45,3 +46,4 @@ namespace cppkin
         int m_batchSize;
     };
 }
+#pragma warning( pop ) 

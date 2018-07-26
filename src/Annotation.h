@@ -3,6 +3,7 @@
 #include <string>
 #include <stdint.h>
 #include "AnnotationType.h"
+#include "Export.h"
 
 namespace cppkin
 {
@@ -19,7 +20,7 @@ namespace cppkin
             std::string ServiceName;
         };
 
-        struct Value
+        struct CPPKIN_EXPORT Value
         {
         public:
             static const char* SERVER_SEND;
