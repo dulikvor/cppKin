@@ -83,7 +83,7 @@ namespace cppkin
         static mt19937_64 twister;
         static random_device device;
         uint64_t seed = (static_cast<uint64_t>(device()) << 32) | device();
-        twister.seed(seed);
+        twister.seed((unsigned long)seed);
         return twister();
     }
 }

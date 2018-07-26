@@ -16,6 +16,7 @@ int main( int argc, const char *argv[] )
         desc.add_options()
           ("help,h", "Help screen")
           ("transport", value<string>()->default_value("http"), "Transport" )
+          ("encoding", value<string>()->default_value("json"), "Encoding" )
           ("host", value<string>()->default_value("127.0.0.1"), "Host" )
           ("port", value<int>()->default_value(-1), "Port")
           ("service", value<string>()->default_value("example_service"), "Service");
@@ -39,6 +40,13 @@ int main( int argc, const char *argv[] )
             port = 9410;
         }
     }
+    auto encodingType = cppkin::EncodingType::Json;
+    if (vm["encoding"].as<string>() == "thrift") {
+        encodingType = cppkin::EncodingType::Thrift;
+        if (vm["port"].as<int>() == -1 ) {
+            port = 9410;
+        }
+    }
 
     cppkin::CppkinParams cppkinParams;
     cppkinParams.AddParam(cppkin::ConfigTags::HOST_ADDRESS, vm["host"].as<string>());
@@ -47,7 +55,7 @@ int main( int argc, const char *argv[] )
     cppkinParams.AddParam(cppkin::ConfigTags::DEBUG, true);
     cppkinParams.AddParam(cppkin::ConfigTags::SAMPLE_COUNT, 1);
     cppkinParams.AddParam(cppkin::ConfigTags::TRANSPORT_TYPE, cppkin::TransportType(transportType).ToString());
-    cppkinParams.AddParam(cppkin::ConfigTags::ENCODING_TYPE, cppkin::EncodingType(cppkin::EncodingType::Thrift).ToString());
+    cppkinParams.AddParam(cppkin::ConfigTags::ENCODING_TYPE, cppkin::EncodingType(encodingType).ToString());
 
     cppkin::Init(cppkinParams);
 

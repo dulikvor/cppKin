@@ -11,14 +11,14 @@ class Span:
         self.id = -1
         self.name = ''
         self.timestamp = -1
-        self.traceId = -1
-        self.duration = -1
-        self.parentId = -1
+        self.traceId = ''
+        self.duration = ''
+        self.parentId = ''
         self.annotations = []
 
 class EndPoint:
     def __init__(self):
-        self.ipv4 = -1
+        self.ipv4 = ''
         self.port = -1
         self.serviceName = ''
 
@@ -35,7 +35,7 @@ class JsonEncoder:
     @staticmethod
     def fromRawToEndPoint( endPointRawData):
         endpoint = EndPoint()
-        endpoint.ipv4 = socket.inet_ntoa(struct.pack('!i', endPointRawData['ipv4']))
+        endpoint.ipv4 = endPointRawData['ipv4']
         endpoint.port = endPointRawData['port']
         endpoint.serviceName = endPointRawData['serviceName'].encode('ascii', 'ignore')
         return endpoint
@@ -56,7 +56,7 @@ class JsonEncoder:
             value = spanRawData[attribute].encode('ascii', 'ignore') if isinstance( spanRawData[attribute], basestring) else spanRawData[attribute]
             setattr(span, attribute, value)
 
-        span.parentId = spanRawData.get('parentId', -1)
+        span.parentId = spanRawData.get('parentId', '')
 
         for annotationData in spanRawData['annotations']:
             annotation = JsonEncoder.fromRawToAnnotation( annotationData )

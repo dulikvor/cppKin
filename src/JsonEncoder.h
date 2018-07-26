@@ -24,17 +24,17 @@ namespace cppkin {
         static void Serialize(Poco::JSON::Array &jsonSpan, const SimpleAnnotation &annotation);
     };
 
-    json::Object EncoderImpl<EncodingType::Json>::Serialize(const span_impl& span) {
+    inline json::Object EncoderImpl<EncodingType::Json>::Serialize(const span_impl& span) {
         json::Object jsonSpan;
-        jsonSpan.set("traceId", span.GetHeader().TraceID);
+        jsonSpan.set("traceId", std::to_string(span.GetHeader().TraceID));
         jsonSpan.set("name", span.GetHeader().Name);
-        jsonSpan.set("id", span.GetHeader().ID);
+        jsonSpan.set("id", std::to_string(span.GetHeader().ID));
         jsonSpan.set("debug", ConfigParams::Instance().GetDebug());
         jsonSpan.set("timestamp", span.GetTimeStamp());
         jsonSpan.set("duration", span.GetDuration());
 
         if(span.GetHeader().ParentIdSet)
-            jsonSpan.set("parentId", span.GetHeader().ParentID);
+            jsonSpan.set("parentId", std::to_string(span.GetHeader().ParentID));
 
         json::Array jsonAnnotations;
         for(auto& annotation : span.GetAnnotations())
@@ -45,7 +45,7 @@ namespace cppkin {
         return jsonSpan;
     }
 
-    void EncoderImpl<EncodingType::Json>::Serialize(json::Array& jsonAnnotations, const SimpleAnnotation &annotation) {
+    inline void EncoderImpl<EncodingType::Json>::Serialize(json::Array& jsonAnnotations, const SimpleAnnotation &annotation) {
         json::Object jsonAnnotation;
         jsonAnnotation.set("value", annotation.GetEvent());
         jsonAnnotation.set("timestamp", annotation.GetTimeStamp());
@@ -60,14 +60,14 @@ namespace cppkin {
         jsonAnnotations.add(jsonAnnotation);
     }
 
-    string EncoderImpl<EncodingType::Json>::ToString(const span_impl& span) const {
+    inline string EncoderImpl<EncodingType::Json>::ToString(const span_impl& span) const {
         json::Object jsonSpan = EncoderImpl<EncodingType::Json>::Serialize(span);
         ostringstream oss;
         jsonSpan.stringify(oss);
         return oss.str();
     }
 
-    string EncoderImpl<EncodingType::Json>::ToString(const std::vector<EncoderContext::ContextElement>& spans) const {
+    inline string EncoderImpl<EncodingType::Json>::ToString(const std::vector<EncoderContext::ContextElement>& spans) const {
 
         json::Array jsonSpans;
         for (const auto& span : spans) {

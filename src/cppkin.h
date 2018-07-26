@@ -3,7 +3,7 @@
 #include <memory>
 #include "Export.h"
 #include "core/GeneralParams.h"
-#include "Init.h"
+#include "Control.h"
 #include "ConfigParams.h"
 #include "ConfigTags.h"
 #include "SpanContainer.h"
