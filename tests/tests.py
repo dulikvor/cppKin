@@ -1,6 +1,6 @@
 from zipkinStubServer import ServerGuard, ZipkinStubServer
 import _cppkin
-from _cppkin import Trace, CppkinParams, Logger
+from _cppkin import Trace, CppkinParams
 import unittest
 from Queue import Queue
 from threading import Event
@@ -10,15 +10,7 @@ startEvent = None
 
 class TestCppkin(unittest.TestCase):
     def setUp(self):
-        params = CppkinParams()
-        params.add_str(_cppkin.HOST_ADDRESS, "127.0.0.1")
-        params.add_int(_cppkin.PORT, 9411)
-        params.add_str(_cppkin.SERVICE_NAME, "cppkinTest")
-        params.add_bool(_cppkin.DEBUG, True)
-        params.add_str(_cppkin.TRANSPORT_TYPE, "Http Transport")
-        params.add_int(_cppkin.SAMPLE_COUNT, 1)
-
-        _cppkin.init( params )
+        pass
 
 class TestCppkinTrace(TestCppkin):
     def runTest(self):
@@ -50,6 +42,16 @@ class TestCppkinTraceSpanRelation(TestCppkin):
         self.assertEqual(spans[0].parentId, spans[1].id, "Span parent id dosn't match trace's id {0} != {1}".format(spans[0].parentId, spans[1].id))
 
 def main():
+    params = CppkinParams()
+    params.add_str(_cppkin.HOST_ADDRESS, "127.0.0.1")
+    params.add_int(_cppkin.PORT, 9411)
+    params.add_str(_cppkin.SERVICE_NAME, "cppkinTest")
+    params.add_bool(_cppkin.DEBUG, True)
+    params.add_str(_cppkin.TRANSPORT_TYPE, "Http Transport")
+    params.add_int(_cppkin.SAMPLE_COUNT, 1)
+
+    _cppkin.init( params )
+
     global outQueue
     global startEvent
     server = ZipkinStubServer()
@@ -61,5 +63,4 @@ def main():
 
 
 if __name__ == "__main__":
-    Logger.instance().start(_cppkin.TraceSeverity.Info)
     main()
