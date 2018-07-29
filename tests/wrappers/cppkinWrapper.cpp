@@ -8,9 +8,6 @@
 #include "sweetPy/InitModule.h"
 #include "sweetPy/CPythonEnum.h"
 #include "sweetPy/Exception.h"
-#include "core/Logger.h"
-#include "core/Source.h"
-#include "core/Logger.h"
 #include "src/Trace.h"
 #include "src/Span.h"
 #include "src/Control.h"
@@ -19,21 +16,6 @@
 
 INIT_MODULE(_cppkin, "cppkin library wrapper")
 {
-    sweetPy::CPythonClass<core::Logger> logger(module, "Logger", "logger type");
-    logger.AddStaticMethod("instance", "logger singelton access function", &core::Logger::Instance);
-    logger.AddMethod("trace", "logger trace function", &core::Logger::Trace<>);
-    logger.AddMethod("start", "Initiates the logger, commencing all accamulated listeners to underline layer.", &core::Logger::Start);
-
-    sweetPy::CPythonClass<core::Source> source(module, "Source", "source type");
-    source.AddMember("file", &core::Source::file, "source code file name");
-    source.AddMember("function", &core::Source::function, "current function name");
-    source.AddMember("line", &core::Source::line, "source code line");
-
-    sweetPy::CPythonEnum severity(module, "TraceSeverity", "Trace severity levels");
-    severity.AddEnumValue("Verbose", core::TraceSeverity::Verbose, "Verbose severity level");
-    severity.AddEnumValue("Info", core::TraceSeverity::Info, "Info severity level");
-    severity.AddEnumValue("Fatal", core::TraceSeverity::Fatal, "Fatal severity level");
-
     sweetPy::CPythonClass<cppkin::Span> span(module, "Span", "cppkin span");
     span.AddConstructor<>();
     span.AddMethod("createSpan", "creating a child span", &cppkin::Span::CreateSpan);

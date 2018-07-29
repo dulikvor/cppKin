@@ -4,11 +4,19 @@
 #include <string>
 #include <boost/program_options.hpp>
 #include "src/cppkin.h"
-#include "core/Logger.h"
 
 using namespace std;
 using namespace core;
 using namespace boost::program_options;
+
+static void portable_sleep(int duration)
+{
+#if defined(WIN32)
+    ::Sleep(duration);
+#else
+    ::sleep(duration);
+#endif
+}
 
 int main( int argc, const char *argv[] )
 {
@@ -30,7 +38,6 @@ int main( int argc, const char *argv[] )
         return 0;
     }
 
-    Logger::Instance().Start(TraceSeverity::Info);
 
     int port = 9411;
     auto transportType = cppkin::TransportType::Http;
@@ -60,26 +67,25 @@ int main( int argc, const char *argv[] )
     cppkin::Init(cppkinParams);
 
     cppkin::Trace trace("TestTrace");
-    sleep(1);
+    portable_sleep(1);
     trace.AddAnnotation("TraceEvent1");
 
     auto span_1 = trace.CreateSpan("Span1");
-    sleep(1);
+    portable_sleep(1);
     span_1.AddAnnotation("Event2");
     {
         auto span_2 = trace.CreateSpan("Span2");
-        sleep(1);
+        portable_sleep(1);
         span_2.Submit();
     }
     span_1.Submit();
-    sleep(1);
+    portable_sleep(1);
     trace.Submit();
 
 #if defined(WIN32)
-    ::Sleep(100);
+    portable_sleep(100);
 #else
-    ::sleep(2);
+    portable_sleep(2);
 #endif
-    Logger::Instance().Terminate();
     return 0;
 }
