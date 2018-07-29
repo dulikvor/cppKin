@@ -46,14 +46,19 @@ The script will:
 
 ### Windows Install
 
-In order to start run the following script:
+In order to inspect cppKin available installation parameters, use the help command:
 ```
-INSTALL.bat
+cppkin.bat --help
+```
+
+In order to start the installation use the installation command:
+```
+cppkin.bat install #add arguments of choice
 ```
 The script will:
 1) Retrieve all 3rd party dependecies, compiling them and installing them locally (under cppkin directory structure).
-2) Compile cppkin into shared object.
-3) Will create msbuild project structure for all the different components.
+2) Compile cppkin into dll.
+3) Will build all examples if requested.
 
 `cppkin` dll will be available under the bin dir.
 
