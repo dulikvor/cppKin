@@ -1,4 +1,5 @@
 if (NOT Boost_FOUND)
+	string(TOLOWER ${CMAKE_BUILD_TYPE} variant)
 	if (WIN32)
 		include(cppkinMacro)
 		LinuxPath_ToWinPath(${CMAKE_CURRENT_SOURCE_DIR}/Third_Party INSTALL_DIR_WIN)
@@ -8,7 +9,7 @@ if (NOT Boost_FOUND)
 						URL                 https://dl.bintray.com/boostorg/release/1.65.1/source/boost_1_65_1.tar.gz
 						URL_MD5             ee64fd29a3fe42232c6ac3c419e523cf
 						CONFIGURE_COMMAND   cd ${SOURCE_DIR_WIN} && CMD /C bootstrap
-						BUILD_COMMAND       cd ${SOURCE_DIR_WIN} && .\\b2 install --prefix=${INSTALL_DIR_WIN} --exec-prefix=${INSTALL_DIR_WIN} --with-program_options toolset=msvc-12.0 -j4 link=shared threading=multi runtime-link=shared
+						BUILD_COMMAND       cd ${SOURCE_DIR_WIN} && .\\b2 install --prefix=${INSTALL_DIR_WIN} --exec-prefix=${INSTALL_DIR_WIN} --with-program_options toolset=msvc-12.0 -j4 link=shared threading=multi runtime-link=share
 						INSTALL_COMMAND     ""
 						TEST_COMMAND        ""
 		)
@@ -23,7 +24,7 @@ if (NOT Boost_FOUND)
 						URL_MD5             ee64fd29a3fe42232c6ac3c419e523cf
 						CONFIGURE_COMMAND   cd <SOURCE_DIR> && ./bootstrap.sh --prefix=<INSTALL_DIR> --exec-prefix=<INSTALL_DIR>
 						BUILD_COMMAND       ""
-						INSTALL_COMMAND     cd <SOURCE_DIR> && ./b2 install --with-program_options --layout=system link=shared threading=multi runtime-link=shared
+						INSTALL_COMMAND     cd <SOURCE_DIR> && ./b2 install --with-program_options --layout=system link=shared threading=multi runtime-link=shared variant=${variant}
 						TEST_COMMAND        ""
 		)
 	endif()

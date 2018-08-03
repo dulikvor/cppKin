@@ -34,6 +34,10 @@ if (NOT CURL_FOUND OR USE_BUNDLED_CURL)
 				DEPENDEES   install
 				)
 	else()
+		set(debug_build "")
+		if(${CMAKE_BUILD_TYPE} STREQUAL "Debug")
+			set(debug_build --enable-debug)
+        endif()
 		ExternalProject_Add(CURL
 			URL                 https://curl.haxx.se/download/curl-${CURL_VERSION_STRING}.tar.gz
 			URL_MD5             ${CURL_URL_MD5}
@@ -42,6 +46,7 @@ if (NOT CURL_FOUND OR USE_BUNDLED_CURL)
 									--without-ssl
 									--without-nghttp2
 									--disable-ldap
+									${debug_build}
 			BUILD_COMMAND       make
 			INSTALL_COMMAND     make install
 			TEST_COMMAND        ""

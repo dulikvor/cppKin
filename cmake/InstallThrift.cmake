@@ -40,6 +40,10 @@ if (NOT THRIFT_FOUND)
 				DEPENDEES   install
 				)
 	else()
+		set(THRIFT_CXXFLAGS "-O3")
+		if(${CMAKE_BUILD_TYPE} STREQUAL "Debug")
+			set(THRIFT_CXXFLAGS "-g")
+		endif()
 		ExternalProject_Add(Thrift
 				DOWNLOAD_NAME       thrift-0.10.0.tar.gz
 				URL                 http://archive.apache.org/dist/thrift/0.10.0/thrift-0.10.0.tar.gz
@@ -65,6 +69,7 @@ if (NOT THRIFT_FOUND)
 				--with-boost=${PROJECT_DIR}/Third_Party/include/
 				--with-boost-libdir=${PROJECT_DIR}/Third_Party/lib
 				--enable-tests=no
+				CXXFLAGS=${THRIFT_CXXFLAGS}
 				BUILD_COMMAND       make -C <SOURCE_DIR>
 				INSTALL_COMMAND     make -C <SOURCE_DIR> install
 				TEST_COMMAND        ""

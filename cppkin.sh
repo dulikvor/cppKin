@@ -8,6 +8,8 @@ display_help(){
     echo "#--with_tests               ## Will run cppkin tests              #"
     echo "#-----------------------------------------------------------------#"
     echo "#--with_examples            ## Will compile cppkin examples       #"
+    echo "#-----------------------------------------------------------------#"
+    echo "#--debug                    ## debug build                        #"
     echo "###################################################################"
 }
 
@@ -19,6 +21,7 @@ install(){
     WITH_THRIFT=OFF
     WITH_TESTS=OFF
     WITH_EXAMPLES=OFF
+    BUILD_TYPE=Release
     for argument in "${@:2}"
     do
         case $argument in
@@ -31,15 +34,18 @@ install(){
             --with_examples)
                 WITH_EXAMPLES=ON
             ;;
+            --debug)
+                BUILD_TYPE=Debug
+            ;;
         esac
-    done 
-    cmake -D 3RD_PARTY_INSTALL_STEP=ON -DWITH_THRIFT=$WITH_THRIFT  -DWITH_EXAMPLES=$WITH_EXAMPLES . && make
+    done
+    cmake -D 3RD_PARTY_INSTALL_STEP=ON -DWITH_THRIFT=$WITH_THRIFT  -DWITH_EXAMPLES=$WITH_EXAMPLES -DCMAKE_BUILD_TYPE=$BUILD_TYPE . && make
     clean_cmake_cache
-    cmake -D 3RD_PARTY_INSTALL_STEP=ON -DWITH_TESTS=$WITH_TESTS . && make
+    cmake -D 3RD_PARTY_INSTALL_STEP=ON -DWITH_TESTS=$WITH_TESTS -DCMAKE_BUILD_TYPE=$BUILD_TYPE . && make
     clean_cmake_cache
-    cmake -D PRE_COMPILE_STEP=ON -DWITH_THRIFT=$WITH_THRIFT . && make
+    cmake -D PRE_COMPILE_STEP=ON -DWITH_THRIFT=$WITH_THRIFT -DCMAKE_BUILD_TYPE=$BUILD_TYPE . && make
     clean_cmake_cache
-    cmake -D COMPILATION_STEP=ON -DWITH_THRIFT=$WITH_THRIFT -D WITH_TESTS=$WITH_TESTS -DWITH_EXAMPLES=$WITH_EXAMPLES . && make
+    cmake -D COMPILATION_STEP=ON -DWITH_THRIFT=$WITH_THRIFT -D WITH_TESTS=$WITH_TESTS -DWITH_EXAMPLES=$WITH_EXAMPLES -DCMAKE_BUILD_TYPE=$BUILD_TYPE . && make
     clean_cmake_cache
 }
 
