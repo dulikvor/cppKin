@@ -6,8 +6,8 @@ if (NOT THRIFT_FOUND)
 		ExternalProject_Add(Thrift
 				DOWNLOAD_NAME       thrift-0.10.0.tar.gz
 				URL                 http://archive.apache.org/dist/thrift/0.10.0/thrift-0.10.0.tar.gz
-				CONFIGURE_COMMAND   copy ${INSTALL_DIR_WIN}\\Patch\\FindBoost.cmake ${SOURCE_DIR_WIN}\\build\\cmake && copy ${INSTALL_DIR_WIN}\\Patch\\Thrift.h ${SOURCE_DIR_WIN}\\lib\\cpp\\src\\thrift && cd ${SOURCE_DIR_WIN} && cmake -G "Visual Studio 12" -DWITH_SHARED_LIB=off -DBUILD_TUTORIALS=OFF -DBUILD_TESTING=OFF
-				BUILD_COMMAND       cd ${SOURCE_DIR_WIN} && msbuild ALL_BUILD.vcxproj /p:Configuration=Release
+				CONFIGURE_COMMAND   copy ${INSTALL_DIR_WIN}\\Patch\\FindBoost.cmake ${SOURCE_DIR_WIN}\\build\\cmake && copy ${INSTALL_DIR_WIN}\\Patch\\Thrift.h ${SOURCE_DIR_WIN}\\lib\\cpp\\src\\thrift && cd ${SOURCE_DIR_WIN} && cmake -G "Visual Studio 12" -DWITH_SHARED_LIB=off -DBUILD_TUTORIALS=OFF -DBUILD_TESTING=OFF -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
+				BUILD_COMMAND       cd ${SOURCE_DIR_WIN} && msbuild ALL_BUILD.vcxproj /p:Configuration=${CMAKE_BUILD_TYPE}
 				INSTALL_COMMAND     ""
 				TEST_COMMAND        ""
 				)
@@ -28,7 +28,7 @@ if (NOT THRIFT_FOUND)
 				DEPENDEES   install
 				)
 		ExternalProject_Add_Step(Thrift Thrift_Install_Binaries
-				COMMAND     copy ${SOURCE_DIR_WIN}\\bin\\Release\\thrift.exe ${INSTALL_DIR_WIN}\\bin
+				COMMAND     copy ${SOURCE_DIR_WIN}\\bin\\${CMAKE_BUILD_TYPE}\\thrift.exe ${INSTALL_DIR_WIN}\\bin
 				DEPENDEES   install
 				)
 		ExternalProject_Add_Step(Thrift Thrift_Create_Libs_Dir
@@ -36,7 +36,7 @@ if (NOT THRIFT_FOUND)
 				DEPENDEES   install
 				)
 		ExternalProject_Add_Step(Thrift Thrift_Install_Libs
-				COMMAND     copy ${SOURCE_DIR_WIN}\\lib\\Release\\thriftmd.lib ${INSTALL_DIR_WIN}\\lib
+				COMMAND     copy ${SOURCE_DIR_WIN}\\lib\\${CMAKE_BUILD_TYPE}\\*.lib ${INSTALL_DIR_WIN}\\lib
 				DEPENDEES   install
 				)
 	else()

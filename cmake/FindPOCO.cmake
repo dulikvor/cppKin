@@ -1,6 +1,6 @@
 find_path(POCO_INCLUDE_DIR NAMES Poco/JSON/JSON.h PATHS ${PROJECT_3RD_LOC}/include)
 if(WIN32)
-	find_program(POCO_LIBRARY_DIR NAMES PocoJSON.dll PATHS ${PROJECT_3RD_LOC}/lib)
+	find_program(POCO_LIBRARY_DIR NAMES PocoJSON${POCO_SUFFIX}.dll PATHS ${PROJECT_3RD_LOC}/lib)
 else()
 	find_program(POCO_LIBRARY_DIR NAMES libPocoJSON${POCO_SUFFIX}.so PATHS ${PROJECT_3RD_LOC}/lib)
 endif()	

@@ -1,6 +1,6 @@
 find_program(THRIFT_BINARY_DIR NAMES thrift PATHS ${PROJECT_DIR}/Third_Party/bin)
 if(WIN32)
-	find_library(THRIFT_LIBRARY_DIR NAMES thriftmd.lib PATHS ${PROJECT_DIR}/Third_Party/lib)
+	find_library(THRIFT_LIBRARY_DIR NAMES thriftmd${CMAKE_DEBUG_POSTFIX}.lib PATHS ${PROJECT_DIR}/Third_Party/lib)
 else()
 	find_program(THRIFT_LIBRARY_DIR NAMES libthrift.so PATHS ${PROJECT_DIR}/Third_Party/lib)
 endif()	
