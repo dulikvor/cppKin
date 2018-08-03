@@ -26,6 +26,8 @@ exit /b 0
 	call:clean
 	)
 	cmake -G "Visual Studio 12" -DCMAKE_BUILD_TYPE=%BUILD_TYPE% -D3RD_PARTY_INSTALL_STEP=ON -DCOMPILATION_STEP=ON -DWITH_THRIFT=%WITH_THRIFT% -DWITH_EXAMPLES=%WITH_EXAMPLES%
+    IF %WITH_THRIFT%==OFF ( IF exist Boost.vcxproj (CMD /C msbuild Boost.vcxproj /property:Configuration=%BUILD_TYPE%) )
+    cmake -G "Visual Studio 12" -DCMAKE_BUILD_TYPE=%BUILD_TYPE% -D3RD_PARTY_INSTALL_STEP=ON -DCOMPILATION_STEP=ON -DWITH_THRIFT=%WITH_THRIFT% -DWITH_EXAMPLES=%WITH_EXAMPLES%
 	IF exist POCO.vcxproj (CMD /C msbuild POCO.vcxproj /property:Configuration=%BUILD_TYPE%)
 	IF exist CURL.vcxproj (CMD /C msbuild CURL.vcxproj /property:Configuration=%BUILD_TYPE%)
 	IF exist SpdLog.vcxproj (CMD /C msbuild SpdLog.vcxproj /property:Configuration=%BUILD_TYPE%)
