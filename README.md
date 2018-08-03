@@ -30,12 +30,12 @@ cppkin uses the following 3rd party dependencies -
 
 In order to inspect cppKin available installation parameters, use the help command:
 ```
-. cppKin.bash --help
+. cppkin.bash --help
 ```
 
 In order to start the installation use the installation command:
 ```
-. cppKin.bash install #add arguments of choice
+. cppkin.bash install #add arguments of choice
 ```
 The script will:
 1) Retrieve all 3rd party dependecies, compiling them and installing them locally (under cppkin directory structure).
