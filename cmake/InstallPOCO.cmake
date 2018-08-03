@@ -3,12 +3,13 @@ if (NOT POCO_FOUND)
 		include(cppkinMacro)
 		LinuxPath_ToWinPath(${CMAKE_CURRENT_SOURCE_DIR}/Third_Party INSTALL_DIR_WIN)
 		LinuxPath_ToWinPath(${CMAKE_CURRENT_SOURCE_DIR}/Third_Party/src/POCO SOURCE_DIR_WIN)
+		string(TOLOWER ${CMAKE_BUILD_TYPE} poco_build)
 		ExternalProject_Add(POCO
 						DOWNLOAD_NAME       poco-1.8.1-release.tar.gz
 						URL                 https://github.com/pocoproject/poco/archive/poco-1.8.1-release.tar.gz
 						URL_MD5             e64735b06d2520ebf1bcc2b7ffe81562
 						CONFIGURE_COMMAND   cd ${SOURCE_DIR_WIN} && echo Foundation > components && echo CppUnit >> components && echo JSON >> components
-						BUILD_COMMAND       cd ${SOURCE_DIR_WIN} && CMD /C buildwin.cmd 120 build shared release Win32 nosamples notests msbuild
+						BUILD_COMMAND       cd ${SOURCE_DIR_WIN} && CMD /C buildwin.cmd 120 build shared ${poco_build} Win32 nosamples notests msbuild
 						INSTALL_COMMAND     if not exist ${INSTALL_DIR_WIN}\\include\\Poco\\JSON mkdir ${INSTALL_DIR_WIN}\\include\\Poco\\JSON && if not exist ${INSTALL_DIR_WIN}\\lib mkdir ${INSTALL_DIR_WIN}\\lib
 						TEST_COMMAND        ""
 		)
@@ -33,7 +34,7 @@ if (NOT POCO_FOUND)
                 DOWNLOAD_NAME       poco-1.8.1-release.tar.gz
                 URL                 https://github.com/pocoproject/poco/archive/poco-1.8.1-release.tar.gz
                 URL_MD5             e64735b06d2520ebf1bcc2b7ffe81562
-                CONFIGURE_COMMAND   cd <SOURCE_DIR> && cmake . -DCMAKE_INSTALL_PREFIX=<INSTALL_DIR> -DENABLE_ENCODINGS=OFF -DENABLE_XML=OFF -DENABLE_MONGODB=OFF -DENABLE_REDIS=OFF -DENABLE_UTIL=OFF -DENABLE_NET=OFF -DENABLE_NETSSL=OFF -DENABLE_CRYPTO=OFF -DENABLE_DATA=OFF -DENABLE_DATA_SQLITE=OFF -DENABLE_DATA_MYSQL=OFF -DENABLE_DATA_ODBC=OFF -DENABLE_ZIP=OFF -DENABLE_PAGECOMPILER=OFF -DENABLE_PAGECOMPILER_FILE2PAGE=OFF
+                CONFIGURE_COMMAND   cd <SOURCE_DIR> && cmake . -DCMAKE_INSTALL_PREFIX=<INSTALL_DIR> -DENABLE_ENCODINGS=OFF -DENABLE_XML=OFF -DENABLE_MONGODB=OFF -DENABLE_REDIS=OFF -DENABLE_UTIL=OFF -DENABLE_NET=OFF -DENABLE_NETSSL=OFF -DENABLE_CRYPTO=OFF -DENABLE_DATA=OFF -DENABLE_DATA_SQLITE=OFF -DENABLE_DATA_MYSQL=OFF -DENABLE_DATA_ODBC=OFF -DENABLE_ZIP=OFF -DENABLE_PAGECOMPILER=OFF -DENABLE_PAGECOMPILER_FILE2PAGE=OFF -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
                 BUILD_COMMAND       cd <SOURCE_DIR> && make
                 INSTALL_COMMAND     cd <SOURCE_DIR> && make install
                 TEST_COMMAND        ""

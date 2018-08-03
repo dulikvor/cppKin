@@ -2,9 +2,9 @@ if (NOT SweetPy_FOUND AND Core_FOUND)
 
     ExternalProject_Add(SweetPy
             URL                 https://github.com/Dudi119/sweetPy/archive/v1.0.0.tar.gz
-            CONFIGURE_COMMAND   cd <SOURCE_DIR> && cmake -DsweetPy_3RD_PARTY_DIR:STRING=<INSTALL_DIR> -DsweetPy_COMPILE_STEP=ON .
+            CONFIGURE_COMMAND   cd <SOURCE_DIR> && cmake -DsweetPy_3RD_PARTY_DIR:STRING=<INSTALL_DIR> -DsweetPy_COMPILE_STEP=ON -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE} .
             BUILD_COMMAND       cd <SOURCE_DIR> && make
-            INSTALL_COMMAND     cp <SOURCE_DIR>/bin/libsweetPy.so <INSTALL_DIR>/lib
+            INSTALL_COMMAND     cp <SOURCE_DIR>/bin/libsweetPy${CMAKE_DEBUG_POSTFIX}.so <INSTALL_DIR>/lib
             TEST_COMMAND        ""
             )
 
