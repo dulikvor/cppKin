@@ -3,7 +3,7 @@ setlocal EnableDelayedExpansion
 IF "%1" == "install" ( call :clean && call :install %* 
 ) ELSE IF "%1" == "--help" ( call :display_help
 ) ELSE ( ECHO "supported commands - --help, install" )
-exit /b 0
+IF %ERRORLEVEL% GEQ 1 (EXIT /B 2) ELSE (EXIT /B 0)
 
 :install
     SET WITH_THRIFT=OFF

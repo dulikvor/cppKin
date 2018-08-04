@@ -9,10 +9,6 @@
 #include "core/Thread.h"
 #include "span_impl.h"
 
-#if defined(WIN32)
-#pragma warning (disable : 4251)
-#endif
-
 namespace cppkin
 {
 
