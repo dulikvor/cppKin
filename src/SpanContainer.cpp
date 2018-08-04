@@ -36,7 +36,7 @@ namespace cppkin
 
     Span* const SpanContainer::PopSpan(){
         if (m_spans.empty())
-            throw Exception(__CORE_SOURCE, "Container is empty");
+            throw Exception(__CORE_SOURCE, "Span container is empty");
 
         Span* const span = m_spans.front();
         m_spans.pop_front();

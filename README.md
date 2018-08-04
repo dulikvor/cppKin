@@ -6,34 +6,34 @@
 meant to be used by distributed services in order to measure latency across clusters.
 
 ## Linux Requirements
-
 * c++11.
 * Cmake version > 3.8.
 * OpenSSL-dev.
+If testing is requested - python 2.7
 
 ## Windows Requirements
-
 * Runtime support and tool chain of Visual Studio 2013.
 * Cmake version > 3.8.
 * Flex and Bison (e.g. the WinFlexBison package)
 
 
 ## Getting Started
-
 cppkin uses the following 3rd party dependencies -
 1) boost.
 2) spdlog.
-3) thrift.
+3) thrift - only if thrift is requested.
 4) curl.
+5) Core.
+6) sweetPy - only if testing is requested.
+7) bottle - only if testing is requested.
 
 ### Linux Install
-
 In order to inspect cppKin available installation parameters, use the help command:
 ```
 . cppkin.bash --help
 ```
 
-In order to start the installation use the installation command:
+In order to start the installation use the install command:
 ```
 . cppkin.bash install #add arguments of choice
 ```
@@ -45,13 +45,12 @@ The script will:
 `cppkin` shared object will be available under the bin dir.
 
 ### Windows Install
-
 In order to inspect cppKin available installation parameters, use the help command:
 ```
 cppkin.bat --help
 ```
 
-In order to start the installation use the installation command:
+In order to start the installation use the install command:
 ```
 cppkin.bat install #add arguments of choice
 ```
@@ -63,15 +62,18 @@ The script will:
 `cppkin` dll will be available under the bin dir.
 
 ### Interface
-
 In order to use cppkin include cppkin interface file - `cppkin.h`.
 ```c++
 #include "cppKin/src/cppkin.h"
 ```
 cppkin supports an object oriented style of coding.
 the header will publish two user types:
+- init - Initializing the cppKin client library.
+- A stop function - deallocating cppKin client library internal resources.
 - A Trace type.
 - A Span type.
+- Pusing a reference for a specific Span/Trace.
+- Popping a referenced Span/Trace.
 
 Trace type capabilities:
 - Create a Trace.
@@ -97,12 +99,12 @@ In order to initialize `cppkin` (the first step you would like to take) two oper
 | -------------   | ------------- |
 | HOST_ADDRESS    | Zipkin server address in IPV4 format XXX.XXX.XXX.XXX.  |
 | PORT            | Zipkin server port value, usually 9410 for Scribe collector  |
-| TRANSPORT_TYPE  | Which transportaion to use Scribe/Http, Http is default. |
+| TRANSPORT_TYPE  | Which transportaion to use Scribe/Http/Stub, Stub is default. |
 | SERVICE_NAME    | The traced service name which will be displayed at Zipkin UI.  |
 | DEBUG           | Will mark all sampled spans as debug spans.  |
-| SAMPLE_COUNT    | Will sample every - n % SAMPLE_COUNT == 0 span.
-| BATCH_SIZE      | How many spans will be packed together when addressing the zipkin server. |
-| ENCODING_TYPE   | Dictates which encoder will be use to encode cppkin outgoing messages - json, thrift. |
+| SAMPLE_COUNT    | Will sample every - n % SAMPLE_COUNT == 0 span, default value = 1000.
+| BATCH_SIZE      | How many spans will be packed together when addressing the zipkin server, default value = 50. |
+| ENCODING_TYPE   | Dictates which encoder will be use to encode cppkin outgoing messages - json, thrift, json is default. |
 
 
 A full example:
@@ -113,11 +115,19 @@ cppkinParams.AddParam(cppkin::ConfigTags::PORT, 9410);
 cppkinParams.AddParam(cppkin::ConfigTags::SERVICE_NAME,"Index_Builder");
 cppkinParams.AddParam(cppkin::ConfigTags::DEBUG, false);
 cppkinParams.AddParam(cppkin::ConfigTags::SAMPLE_COUNT, 1000);
+cppkinParams.AddParam(cppkin::ConfigTags::TRANSPORT_TYPE, cppkin::TransportType(cppkin::TransportType::Http).ToString());
+cppkinParams.AddParam(cppkin::ConfigTags::ENCODING_TYPE, cppkin::EncodingType(cppkin::EncodingType::Json).ToString());
 cppkin::Init(cppkinParams);
 ```
 
+### Stop
+In order to deallocate the client library internal resources in correct fashion, cppKin provides a Stop function.
+```c++
+cppkin::Stop();
+```
+
 ##
-#### Tracing
+### Tracing
 In order to create a trace, initalize a new trace instance:
 ```c++
 cppkin::Trace trace("Something");
@@ -155,6 +165,7 @@ Supported transportation methods:
 | -------------   | ------------- |
 | Thrift    | Thrift  |
 | Http      | Json  |
+| Stub (will send nothing)| |
 
 ### OutStream Communication
 Outstream communication is done by using the `Submit` method.
@@ -186,4 +197,26 @@ Span span();
 span.Join(traceHeader.Name.c_str(), traceHeader.TraceID, traceHeader.ParentID, traceHeader.ID, traceHeader.Sampled);
 ```
 
-Span will always be used at the receiving side.
+Span will always be used at the receiving side (Continuing an existing trace or span).
+### Passing Trace/Span across multiple stack frames:
+It is possible to provide an instance of Trace/Span across many stack frames (no injection is in need).
+use the Push/Pop command, in order the provide a specific span.
+```c++
+static void foo()
+{
+    cppkin::Span& span_1 = *cppkin::PopSpan();
+    auto span_2 = span_1.CreateSpan("Span2");
+    portable_sleep(10);
+    span_2.Submit();
+}
+#main function
+    auto span_1 = trace.CreateSpan("Span1");
+    span_1.AddAnnotation("Span1Event");
+    //Lets use the span container in order to reach a certain stack frame.
+    //We still own the span, no transfer of ownership was commenced.
+    cppkin::PushSpan(span_1);
+    foo();
+    span_1.Submit();
+```
+Its important to remember that the ownership of that span remain at the user hands, the span is only referenced by the Push command.
+
