@@ -10,7 +10,7 @@
 #include "sweetPy/Exception.h"
 #include "src/Trace.h"
 #include "src/Span.h"
-#include "src/Control.h"
+#include "src/cppkin.h"
 #include "src/ConfigTags.h"
 #include "src/Annotation.h"
 
@@ -41,4 +41,5 @@ INIT_MODULE(_cppkin, "cppkin library wrapper")
     sweetPy::CPythonGlobalVariable(module, "SERVER_RECEIVE", cppkin::Annotation::Value::SERVER_RECEIVE);
 
     sweetPy::CPythonGlobalFunction(module, "init", "initializes cppkin", &cppkin::Init);
+    sweetPy::CPythonGlobalFunction(module, "stop", "deallocate cppkin resources", &cppkin::Stop);
 }
