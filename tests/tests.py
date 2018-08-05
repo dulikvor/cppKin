@@ -61,6 +61,7 @@ def main():
         unittest.main(exit=False)
         server.stop()
 
+    _cppkin.stop()
 
 if __name__ == "__main__":
     main()

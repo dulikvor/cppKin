@@ -5,6 +5,10 @@
 #include "span_impl.h"
 #include "Annotation.h"
 #include "Export.h"
+#if defined(WIN32)
+#pragma warning( push )
+#pragma warning (disable : 4251)
+#endif
 
 namespace cppkin
 {
@@ -29,3 +33,6 @@ namespace cppkin
         std::shared_ptr<span_impl> m_span;
     };
 }
+#if defined(WIN32)
+#pragma warning( pop )
+#endif

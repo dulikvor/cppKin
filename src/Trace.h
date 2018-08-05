@@ -4,6 +4,10 @@
 #include <string>
 #include "Export.h"
 #include "Span.h"
+#if defined(WIN32)
+#pragma warning( push )
+#pragma warning (disable : 4251)
+#endif
 
 namespace cppkin
 {
@@ -15,3 +19,6 @@ namespace cppkin
         Trace(const char *operationName, const char* value = Annotation::Value::SERVER_RECEIVE);
     };
 }
+#if defined(WIN32)
+#pragma warning( pop )
+#endif

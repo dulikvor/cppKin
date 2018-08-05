@@ -6,6 +6,10 @@
 #include "Export.h"
 #include "Span.h"
 #include "span_impl.h"
+#if defined(WIN32)
+#pragma warning( push )
+#pragma warning (disable : 4251)
+#endif
 
 namespace cppkin
 {
@@ -23,4 +27,6 @@ namespace cppkin
         std::forward_list<Span*> m_spans;
     };
 }
-
+#if defined(WIN32)
+#pragma warning( pop )
+#endif

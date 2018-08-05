@@ -18,6 +18,14 @@ static void portable_sleep(int duration)
 #endif
 }
 
+static void foo()
+{
+    cppkin::Span& span_1 = *cppkin::PopSpan();
+    auto span_2 = span_1.CreateSpan("Span2");
+    portable_sleep(10);
+    span_2.Submit();
+}
+
 int main( int argc, const char *argv[] )
 {
     options_description desc{"Options"};
@@ -67,19 +75,18 @@ int main( int argc, const char *argv[] )
     cppkin::Init(cppkinParams);
 
     cppkin::Trace trace("TestTrace");
-    portable_sleep(1);
-    trace.AddAnnotation("TraceEvent1");
+    portable_sleep(10);
+    trace.AddAnnotation("TraceEvent");
 
     auto span_1 = trace.CreateSpan("Span1");
-    portable_sleep(1);
-    span_1.AddAnnotation("Event2");
-    {
-        auto span_2 = trace.CreateSpan("Span2");
-        portable_sleep(1);
-        span_2.Submit();
-    }
+    portable_sleep(10);
+    span_1.AddAnnotation("Span1Event");
+    //Lets use the span container in order to reach a certain stack frame.
+    cppkin::PushSpan(span_1);
+    foo();
+
     span_1.Submit();
-    portable_sleep(1);
+    portable_sleep(10);
     trace.Submit();
 
 #if defined(WIN32)
@@ -87,5 +94,6 @@ int main( int argc, const char *argv[] )
 #else
     portable_sleep(2);
 #endif
+    cppkin::Stop();
     return 0;
 }
