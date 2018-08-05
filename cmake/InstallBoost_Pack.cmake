@@ -9,7 +9,7 @@ if (NOT Boost_FOUND)
 						URL                 https://dl.bintray.com/boostorg/release/1.65.1/source/boost_1_65_1.tar.gz
 						URL_MD5             ee64fd29a3fe42232c6ac3c419e523cf
 						CONFIGURE_COMMAND   cd ${SOURCE_DIR_WIN} && CMD /C bootstrap
-						BUILD_COMMAND       cd ${SOURCE_DIR_WIN} && .\\b2 install --prefix=${INSTALL_DIR_WIN} --exec-prefix=${INSTALL_DIR_WIN} --with-program_options toolset=msvc-12.0 -j4 link=shared threading=multi runtime-link=share
+						BUILD_COMMAND       cd ${SOURCE_DIR_WIN} && .\\b2 install --prefix=${INSTALL_DIR_WIN} --exec-prefix=${INSTALL_DIR_WIN} --with-program_options toolset=msvc-12.0 -j4 link=shared threading=multi runtime-link=shared variant=${variant}
 						INSTALL_COMMAND     ""
 						TEST_COMMAND        ""
 		)

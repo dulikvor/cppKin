@@ -5,6 +5,10 @@
 #include <vector>
 #include <memory>
 #include "Annotation.h"
+#if defined(WIN32)
+#pragma warning( push )
+#pragma warning (disable : 4251)
+#endif
 
 namespace cppkin
 {
@@ -15,7 +19,7 @@ namespace cppkin
     {
     public:
         typedef std::vector<std::unique_ptr<Annotation>> Annotations;
-        struct SpanHeader
+        struct CPPKIN_EXPORT SpanHeader
         {
         public:
             SpanHeader(const std::string& name, uint_fast64_t traceID, uint_fast64_t parentID, uint_fast64_t id, bool sampled);
@@ -60,3 +64,6 @@ namespace cppkin
         int_fast64_t m_duration;
     };
 }
+#if defined(WIN32)
+#pragma warning( pop )
+#endif
