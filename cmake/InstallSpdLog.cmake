@@ -12,8 +12,8 @@ if (NOT SPDLOG_FOUND)
 	
 	if (WIN32)
 		include(cppkinMacro)
-		LinuxPath_ToWinPath(${CMAKE_CURRENT_SOURCE_DIR}/Third_Party INSTALL_DIR_WIN)
-		LinuxPath_ToWinPath(${CMAKE_CURRENT_SOURCE_DIR}/Third_Party/src/Spdlog SOURCE_DIR_WIN)
+		LinuxPath_ToWinPath(${PROJECT_3RD_LOC} INSTALL_DIR_WIN)
+		LinuxPath_ToWinPath(${PROJECT_3RD_LOC}/src/Spdlog SOURCE_DIR_WIN)
 
 		ExternalProject_Add_Step(SpdLog SpdLog_Install_Headers
 				COMMAND     if not exist ${INSTALL_DIR_WIN}\\include\\spdlog mkdir ${INSTALL_DIR_WIN}\\include\\spdlog && xcopy ${SOURCE_DIR_WIN}\\include\\spdlog ${INSTALL_DIR_WIN}\\include\\spdlog /E

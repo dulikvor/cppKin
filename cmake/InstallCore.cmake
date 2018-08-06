@@ -1,8 +1,8 @@
 if (NOT Core_FOUND)
 	if (WIN32)
 		include(cppkinMacro)
-		LinuxPath_ToWinPath(${CMAKE_CURRENT_SOURCE_DIR}/Third_Party INSTALL_DIR_WIN)
-		LinuxPath_ToWinPath(${CMAKE_CURRENT_SOURCE_DIR}/Third_Party/src/Core SOURCE_DIR_WIN)
+		LinuxPath_ToWinPath(${PROJECT_3RD_LOC} INSTALL_DIR_WIN)
+		LinuxPath_ToWinPath(${PROJECT_3RD_LOC}/src/Core SOURCE_DIR_WIN)
 		
 		ExternalProject_Add(Core
 				URL                 https://github.com/Dudi119/Core/archive/v1.0.1.tar.gz

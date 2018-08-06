@@ -1,5 +1,6 @@
 PROJECT_DIR=$1
-COMPILER=${PROJECT_DIR}/Third_Party/bin/thrift
+THIRD_PARTY_DIR=$2
+COMPILER=${THIRD_PARTY_DIR}/bin/thrift
 COMPILE_DIR=IDL
 OUTPUT_DIR=GeneratedFiles
 #Create output dir if not exists

@@ -2,8 +2,8 @@ if (NOT Boost_FOUND)
 	string(TOLOWER ${CMAKE_BUILD_TYPE} variant)
 	if (WIN32)
 		include(cppkinMacro)
-		LinuxPath_ToWinPath(${CMAKE_CURRENT_SOURCE_DIR}/Third_Party INSTALL_DIR_WIN)
-		LinuxPath_ToWinPath(${CMAKE_CURRENT_SOURCE_DIR}/Third_Party/src/Boost SOURCE_DIR_WIN)
+		LinuxPath_ToWinPath(${PROJECT_3RD_LOC} INSTALL_DIR_WIN)
+		LinuxPath_ToWinPath(${PROJECT_3RD_LOC}/src/Boost SOURCE_DIR_WIN)
 		ExternalProject_Add(Boost
 						DOWNLOAD_NAME       boost_1_65_1.tar.gz
 						URL                 https://dl.bintray.com/boostorg/release/1.65.1/source/boost_1_65_1.tar.gz

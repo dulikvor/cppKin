@@ -17,7 +17,7 @@
 #   CURL_VERSION_STRING - the version of curl found (since CMake 2.8.8)
 
 # Look for the header file.
-find_path(CURL_INCLUDE_DIR NAMES curl/curl.h PATHS ${PROJECT_DIR}/Third_Party/include)
+find_path(CURL_INCLUDE_DIR NAMES curl/curl.h PATHS ${PROJECT_3RD_LOC}/include NO_DEFAULT_PATH)
 mark_as_advanced(CURL_INCLUDE_DIR) 
 
 # Look for the library (sorted from most current/relevant entry to least).
@@ -29,7 +29,7 @@ find_library(CURL_LIBRARY_DIR NAMES
     curllib_static
   # Windows older "Win32 - MSVC" prebuilts (libcurl.lib, e.g. libcurl-7.15.5-win32-msvc.zip):
     libcurl
-    PATHS ${PROJECT_DIR}/Third_Party/lib
+    PATHS ${PROJECT_3RD_LOC}/lib
 )
 mark_as_advanced(CURL_LIBRARY_DIR)
 
