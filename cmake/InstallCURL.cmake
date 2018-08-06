@@ -6,9 +6,9 @@ if (NOT CURL_FOUND OR USE_BUNDLED_CURL)
 	
 	if (WIN32)
 		include(cppkinMacro)
-		LinuxPath_ToWinPath(${CMAKE_CURRENT_SOURCE_DIR}/Third_Party INSTALL_DIR_WIN)
-		LinuxPath_ToWinPath(${CMAKE_CURRENT_SOURCE_DIR}/Third_Party/src/CURL SOURCE_DIR_WIN)
-		LinuxPath_ToWinPath(${CMAKE_CURRENT_SOURCE_DIR}/Third_Party/src/CURL-build/lib SOURCE_LIB_DIR_WIN)
+		LinuxPath_ToWinPath(${PROJECT_3RD_LOC} INSTALL_DIR_WIN)
+		LinuxPath_ToWinPath(${PROJECT_3RD_LOC}/src/CURL SOURCE_DIR_WIN)
+		LinuxPath_ToWinPath(${PROJECT_3RD_LOC}/src/CURL-build/lib SOURCE_LIB_DIR_WIN)
 		ExternalProject_Add(CURL
 			URL                 https://curl.haxx.se/download/curl-${CURL_VERSION_STRING}.tar.gz
 			URL_MD5             ${CURL_URL_MD5}

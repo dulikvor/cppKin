@@ -1,5 +1,5 @@
-find_path(BENCHMARK_INCLUDE_DIR NAMES benchmark PATHS ${PROJECT_DIR}/Third_Party/include)
-find_library(BENCHMARK_LIBRARY_DIR NAMES benchmark PATHS ${PROJECT_DIR}/Third_Party/lib)
+find_path(BENCHMARK_INCLUDE_DIR NAMES benchmark PATHS ${PROJECT_3RD_LOC}/include)
+find_library(BENCHMARK_LIBRARY_DIR NAMES benchmark PATHS ${PROJECT_3RD_LOC}/lib)
 include(FindPackageHandleStandardArgs)
 find_package_handle_standard_args(benchmark REQUIRED_VARS BENCHMARK_INCLUDE_DIR BENCHMARK_LIBRARY_DIR)
 

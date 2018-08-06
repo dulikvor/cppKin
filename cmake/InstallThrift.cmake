@@ -1,8 +1,8 @@
 if (NOT THRIFT_FOUND)
 	if (WIN32)
 		include(cppkinMacro)
-		LinuxPath_ToWinPath(${CMAKE_CURRENT_SOURCE_DIR}/Third_Party INSTALL_DIR_WIN)
-		LinuxPath_ToWinPath(${CMAKE_CURRENT_SOURCE_DIR}/Third_Party/src/Thrift SOURCE_DIR_WIN)
+		LinuxPath_ToWinPath(${PROJECT_3RD_LOC} INSTALL_DIR_WIN)
+		LinuxPath_ToWinPath(${PROJECT_3RD_LOC}/src/Thrift SOURCE_DIR_WIN)
 		ExternalProject_Add(Thrift
 				DOWNLOAD_NAME       thrift-0.10.0.tar.gz
 				URL                 http://archive.apache.org/dist/thrift/0.10.0/thrift-0.10.0.tar.gz
@@ -66,8 +66,8 @@ if (NOT THRIFT_FOUND)
 				--without-go
 				--without-haxe
 				--without-d
-				--with-boost=${PROJECT_DIR}/Third_Party/include/
-				--with-boost-libdir=${PROJECT_DIR}/Third_Party/lib
+				--with-boost=${PROJECT_3RD_LOC}/include/
+				--with-boost-libdir=${PROJECT_3RD_LOC}/lib/
 				--enable-tests=no
 				CXXFLAGS=${THRIFT_CXXFLAGS}
 				BUILD_COMMAND       make -C <SOURCE_DIR>
