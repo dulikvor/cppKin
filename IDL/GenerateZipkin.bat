@@ -1,5 +1,6 @@
 set PROJECT_DIR=%1
-set COMPILER=%PROJECT_DIR%\Third_Party\bin\thrift.exe
+set THIRD_PARTY_DIR=%2
+set COMPILER=%THIRD_PARTY_DIR%\bin\thrift.exe
 set COMPILE_DIR=IDL
 set OUTPUT_DIR=GeneratedFiles
 #Create output dir if not exists
