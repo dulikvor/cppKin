@@ -1,4 +1,4 @@
-find_path(SPDLOG_INCLUDE_DIR NAMES spdlog/spdlog.h PATHS ${PROJECT_DIR}/Third_Party/include)
+find_path(SPDLOG_INCLUDE_DIR NAMES spdlog/spdlog.h PATHS ${PROJECT_3RD_LOC}/include)
 include(FindPackageHandleStandardArgs)
 find_package_handle_standard_args(spdlog REQUIRED_VARS SPDLOG_INCLUDE_DIR)
 

@@ -1,8 +1,8 @@
 if (NOT POCO_FOUND)
     if (WIN32)
 		include(cppkinMacro)
-		LinuxPath_ToWinPath(${CMAKE_CURRENT_SOURCE_DIR}/Third_Party INSTALL_DIR_WIN)
-		LinuxPath_ToWinPath(${CMAKE_CURRENT_SOURCE_DIR}/Third_Party/src/POCO SOURCE_DIR_WIN)
+		LinuxPath_ToWinPath(${PROJECT_3RD_LOC} INSTALL_DIR_WIN)
+		LinuxPath_ToWinPath(${PROJECT_3RD_LOC}/src/POCO SOURCE_DIR_WIN)
 		string(TOLOWER ${CMAKE_BUILD_TYPE} poco_build)
 		ExternalProject_Add(POCO
 						DOWNLOAD_NAME       poco-1.8.1-release.tar.gz

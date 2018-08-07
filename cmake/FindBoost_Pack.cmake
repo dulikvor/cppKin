@@ -1,5 +1,5 @@
-set(BOOST_INCLUDEDIR ${PROJECT_DIR}/Third_Party/include)
-set(BOOST_LIBRARYDIR ${PROJECT_DIR}/Third_Party/lib)
+set(BOOST_INCLUDEDIR ${PROJECT_3RD_LOC}/include NO_DEFAULT_PATH)
+set(BOOST_LIBRARYDIR ${PROJECT_3RD_LOC}/lib)
 set(Boost_USE_MULTITHREADED ON)
 set(Boost_USE_STATIC_LIBS OFF)
 find_package(Boost 1.58.0 COMPONENTS program_options)

@@ -28,10 +28,10 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY  ${PROJECT_DIR}/bin)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY  ${PROJECT_DIR}/bin)
 set(CMAKE_BINARY_DIR ${PROJECT_DIR}/bin)
 set(EXECUTABLE_OUTPUT_PATH ${PROJECT_DIR}/bin)
-set(PROJECT_3RD_LOC ${CMAKE_CURRENT_SOURCE_DIR}/../Third_Party)
+set(PROJECT_3RD_LOC ${PROJECT_3RD_LOC})
 
 include_directories(. ..  ${PROJECT_DIR} ${PROJECT_3RD_LOC}/include)
-link_directories(${PROJECT_3RD_LOC}/lib ${PROJECT_DIR}/../bin)
+link_directories(${PROJECT_3RD_LOC}/lib ${OUTPUT_DIR})
 add_executable(example example.cpp)
 
 if(WIN32)
