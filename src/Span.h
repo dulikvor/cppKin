@@ -22,7 +22,7 @@ namespace cppkin
         void Join(const char* operationName, uint_fast64_t traceId, uint_fast64_t parentId, uint_fast64_t id, bool sampled);
         void AddAnnotation(const char* value);
         void AddAnnotation(const char* value, int_fast64_t timeStamp);
-        void Submit();
+        void Submit(const char* value = Annotation::Value::SERVER_SEND);
         bool IsSampled() const;
         const span_impl::SpanHeader&  GetHeader() const;
     protected:

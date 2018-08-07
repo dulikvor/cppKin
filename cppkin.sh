@@ -1,6 +1,7 @@
 #!/bin/bash
 
 display_help(){
+    echo "                                                               "
     echo "cppkin install [options]..."
     echo "Install                       Install related options."
     echo "======="
@@ -61,7 +62,7 @@ install(){
     clean_cmake_cache
     cmake -D PRE_COMPILE_STEP=ON -DWITH_THRIFT=$WITH_THRIFT -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DPROJECT_3RD_LOC:STRING=$THIRD_PARTY_PREFIX . && make
     clean_cmake_cache
-    cmake -D COMPILATION_STEP=ON -DWITH_THRIFT=$WITH_THRIFT -D WITH_TESTS=$WITH_TESTS -DWITH_EXAMPLES=$WITH_EXAMPLES -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DPROJECT_3RD_LOC:STRING=$THIRD_PARTY_PREFIX -DOUTPUT_DIR:STRING=$OUTPUT_DIR . && make VERBOSE=1
+    cmake -D COMPILATION_STEP=ON -DWITH_THRIFT=$WITH_THRIFT -D WITH_TESTS=$WITH_TESTS -DWITH_EXAMPLES=$WITH_EXAMPLES -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DPROJECT_3RD_LOC:STRING=$THIRD_PARTY_PREFIX -DOUTPUT_DIR:STRING=$OUTPUT_DIR . && make
     clean_cmake_cache
 }
 

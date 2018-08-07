@@ -42,7 +42,7 @@ The script will:
 2) Compile cppkin into shared object.
 3) Will build tests and examples if requested.
 
-`cppkin` shared object will be available under the bin dir.
+`cppkin` shared object will be available under the bin dir by default, or other designated output dir.
 
 ### Windows Install
 In order to inspect cppKin available installation parameters, use the help command:
@@ -59,7 +59,7 @@ The script will:
 2) Compile cppkin into dll.
 3) Will build all examples if requested.
 
-`cppkin` dll will be available under the bin dir.
+`cppkin` dll will be available under the bin dir by default, or other designated output dir.
 
 ### Interface
 In order to use cppkin include cppkin interface file - `cppkin.h`.
@@ -101,7 +101,7 @@ In order to initialize `cppkin` (the first step you would like to take) two oper
 | PORT            | Zipkin server port value, usually 9410 for Scribe collector  |
 | TRANSPORT_TYPE  | Which transportaion to use Scribe/Http/Stub, Stub is default. |
 | SERVICE_NAME    | The traced service name which will be displayed at Zipkin UI.  |
-| DEBUG           | Will mark all sampled spans as debug spans.  |
+| DEBUG           | Will mark all sampled spans as debug spans, default - false.  |
 | SAMPLE_COUNT    | Will sample every - n % SAMPLE_COUNT == 0 span, default value = 1000.
 | BATCH_SIZE      | How many spans will be packed together when addressing the zipkin server, default value = 50. |
 | ENCODING_TYPE   | Dictates which encoder will be use to encode cppkin outgoing messages - json, thrift, json is default. |
@@ -113,7 +113,7 @@ cppkin::CppkinParams cppkinParams;
 cppkinParams.AddParam(cppkin::ConfigTags::HOST_ADDRESS,"127.0.0.1");
 cppkinParams.AddParam(cppkin::ConfigTags::PORT, 9410);
 cppkinParams.AddParam(cppkin::ConfigTags::SERVICE_NAME,"Index_Builder");
-cppkinParams.AddParam(cppkin::ConfigTags::DEBUG, false);
+cppkinParams.AddParam(cppkin::ConfigTags::DEBUG, true);
 cppkinParams.AddParam(cppkin::ConfigTags::SAMPLE_COUNT, 1000);
 cppkinParams.AddParam(cppkin::ConfigTags::TRANSPORT_TYPE, cppkin::TransportType(cppkin::TransportType::Http).ToString());
 cppkinParams.AddParam(cppkin::ConfigTags::ENCODING_TYPE, cppkin::EncodingType(cppkin::EncodingType::Json).ToString());
@@ -154,6 +154,11 @@ trace.AddAnnotation("TraceEvent1");
 span.AddAnnotation("TraceEvent2");
 ```
 `AddAnnotation` takes a single argument - the `"Event value"`.
+
+Two default simple annotations are added -
+* "Server Receive - sr" on span/trace creation.
+* "Server Send - ss" on submit.
+both can be changed.
 
 ### Transportation
 `cppkin` contains a specified `transportation` layer, providing the following capabilities:
@@ -211,13 +216,13 @@ static void foo()
     span_2.Submit();
 }
 #main function
-    auto span_1 = trace.CreateSpan("Span1");
-    span_1.AddAnnotation("Span1Event");
-    //Lets use the span container in order to reach a certain stack frame.
-    //We still own the span, no transfer of ownership was commenced.
-    cppkin::PushSpan(span_1);
-    foo();
-    span_1.Submit();
+auto span_1 = trace.CreateSpan("Span1");
+span_1.AddAnnotation("Span1Event");
+//Lets use the span container in order to reach a certain stack frame.
+//We still own the span, no transfer of ownership was commenced.
+cppkin::PushSpan(span_1);
+foo();
+span_1.Submit();
 ```
 Its important to remember that the ownership of that span remain at the user hands, the span is only referenced by the Push command.
 
