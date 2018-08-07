@@ -1,4 +1,5 @@
 from zipkinStubServer import ServerGuard, ZipkinStubServer
+from server import WSGIRefServerStoppable
 import _cppkin
 from _cppkin import Trace, CppkinParams
 import unittest
@@ -42,9 +43,11 @@ class TestCppkinTraceSpanRelation(TestCppkin):
         self.assertEqual(spans[0].parentId, spans[1].id, "Span parent id dosn't match trace's id {0} != {1}".format(spans[0].parentId, spans[1].id))
 
 def main():
+    port = WSGIRefServerStoppable.findFreePort()
+
     params = CppkinParams()
     params.add_str(_cppkin.HOST_ADDRESS, "127.0.0.1")
-    params.add_int(_cppkin.PORT, 9411)
+    params.add_int(_cppkin.PORT, port)
     params.add_str(_cppkin.SERVICE_NAME, "cppkinTest")
     params.add_bool(_cppkin.DEBUG, True)
     params.add_str(_cppkin.TRANSPORT_TYPE, "Http Transport")
@@ -54,7 +57,7 @@ def main():
 
     global outQueue
     global startEvent
-    server = ZipkinStubServer()
+    server = ZipkinStubServer(port)
     outQueue = Queue()
     startEvent = Event()
     with ServerGuard(ZipkinStubServer.spawn, server, outQueue, startEvent):
