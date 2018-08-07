@@ -15,7 +15,7 @@ class TestCppkin(unittest.TestCase):
 class TestCppkinTrace(TestCppkin):
     def runTest(self):
         trace = Trace("TestTrace")
-        trace.submit()
+        trace.submit(_cppkin.SERVER_SEND)
 
         global outQueue
         spans = outQueue.get()
@@ -28,8 +28,8 @@ class TestCppkinTraceSpanRelation(TestCppkin):
     def runTest(self):
         trace = Trace("TestTrace")
         span = trace.createSpan("TestSpan", _cppkin.SERVER_RECEIVE)
-        span.submit()
-        trace.submit()
+        span.submit(_cppkin.SERVER_SEND)
+        trace.submit(_cppkin.SERVER_SEND)
 
         global outQueue
         spans = []

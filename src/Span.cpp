@@ -45,11 +45,12 @@ namespace cppkin
         m_span->CreateSimpleAnnotation(value, timeStamp);
     }
 
-    void Span::Submit()
+    void Span::Submit(const char* value)
     {
         if(m_span->GetHeader().Sampled == false)
             return;
         m_span->SetEndTime();
+        AddAnnotation(value, m_span->GetTimeStamp() + m_span->GetDuration());
         TransportManager::Instance().PushSpan(m_span);
     }
 

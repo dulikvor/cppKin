@@ -1,6 +1,6 @@
+#include <Python.h>
 #include <memory>
 #include <string>
-#include <Python.h>
 #include "sweetPy/CPythonModule.h"
 #include "sweetPy/CPythonClass.h"
 #include "sweetPy/CPythonGlobalFunction.h"
@@ -39,6 +39,7 @@ INIT_MODULE(_cppkin, "cppkin library wrapper")
     sweetPy::CPythonGlobalVariable(module, "SAMPLE_COUNT", cppkin::ConfigTags::SAMPLE_COUNT);
 
     sweetPy::CPythonGlobalVariable(module, "SERVER_RECEIVE", cppkin::Annotation::Value::SERVER_RECEIVE);
+    sweetPy::CPythonGlobalVariable(module, "SERVER_SEND", cppkin::Annotation::Value::SERVER_SEND);
 
     sweetPy::CPythonGlobalFunction(module, "init", "initializes cppkin", &cppkin::Init);
     sweetPy::CPythonGlobalFunction(module, "stop", "deallocate cppkin resources", &cppkin::Stop);

@@ -67,7 +67,6 @@ int main( int argc, const char *argv[] )
     cppkinParams.AddParam(cppkin::ConfigTags::HOST_ADDRESS, vm["host"].as<string>());
     cppkinParams.AddParam(cppkin::ConfigTags::PORT, port);
     cppkinParams.AddParam(cppkin::ConfigTags::SERVICE_NAME, vm["service"].as<string>());
-    cppkinParams.AddParam(cppkin::ConfigTags::DEBUG, true);
     cppkinParams.AddParam(cppkin::ConfigTags::SAMPLE_COUNT, 1);
     cppkinParams.AddParam(cppkin::ConfigTags::TRANSPORT_TYPE, cppkin::TransportType(transportType).ToString());
     cppkinParams.AddParam(cppkin::ConfigTags::ENCODING_TYPE, cppkin::EncodingType(encodingType).ToString());
