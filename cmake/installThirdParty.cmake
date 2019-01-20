@@ -11,6 +11,7 @@ include(InstallPOCO)
 if(UNIX AND NOT APPLE AND WITH_TESTS)
     include(InstallBottle)
     include(InstallSweetPy)
+    include(InstallPyBind)
     include(InstallBenchMark)
 endif()
 

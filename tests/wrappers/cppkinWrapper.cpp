@@ -1,4 +1,3 @@
-#include <Python.h>
 #include <memory>
 #include <string>
 #include "sweetPy/CPythonModule.h"
@@ -7,7 +6,7 @@
 #include "sweetPy/CPythonGlobalVariable.h"
 #include "sweetPy/InitModule.h"
 #include "sweetPy/CPythonEnum.h"
-#include "sweetPy/Exception.h"
+#include "sweetPy/Core/Exception.h"
 #include "src/Trace.h"
 #include "src/Span.h"
 #include "src/cppkin.h"
@@ -27,8 +26,8 @@ INIT_MODULE(_cppkin, "cppkin library wrapper")
     trace.AddMethod("submit", "the trace will be submitted to the collector", &cppkin::Trace::Submit);
 
     sweetPy::CPythonClass<cppkin::CppkinParams> params(module, "CppkinParams", "a general key value storage for cppkin params");
-    params.AddMethod("add_int", "will add an int typed param", &cppkin::CppkinParams::AddParam<int>);
-    params.AddMethod("add_str", "will add a str typed param", &cppkin::CppkinParams::AddParam<std::string>);
+    params.AddMethod("add_int", "will add an int typed param", &cppkin::CppkinParams::AddParam<const int&>);
+    params.AddMethod("add_str", "will add a str typed param", &cppkin::CppkinParams::AddParam<const std::string&>);
     params.AddMethod("add_bool", "will add a bool typed param", &cppkin::CppkinParams::AddParam<bool>);
 
     sweetPy::CPythonGlobalVariable(module, "HOST_ADDRESS", cppkin::ConfigTags::HOST_ADDRESS);
