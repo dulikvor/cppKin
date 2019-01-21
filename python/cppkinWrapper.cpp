@@ -8,6 +8,8 @@
 #include "sweetPy/InitModule.h"
 #include "sweetPy/CPythonEnum.h"
 #include "sweetPy/Core/Exception.h"
+#elif defined PYBIND
+#include "pybind11/pybind11.h"
 #endif
 #include "src/Trace.h"
 #include "src/Span.h"
@@ -46,4 +48,36 @@ INIT_MODULE(_cppkin, "cppkin library wrapper")
     sweetPy::CPythonGlobalFunction(module, "init", "initializes cppkin", &cppkin::Init);
     sweetPy::CPythonGlobalFunction(module, "stop", "deallocate cppkin resources", &cppkin::Stop);
 }
+#elif defined PYBIND
+    PYBIND11_MODULE(_cppkin, module)
+    {
+        pybind11::class_<cppkin::Span>(module, "Span")
+            .def(pybind11::init<>())
+            .def("createSpan", &cppkin::Span::CreateSpan)
+            .def("submit", &cppkin::Span::Submit);
+        
+        pybind11::class_<cppkin::Trace>(module, "Trace")
+            .def(pybind11::init<const char*>())
+            .def("createSpan", &cppkin::Trace::CreateSpan)
+            .def("submit", &cppkin::Trace::Submit);
+        
+        pybind11::class_<cppkin::CppkinParams>(module, "CppkinParams")
+            .def(pybind11::init<>())
+            .def("add_int", &cppkin::CppkinParams::AddParam<const int&>)
+            .def("add_str", &cppkin::CppkinParams::AddParam<const std::string&>)
+            .def("add_bool", &cppkin::CppkinParams::AddParam<const bool&>);
+        
+        module.attr("HOST_ADDRESS") = cppkin::ConfigTags::HOST_ADDRESS;
+        module.attr("PORT") = cppkin::ConfigTags::PORT;
+        module.attr("SERVICE_NAME") = cppkin::ConfigTags::SERVICE_NAME;
+        module.attr("DEBUG") = cppkin::ConfigTags::DEBUG;
+        module.attr("TRANSPORT_TYPE") = cppkin::ConfigTags::TRANSPORT_TYPE;
+        module.attr("SAMPLE_COUNT") = cppkin::ConfigTags::SAMPLE_COUNT;
+        
+        module.attr("SERVER_RECEIVE") = cppkin::Annotation::Value::SERVER_RECEIVE;
+        module.attr("SERVER_SEND") = cppkin::Annotation::Value::SERVER_SEND;
+        
+        module.def("init", &cppkin::Init, "initializes cppkin");
+        module.def("stop", &cppkin::Stop, "deallocate cppkin resources");
+    }
 #endif

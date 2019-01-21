@@ -9,7 +9,7 @@ if (NOT PYBIND_FOUND)
             )
 
     ExternalProject_Add_Step(PyBind PyBind_Install_Headers
-            COMMAND     mkdir -p <INSTALL_DIR>/include && cp -r <SOURCE_DIR>/include/pybind11 <INSTALL_DIR>/include/pybind
+            COMMAND     mkdir -p <INSTALL_DIR>/include && cp -r <SOURCE_DIR>/include/pybind11/ <INSTALL_DIR>/include/
             DEPENDEES   install
             )
 

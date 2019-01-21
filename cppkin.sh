@@ -26,7 +26,27 @@ display_help(){
 }
 
 clean_cmake_cache(){
-    rm -rf CMakeFiles && rm CMakeCache.txt
+
+    declare -a commands=("rm -rf CMakeFiles"
+                         "rm -rf CMakeFiles"
+                         "rm CMakeCache.txt"
+                         "rm *.cbp"
+                         "rm cmake_install.cmake"
+                         "rm compile_commands.json")
+
+    for f in *; do
+        if [[ -d $f ]]; then
+            for command in "${commands[@]}"; do
+                cd $f
+                $command 2>/dev/null || true
+                cd ..
+            done
+        fi
+    done
+
+    for command in "${commands[@]}"; do
+        $command 2>/dev/null || true
+    done
 }
 
 install(){
