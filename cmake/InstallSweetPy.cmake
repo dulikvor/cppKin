@@ -1,7 +1,7 @@
 if (NOT SweetPy_FOUND AND Core_FOUND)
 
     ExternalProject_Add(SweetPy
-            URL                 https://github.com/Dudi119/sweetPy/archive/v1.0.0.tar.gz
+            GIT_REPOSITORY      https://github.com/Dudi119/sweetPy
             CONFIGURE_COMMAND   cd <SOURCE_DIR> && cmake -DsweetPy_3RD_PARTY_DIR:STRING=<INSTALL_DIR> -DsweetPy_COMPILE_STEP=ON -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE} .
             BUILD_COMMAND       cd <SOURCE_DIR> && make
             INSTALL_COMMAND     cp <SOURCE_DIR>/bin/libsweetPy${CMAKE_DEBUG_POSTFIX}.so <INSTALL_DIR>/lib
@@ -10,6 +10,15 @@ if (NOT SweetPy_FOUND AND Core_FOUND)
 
     ExternalProject_Add_Step(SweetPy SweetPy_Install_Headers
             COMMAND     mkdir -p <INSTALL_DIR>/include/sweetPy && sh -c "cp <SOURCE_DIR>/src/*.h <INSTALL_DIR>/include/sweetPy/"
+            DEPENDEES   install
+            )
+    ExternalProject_Add_Step(SweetPy SweetPy_Install_Core_Headers
+            COMMAND     mkdir -p <INSTALL_DIR>/include/sweetPy/Core && sh -c "cp <SOURCE_DIR>/src/Core/*.h <INSTALL_DIR>/include/sweetPy/Core"
+            DEPENDEES   install
+            )
+
+    ExternalProject_Add_Step(SweetPy SweetPy_Install_Types_Headers
+            COMMAND     mkdir -p <INSTALL_DIR>/include/sweetPy/Types && sh -c "cp <SOURCE_DIR>/src/Types/*.h <INSTALL_DIR>/include/sweetPy/Types"
             DEPENDEES   install
             )
 

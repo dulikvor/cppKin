@@ -3,7 +3,7 @@ from server import WSGIRefServerStoppable
 import _cppkin
 from _cppkin import Trace, CppkinParams
 import unittest
-from Queue import Queue
+from queue import Queue
 from threading import Event
 
 outQueue = None

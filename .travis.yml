@@ -1,6 +1,6 @@
 language: python
 python:
-  - "2.7"
+  - "3.6"
 sudo: required
 
 matrix:
@@ -27,8 +27,8 @@ before_script:
 - ulimit -c unlimited -S       # enable core dumps
 
 script:
-- source cppkin.sh install --with_thrift --with_tests --with_examples
-- python ./tests/tests.py
+- source cppkin.sh install --with_tests --with_examples
+- PYBINDER=$(pwd)/bin python ./tests/tests.py
 
 after_failure:
 - COREFILE=$(find . -maxdepth 1 -name "core*" | head -n 1) # find core file

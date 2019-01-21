@@ -1,9 +1,13 @@
 from bottle import post, Bottle, request
 import json
 import socket, struct
-import Queue
+import queue
 from threading import Thread
 import server
+
+import sys
+import os
+sys.path.append(os.environ['PYBINDER'])
 
 
 class Span:
@@ -44,8 +48,7 @@ class JsonEncoder:
     def fromRawToAnnotation( annotationRawData ):
         annotation = Annotation()
         for attribute in JsonEncoder.annotationAttributeList:
-            value = annotationRawData[attribute].encode('ascii', 'ignore') if isinstance( annotationRawData[attribute], basestring) else annotationRawData[attribute]
-            setattr(annotation, attribute, value)
+            setattr(annotation, attribute, annotationRawData[attribute])
         annotation.endpoint = JsonEncoder.fromRawToEndPoint( annotationRawData['endpoint'])
         return annotation
 
@@ -53,8 +56,7 @@ class JsonEncoder:
     def fromRawToSpan( spanRawData ):
         span = Span()
         for attribute in JsonEncoder.spanAttributeList:
-            value = spanRawData[attribute].encode('ascii', 'ignore') if isinstance( spanRawData[attribute], basestring) else spanRawData[attribute]
-            setattr(span, attribute, value)
+            setattr(span, attribute, spanRawData[attribute])
 
         span.parentId = spanRawData.get('parentId', '')
 
@@ -67,7 +69,7 @@ class JsonEncoder:
     @staticmethod
     def fromJson( data ):
         spans = []
-        rawData = json.JSONDecoder().decode(data)
+        rawData = json.JSONDecoder().decode(data.decode('utf-8'))
         for spanRawData in rawData:
             spans.append(JsonEncoder.fromRawToSpan( spanRawData ))
 
@@ -76,7 +78,7 @@ class JsonEncoder:
 class ZipkinStubServer(object):
     def __init__(self, port = 9411):
         self._port = port
-        self._messageQueue = Queue.Queue()
+        self._messageQueue = queue.Queue()
         self._running = False
         self._thread = None
         self.outQueue = None
@@ -100,16 +102,17 @@ class ZipkinStubServer(object):
 
     def handleSpans(self):
         contentType = request.headers.get('Content-Type')
-        self._messageQueue.put((contentType, request.body.buf))
+        a = request.body.readlines()
+        self._messageQueue.put((contentType, a))
 
     def eventLoop(self):
         while self._running == True:
             try:
-                message = self._messageQueue.get(True, 2)
+                message = self._messageQueue.get(True)
                 if message[0] == 'application/json':
-                    spans = JsonEncoder.fromJson(message[1])
+                    spans = JsonEncoder.fromJson(message[1][0])
                     self.outQueue.put( spans )
-            except Queue.Empty:
+            except queue.Empty:
                 pass
 
     @staticmethod
