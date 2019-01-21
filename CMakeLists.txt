@@ -116,7 +116,7 @@ if(COMPILATION_STEP)
         add_definitions(-DCURL_STATICLIB)
         set(TO_LINK_LIBS libcurl Core${CMAKE_DEBUG_POSTFIX}.dll Ws2_32)
     else()
-        set(TO_LINK_LIBS pthread curl PocoJSON${POCO_SUFFIX} Core${CMAKE_DEBUG_POSTFIX})
+        set(TO_LINK_LIBS pthread curl libPocoJSON${POCO_SUFFIX}.so libCore${CMAKE_DEBUG_POSTFIX}.so)
     endif()
 
     add_library(cppkin SHARED src/Trace.h src/SpanContainer.h src/SpanContainer.cpp src/span_impl.cpp src/span_impl.h src/AnnotationType.cpp src/AnnotationType.h src/Annotation.h src/SimpleAnnotation.cpp src/SimpleAnnotation.h src/cppkin.h src/Trace.cpp src/Encoder.cpp src/Encoder.h src/EncodingTypes.cpp src/EncodingTypes.h src/EncodingContext.cpp src/EncodingContext.h src/TransportManager.cpp src/TransportManager.h src/Transport.cpp src/Transport.h src/HttpTransport.cpp src/HttpTransport.h src/ConfigTags.h src/TransportType.cpp src/TransportType.h src/TransportFactory.h src/TransportFactory.cpp src/ConfigParams.cpp src/ConfigTags.cpp src/Annotation.cpp src/Sampler.cpp src/JsonEncoder.h src/cppkin.cpp src/Export.h src/Span.cpp src/Span.h)
