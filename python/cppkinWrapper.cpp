@@ -1,5 +1,6 @@
 #include <memory>
 #include <string>
+#if defined SWEETPY
 #include "sweetPy/CPythonModule.h"
 #include "sweetPy/CPythonClass.h"
 #include "sweetPy/CPythonGlobalFunction.h"
@@ -7,12 +8,14 @@
 #include "sweetPy/InitModule.h"
 #include "sweetPy/CPythonEnum.h"
 #include "sweetPy/Core/Exception.h"
+#endif
 #include "src/Trace.h"
 #include "src/Span.h"
 #include "src/cppkin.h"
 #include "src/ConfigTags.h"
 #include "src/Annotation.h"
 
+#if defined SWEETPY
 INIT_MODULE(_cppkin, "cppkin library wrapper")
 {
     sweetPy::CPythonClass<cppkin::Span> span(module, "Span", "cppkin span");
@@ -43,3 +46,4 @@ INIT_MODULE(_cppkin, "cppkin library wrapper")
     sweetPy::CPythonGlobalFunction(module, "init", "initializes cppkin", &cppkin::Init);
     sweetPy::CPythonGlobalFunction(module, "stop", "deallocate cppkin resources", &cppkin::Stop);
 }
+#endif

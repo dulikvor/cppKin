@@ -20,6 +20,9 @@ display_help(){
     echo "--with_tests                  Run and install cppkin tests     "
     echo "                                                               "
     echo "--with_examples               Compile cppkin examples          "
+    echo "                                                               "
+    echo "--python_binding=<PRODUCT>    cppkin being exported by -       "
+    echo "                              sweetPy|pyBind. Default=sweetPy  "
 }
 
 clean_cmake_cache(){
@@ -33,6 +36,7 @@ install(){
     BUILD_TYPE=Release
     THIRD_PARTY_PREFIX=""
     OUTPUT_DIR=""
+    PYTHON_BINDING="sweetPy"
     for argument in "${@:2}"
     do
         case $argument in
@@ -54,15 +58,12 @@ install(){
             --output_dir=*)
                 OUTPUT_DIR="${argument#*=}"
             ;;
+            --python_binding=*)
+                PYTHON_BINDING="${argument#*=}"
+            ;;
         esac
     done
-    cmake -D 3RD_PARTY_INSTALL_STEP=ON -DWITH_THRIFT=$WITH_THRIFT  -DWITH_EXAMPLES=$WITH_EXAMPLES -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DPROJECT_3RD_LOC:STRING=$THIRD_PARTY_PREFIX . && make
-    clean_cmake_cache
-    cmake -D 3RD_PARTY_INSTALL_STEP=ON -DWITH_TESTS=$WITH_TESTS -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DPROJECT_3RD_LOC:STRING=$THIRD_PARTY_PREFIX . && make
-    clean_cmake_cache
-    cmake -D PRE_COMPILE_STEP=ON -DWITH_THRIFT=$WITH_THRIFT -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DPROJECT_3RD_LOC:STRING=$THIRD_PARTY_PREFIX . && make
-    clean_cmake_cache
-    cmake -D COMPILATION_STEP=ON -DWITH_THRIFT=$WITH_THRIFT -D WITH_TESTS=$WITH_TESTS -DWITH_EXAMPLES=$WITH_EXAMPLES -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DPROJECT_3RD_LOC:STRING=$THIRD_PARTY_PREFIX -DOUTPUT_DIR:STRING=$OUTPUT_DIR . && make
+    cmake -DPRE_COMPILE_STEP=ON -D3RD_PARTY_INSTALL_STEP=ON -DCOMPILATION_STEP=ON -DWITH_THRIFT=$WITH_THRIFT -D WITH_TESTS=$WITH_TESTS -DWITH_EXAMPLES=$WITH_EXAMPLES -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DPROJECT_3RD_LOC:STRING=$THIRD_PARTY_PREFIX -DOUTPUT_DIR:STRING=$OUTPUT_DIR -DPYTHON_BINDING:STRING=$PYTHON_BINDING . && make
     clean_cmake_cache
 }
 
