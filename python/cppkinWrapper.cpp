@@ -79,5 +79,11 @@ INIT_MODULE(_cppkin, "cppkin library wrapper")
         
         module.def("init", &cppkin::Init, "initializes cppkin");
         module.def("stop", &cppkin::Stop, "deallocate cppkin resources");
+        module.def("push_span", &cppkin::PushSpan, "pushes current span to the span container");
+        module.def("top_span", &cppkin::TopSpan, pybind11::return_value_policy::reference, "retrieves current top span from the span container");
+        module.def("pop_span", &cppkin::PopSpan, "pop the current top span at the span container");
+        module.def("cast_trace_to_span", [](cppkin::Trace& trace)->cppkin::Span&{
+            return static_cast<cppkin::Span&>(trace);},
+            pybind11::return_value_policy::reference, "casting from trace to span");
     }
 #endif

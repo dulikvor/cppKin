@@ -19,7 +19,8 @@ namespace cppkin
         static SpanContainer& Instance();
         ~SpanContainer();
         void PushSpan(Span& span);
-        Span* const  PopSpan();
+        Span& TopSpan();
+        void PopSpan();
      private:
         SpanContainer();
 

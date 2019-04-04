@@ -1,7 +1,7 @@
 from zipkinStubServer import ServerGuard, ZipkinStubServer
 from server import WSGIRefServerStoppable
-import _cppkin
-from _cppkin import Trace, CppkinParams
+import cppkin
+from cppkin import Trace, span, trace
 import unittest
 from queue import Queue
 from threading import Event
@@ -14,23 +14,38 @@ class TestCppkin(unittest.TestCase):
         pass
 
 class TestCppkinTrace(TestCppkin):
+
+    @span("Decorator_Span")
+    def span_wrapped_func(self):
+        pass
+
+    @trace("Decorator_Trace")
+    def trace_wrapped_func(self):
+        self.span_wrapped_func()
+
     def runTest(self):
         trace = Trace("TestTrace")
-        trace.submit(_cppkin.SERVER_SEND)
+        trace.submit(cppkin.SERVER_SEND)
 
+        self.trace_wrapped_func()
         global outQueue
         spans = outQueue.get()
-        self.assertEqual(len(spans), 1, "The amount of received spans dosn't match expected {0} != {1}". format(len(spans), 1))
+        self.assertEqual(len(spans), 3, "The amount of received spans dosn't match expected {0} != {1}". format(len(spans), 1))
         self.assertEqual(spans[0].name, "TestTrace", "Trace name dosn't match {0} != {1}".format(spans[0].name, "TestTrace"))
         self.assertEqual(spans[0].id, spans[0].traceId, "Trace id dosn't match id {0} != {1}".format(spans[0].id, spans[0].traceId))
+        self.assertEqual(spans[1].name, "Decorator_Span", "Trace name dosn't match {0} != {1}".format(spans[2].name, "Decorator_Span"))
+        self.assertEqual(spans[1].traceId, spans[2].id, "Trace id dosn't match id {0} != {1}".format(spans[1].traceId, spans[2].id))
+        self.assertEqual(spans[1].parentId, spans[2].id, "Span parent id dosn't match trace's id {0} != {1}".format(spans[1].parentId, spans[2].id))
+        self.assertEqual(spans[2].name, "Decorator_Trace", "Trace name dosn't match {0} != {1}".format(spans[2].name, "Decorator_Trace"))
+        self.assertEqual(spans[2].id, spans[2].traceId, "Trace id dosn't match id {0} != {1}".format(spans[2].id, spans[2].traceId))
 
 
 class TestCppkinTraceSpanRelation(TestCppkin):
     def runTest(self):
         trace = Trace("TestTrace")
-        span = trace.createSpan("TestSpan", _cppkin.SERVER_RECEIVE)
-        span.submit(_cppkin.SERVER_SEND)
-        trace.submit(_cppkin.SERVER_SEND)
+        span = trace.createSpan("TestSpan", cppkin.SERVER_RECEIVE)
+        span.submit(cppkin.SERVER_SEND)
+        trace.submit(cppkin.SERVER_SEND)
 
         global outQueue
         spans = []
@@ -45,15 +60,7 @@ class TestCppkinTraceSpanRelation(TestCppkin):
 def main():
     port = WSGIRefServerStoppable.findFreePort()
 
-    params = CppkinParams()
-    params.add_str(_cppkin.HOST_ADDRESS, "127.0.0.1")
-    params.add_int(_cppkin.PORT, port)
-    params.add_str(_cppkin.SERVICE_NAME, "cppkinTest")
-    params.add_bool(_cppkin.DEBUG, True)
-    params.add_str(_cppkin.TRANSPORT_TYPE, "Http Transport")
-    params.add_int(_cppkin.SAMPLE_COUNT, 1)
-
-    _cppkin.init( params )
+    cppkin.start("127.0.0.1", port, "cppkinTest", 1)
 
     global outQueue
     global startEvent
@@ -64,7 +71,7 @@ def main():
         unittest.main(exit=False)
         server.stop()
 
-    _cppkin.stop()
+    cppkin.stop()
 
 if __name__ == "__main__":
     main()

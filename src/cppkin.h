@@ -20,7 +20,8 @@ namespace cppkin {
     CPPKIN_EXPORT void Stop();
     //Using the tls
     CPPKIN_EXPORT void PushSpan(Span& span);
-    CPPKIN_EXPORT Span* const PopSpan();
+    CPPKIN_EXPORT Span& TopSpan();
+    CPPKIN_EXPORT void PopSpan();
 }
 #if defined(WIN32)
 #pragma warning( pop )

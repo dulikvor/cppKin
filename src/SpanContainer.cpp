@@ -33,13 +33,18 @@ namespace cppkin
     void SpanContainer::PushSpan(Span& span) {
         m_spans.push_front(&span);
     }
-
-    Span* const SpanContainer::PopSpan(){
+    
+    Span& SpanContainer::TopSpan(){
         if (m_spans.empty())
             throw Exception(__CORE_SOURCE, "Span container is empty");
+        
+        return *m_spans.front();
+    }
 
-        Span* const span = m_spans.front();
+    void SpanContainer::PopSpan(){
+        if (m_spans.empty())
+            return;
+
         m_spans.pop_front();
-        return span;
     }
 }
