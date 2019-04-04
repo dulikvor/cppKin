@@ -15,5 +15,10 @@ target_link_libraries(_cppkin ${PROJECT_3RD_LOC}/lib/libCore${CMAKE_DEBUG_POSTFI
 
 ADD_CUSTOM_COMMAND(TARGET _cppkin
         POST_BUILD
-        COMMAND mv ${OUTPUT_DIR}/lib_cppkin${CMAKE_DEBUG_POSTFIX}.so ${OUTPUT_DIR}/_cppkin.so
+        COMMAND mv ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/lib_cppkin${CMAKE_DEBUG_POSTFIX}.so ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/_cppkin.so
+        )
+
+ADD_CUSTOM_COMMAND(TARGET _cppkin
+        POST_BUILD
+        COMMAND cp cppkin.py ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}
         )

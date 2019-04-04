@@ -25,9 +25,14 @@ namespace cppkin
     {
         SpanContainer::Instance().PushSpan(span);
     }
-
-    Span* const PopSpan()
+    
+    Span& TopSpan()
     {
-        return SpanContainer::Instance().PopSpan();
+        return SpanContainer::Instance().TopSpan();
+    }
+
+    void PopSpan()
+    {
+        SpanContainer::Instance().PopSpan();
     }
 }

@@ -27,7 +27,7 @@ before_script:
 - ulimit -c unlimited -S       # enable core dumps
 
 script:
-- source cppkin.sh install --with_tests --with_examples
+- source cppkin.sh compile --with_tests --with_examples --python_binding=pyBind
 - PYBINDER=$(pwd)/bin python ./tests/tests.py
 
 after_failure:

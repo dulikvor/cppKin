@@ -2,12 +2,12 @@
 
 display_help(){
     echo "                                                               "
-    echo "cppkin install [options]..."
+    echo "cppkin compile [options]..."
     echo "Install                       Install related options."
     echo "======="
     echo "--3rd_loc_prefix=<PREFIX>     3rd party install area prefix.   "
     echo "                                                               "
-    echo "--output_dir=<DIR>            cppkin binary install dir.       "
+    echo "--output_dir=<DIR>            cppkin installation dir.         "
     echo "                                                               "
     echo "--debug                       debug build, otherwise - release."
     echo "                                                               "
@@ -49,7 +49,7 @@ clean_cmake_cache(){
     done
 }
 
-install(){
+compile(){
     WITH_THRIFT=OFF
     WITH_TESTS=OFF
     WITH_EXAMPLES=OFF
@@ -84,7 +84,6 @@ install(){
         esac
     done
     cmake -DPRE_COMPILE_STEP=ON -D3RD_PARTY_INSTALL_STEP=ON -DCOMPILATION_STEP=ON -DWITH_THRIFT=$WITH_THRIFT -D WITH_TESTS=$WITH_TESTS -DWITH_EXAMPLES=$WITH_EXAMPLES -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DPROJECT_3RD_LOC:STRING=$THIRD_PARTY_PREFIX -DOUTPUT_DIR:STRING=$OUTPUT_DIR -DPYTHON_BINDING:STRING=$PYTHON_BINDING . && make
-    clean_cmake_cache
 }
 
 while true; do
@@ -98,8 +97,8 @@ while true; do
                 return 0
             fi
         ;;
-        install)
-            install $@
+        compile)
+            compile $@
             if [ "$0" = "$BASH_SOURCE" ]
             then
                 exit 0
@@ -117,7 +116,7 @@ while true; do
             fi
         ;;
         *)
-            echo "supported commands - --help, install, clean_cache"
+            echo "supported commands - --help, compile, clean_cache"
             if [ "$0" = "$BASH_SOURCE" ]
             then
                 exit 0

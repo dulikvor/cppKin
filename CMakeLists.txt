@@ -98,18 +98,18 @@ if(COMPILATION_STEP)
     set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
     set(PROJECT_DIR ${CMAKE_CURRENT_SOURCE_DIR})
     if(NOT OUTPUT_DIR)
-        set(OUTPUT_DIR ${PROJECT_DIR}/bin)
+        set(OUTPUT_DIR ${PROJECT_DIR})
     endif()
     if(NOT IS_ABSOLUTE ${OUTPUT_DIR})
         get_filename_component(OUTPUT_DIR ${OUTPUT_DIR} ABSOLUTE BASE_DIR ${PROJECT_SOURCE_DIR})
     endif()
     message(STATUS "Output dir - ${OUTPUT_DIR}")
 
-    set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${OUTPUT_DIR})
-    set(CMAKE_LIBRARY_OUTPUT_DIRECTORY  ${OUTPUT_DIR})
-    set(CMAKE_RUNTIME_OUTPUT_DIRECTORY  ${OUTPUT_DIR})
-    set(CMAKE_BINARY_DIR ${OUTPUT_DIR})
-    set(EXECUTABLE_OUTPUT_PATH ${OUTPUT_DIR})
+    set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_DIR}/lib)
+    set(CMAKE_LIBRARY_OUTPUT_DIRECTORY  ${PROJECT_DIR}/bin)
+    set(CMAKE_RUNTIME_OUTPUT_DIRECTORY  ${PROJECT_DIR}/bin)
+    set(CMAKE_BINARY_DIR ${PROJECT_DIR}/bin)
+    set(EXECUTABLE_OUTPUT_PATH ${PROJECT_DIR}/bin)
     add_definitions(-DCPPKIN_DLL)
 
     if(WIN32)
@@ -120,6 +120,7 @@ if(COMPILATION_STEP)
     endif()
 
     add_library(cppkin SHARED src/Trace.h src/SpanContainer.h src/SpanContainer.cpp src/span_impl.cpp src/span_impl.h src/AnnotationType.cpp src/AnnotationType.h src/Annotation.h src/SimpleAnnotation.cpp src/SimpleAnnotation.h src/cppkin.h src/Trace.cpp src/Encoder.cpp src/Encoder.h src/EncodingTypes.cpp src/EncodingTypes.h src/EncodingContext.cpp src/EncodingContext.h src/TransportManager.cpp src/TransportManager.h src/Transport.cpp src/Transport.h src/HttpTransport.cpp src/HttpTransport.h src/ConfigTags.h src/TransportType.cpp src/TransportType.h src/TransportFactory.h src/TransportFactory.cpp src/ConfigParams.cpp src/ConfigTags.cpp src/Annotation.cpp src/Sampler.cpp src/JsonEncoder.h src/cppkin.cpp src/Export.h src/Span.cpp src/Span.h)
+    set_target_properties(cppkin PROPERTIES PUBLIC_HEADER "src/Trace.h;src/Annotation.h;src/cppkin.h;src/Span.h")
 
     if(WITH_THRIFT)
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DTHRIFT_FOUND")
@@ -144,6 +145,10 @@ if(COMPILATION_STEP)
         add_subdirectory(bench)
         add_subdirectory(python)
     endif()
+    install(TARGETS cppkin
+            PUBLIC_HEADER DESTINATION ${OUTPUT_DIR}/include
+            LIBRARY DESTINATION ${OUTPUT_DIR}/lib
+            )
 endif()
 
 if(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)

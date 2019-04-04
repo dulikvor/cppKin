@@ -20,7 +20,6 @@ namespace cppkin
         m_batchSize = ConfigParams::Instance().GetBatchSize();
         m_spanQueue.reset(new LockFreeSpansQueue( m_batchSize * 3 ));
         m_worker = std::unique_ptr<Thread>(new Thread("TransportManager", std::bind(&TransportManager::TransportWorker, this)));
-        m_worker->Start();
     }
 
     TransportManager::~TransportManager() {
@@ -30,7 +29,7 @@ namespace cppkin
 
     void TransportManager::Stop() {
         m_terminate = true;
-        m_worker->Join();
+        m_worker->join();
     }
 
     void TransportManager::PushSpan(const std::shared_ptr<span_impl>& span) {
