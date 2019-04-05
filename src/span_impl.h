@@ -54,8 +54,10 @@ namespace cppkin
 
         span_impl(const std::string& name, uint_fast64_t traceID, uint_fast64_t parentID, uint_fast64_t id, bool sampled);
         span_impl(const std::string& name, uint_fast64_t traceID, bool sampled);
+        span_impl(const std::string& b3format);
         static uint_fast64_t GenerateID();
         int_fast64_t GetCurrentTime();
+        std::string GetHeaderB3Format() const;
 
     private:
         SpanHeader m_header;

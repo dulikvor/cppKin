@@ -1,13 +1,12 @@
 #include "span_impl.h"
 #include <chrono>
 #include <random>
+#include <iomanip>
 #include "core/Assert.h"
 #include "core/Environment.h"
 #include "SimpleAnnotation.h"
 #include "ConfigTags.h"
 #include "ConfigParams.h"
-
-using namespace std;
 
 namespace cppkin
 {
@@ -22,6 +21,25 @@ namespace cppkin
 
     span_impl::span_impl(const std::string &name, uint_fast64_t traceID, bool sampled) :
             m_header(name, traceID, traceID, sampled), m_timeStamp(GetCurrentTime()) {}
+    
+    span_impl::span_impl(const std::string &b3format)
+        : m_timeStamp(GetCurrentTime())
+    {
+        std::istringstream is(b3format);
+        std::string dummy_s;
+        char dummy_c, debug_or_sampled;
+        is >> std::hex >> dummy_s >> m_header.TraceID >>
+            dummy_c >> m_header.ID>> dummy_c >> debug_or_sampled;
+        if(is.peek() == '-')
+        {
+            is >> dummy_c >> m_header.ParentID;
+            m_header.ParentIdSet = true;
+        }
+        if(debug_or_sampled == 'd' || debug_or_sampled == '1')
+            m_header.Sampled = true;
+        else
+            m_header.Sampled = false;
+    }
 
     span_impl::span_impl(const span_impl& obj)
     {
@@ -74,16 +92,33 @@ namespace cppkin
     }
 
     int_fast64_t span_impl::GetCurrentTime() {
-        auto currentTime = chrono::system_clock::now();
-        auto value = chrono::duration_cast<std::chrono::microseconds>(currentTime.time_since_epoch());
+        auto currentTime = std::chrono::system_clock::now();
+        auto value = std::chrono::duration_cast<std::chrono::microseconds>(currentTime.time_since_epoch());
         return value.count();
     }
 
     uint_fast64_t span_impl::GenerateID(){
-        static mt19937_64 twister;
-        static random_device device;
+        static std::mt19937_64 twister;
+        static std::random_device device;
         uint64_t seed = (static_cast<uint64_t>(device()) << 32) | device();
         twister.seed((unsigned long)seed);
         return twister();
+    }
+    
+    std::string span_impl::GetHeaderB3Format() const
+    {
+        bool debug = ConfigParams::Instance().GetDebug();
+        std::ostringstream os;
+        {
+            std::ostream temp_os(os.rdbuf());
+            temp_os << std::hex << "b3: " << m_header.TraceID << '-' << m_header.ID << "-";
+        }
+        if(debug)
+            os << 'd';
+        else
+            os << (m_header.Sampled ? 1 : 0);
+        
+        os << '-' << std::hex << m_header.ParentID;
+        return os.str();
     }
 }
