@@ -189,21 +189,36 @@ the header is used to contain the most important data depicting the current Trac
 - Parent Span id.
 - Sampled - is the Trace/Span is sampled or not.
 
-The header is used to keep track of our current trace context across different processes, usually it will be the header which will be serialized and provided via, for example - an RPC to the designated process.
+The header is used to keep track of our current trace context across different processes.
 
-in order to fetch the current Trace/Span header, use the following example:
+The header can be retrieved in two fromats:
+* By directly referencing the header it self:
 ```c++
 auto traceHeader = trace.GetHeader();
 auto spanHeader = span.GetHeader();
 ```
+* By retrieving the header in b3 format, returned as a single string instance.
+```c++
+std::string header_in_b3_format = trace.GetHeaderB3Format();
+std::string header_in_b3_format = span.GetHeaderB3Format();
+```
+for more information regarding the b3 header and its format - https://cwiki.apache.org/confluence/display/ZIPKIN/b3+single+header+format
+
 ### Join a Trace/Span
 In order to join an existing Trace/Span use the `Join` method and a received Trace/Span header:
+* One possibility is to provide the header state in full - 
 ```c++
 Span span();
 span.Join(traceHeader.Name.c_str(), traceHeader.TraceID, traceHeader.ParentID, traceHeader.ID, traceHeader.Sampled);
 ```
-
+* The other is to use the b3 format:
+```c++
+std::string header_in_b3_format = ...
+Span span();
+span.Join(header_in_b3_format);
+```
 Span will always be used at the receiving side (Continuing an existing trace or span).
+
 ### Passing Trace/Span across multiple stack frames:
 It is possible to provide an instance of Trace/Span across many stack frames (no injection is in need).
 use the Push/Pop command, in order the provide a specific span.
