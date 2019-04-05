@@ -6,7 +6,6 @@
 #include "ConfigParams.h"
 #include "SimpleAnnotation.h"
 
-using namespace std;
 namespace json = Poco::JSON;
 
 namespace cppkin {
@@ -60,14 +59,14 @@ namespace cppkin {
         jsonAnnotations.add(jsonAnnotation);
     }
 
-    inline string EncoderImpl<EncodingType::Json>::ToString(const span_impl& span) const {
+    inline std::string EncoderImpl<EncodingType::Json>::ToString(const span_impl& span) const {
         json::Object jsonSpan = EncoderImpl<EncodingType::Json>::Serialize(span);
-        ostringstream oss;
+        std::ostringstream oss;
         jsonSpan.stringify(oss);
         return oss.str();
     }
 
-    inline string EncoderImpl<EncodingType::Json>::ToString(const std::vector<EncoderContext::ContextElement>& spans) const {
+    inline std::string EncoderImpl<EncodingType::Json>::ToString(const std::vector<EncoderContext::ContextElement>& spans) const {
 
         json::Array jsonSpans;
         for (const auto& span : spans) {
@@ -75,7 +74,7 @@ namespace cppkin {
             jsonSpans.add(jsonSpan);
         }
 
-        ostringstream oss;
+        std::ostringstream oss;
         jsonSpans.stringify(oss);
         return oss.str();
     }

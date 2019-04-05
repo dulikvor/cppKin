@@ -30,6 +30,11 @@ namespace cppkin
     {
         m_span.reset(new span_impl(operationName, traceId, parentId, id, sampled));
     }
+    
+    void Span::Join(const std::string& b3format)
+    {
+        m_span.reset(new span_impl(b3format));
+    }
 
     void Span::AddAnnotation(const char* value)
     {
@@ -57,6 +62,11 @@ namespace cppkin
     bool Span::IsSampled() const
     {
         return m_span->GetHeader().Sampled;
+    }
+    
+    std::string Span::GetHeaderB3Format() const
+    {
+        return m_span->GetHeaderB3Format();
     }
 
     const span_impl::SpanHeader& Span::GetHeader() const

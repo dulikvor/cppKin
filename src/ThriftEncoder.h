@@ -9,7 +9,6 @@
 #include "SimpleAnnotation.h"
 
 using namespace apache::thrift;
-using namespace std;
 
 namespace cppkin {
     template<>

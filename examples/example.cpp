@@ -18,11 +18,21 @@ static void portable_sleep(int duration)
 #endif
 }
 
+static void boo(const std::string& b3format)
+{
+    cppkin::Span span_2;
+    span_2.Join(b3format);
+    auto span_3 = span_2.CreateSpan("B3ChildSpan");
+    portable_sleep(5);
+    span_3.Submit();
+}
+
 static void foo()
 {
     cppkin::Span& span_1 = cppkin::TopSpan();
     auto span_2 = span_1.CreateSpan("Span2");
-    portable_sleep(10);
+    portable_sleep(1);
+    boo(span_2.GetHeaderB3Format());
     span_2.Submit();
 }
 
@@ -36,7 +46,6 @@ int main( int argc, const char *argv[] )
           ("host", value<string>()->default_value("127.0.0.1"), "Host" )
           ("port", value<int>()->default_value(-1), "Port")
           ("service", value<string>()->default_value("example_service"), "Service");
-
     variables_map vm;
     store(parse_command_line(argc, argv, desc), vm);
     notify(vm);
@@ -74,11 +83,11 @@ int main( int argc, const char *argv[] )
     cppkin::Init(cppkinParams);
 
     cppkin::Trace trace("TestTrace");
-    portable_sleep(10);
+    portable_sleep(1);
     trace.AddAnnotation("TraceEvent");
 
     auto span_1 = trace.CreateSpan("Span1");
-    portable_sleep(10);
+    portable_sleep(1);
     span_1.AddAnnotation("Span1Event");
     //Lets use the span container in order to reach a certain stack frame.
     cppkin::PushSpan(span_1);
@@ -86,7 +95,7 @@ int main( int argc, const char *argv[] )
     cppkin::PopSpan();
 
     span_1.Submit();
-    portable_sleep(10);
+    portable_sleep(1);
     trace.Submit();
 
 #if defined(WIN32)
