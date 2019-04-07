@@ -2,11 +2,7 @@
 #include <chrono>
 #include <random>
 #include <iomanip>
-#include "core/Assert.h"
-#include "core/Environment.h"
 #include "SimpleAnnotation.h"
-#include "ConfigTags.h"
-#include "ConfigParams.h"
 
 namespace cppkin
 {
@@ -46,9 +42,15 @@ namespace cppkin
         for(const auto& event : obj.m_events)
         {
             if( event->GetType() == AnnotationType::Simple) {
-                SimpleAnnotation &simpleAnnotation = static_cast<SimpleAnnotation &>(*event);
+                auto& simpleAnnotation = static_cast<SimpleAnnotation &>(*event);
                 m_events.emplace_back(new SimpleAnnotation(simpleAnnotation));
             }
+            else
+            {
+                auto &binaryAnnotation = static_cast<BinaryAnnotation &>(*event);
+                m_events.emplace_back(new BinaryAnnotation(binaryAnnotation));
+            }
+            
         }
         m_timeStamp = obj.m_timeStamp;
         m_duration = obj.m_duration;
@@ -64,7 +66,7 @@ namespace cppkin
     }
 
     void span_impl::CreateSimpleAnnotation(const std::string &event) {
-        VERIFY(core::Environment::Instance().GetIPV4Addresses().size() > 0, "Missing IPV4 address");
+        VERIFY(!core::Environment::Instance().GetIPV4Addresses().empty(), "Missing IPV4 address");
         static Annotation::EndPoint endPoint(ConfigParams::Instance().GetServiceName(),
                                       core::Environment::Instance().GetIPV4Addresses().back(),
                                       ConfigParams::Instance().GetPort());
@@ -72,7 +74,7 @@ namespace cppkin
     }
 
     void span_impl::CreateSimpleAnnotation(const std::string &event, int_fast64_t timeStamp) {
-        VERIFY(core::Environment::Instance().GetIPV4Addresses().size() > 0, "Missing IPV4 address");
+        VERIFY(!core::Environment::Instance().GetIPV4Addresses().empty(), "Missing IPV4 address");
         static Annotation::EndPoint endPoint(ConfigParams::Instance().GetServiceName(),
                                              core::Environment::Instance().GetIPV4Addresses().back(),
                                              ConfigParams::Instance().GetPort());

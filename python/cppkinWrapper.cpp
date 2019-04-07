@@ -54,12 +54,16 @@ INIT_MODULE(_cppkin, "cppkin library wrapper")
         pybind11::class_<cppkin::Span>(module, "Span")
             .def(pybind11::init<>())
             .def("createSpan", &cppkin::Span::CreateSpan)
-            .def("submit", &cppkin::Span::Submit);
+            .def("submit", &cppkin::Span::Submit)
+            .def("add_binary_annotation", static_cast<void(cppkin::Span::*)(const char*)>(&cppkin::Span::AddAnnotation))
+            .def("add_binary_annotation", &cppkin::Span::AddBinaryAnnotation<std::string const &>);
         
         pybind11::class_<cppkin::Trace>(module, "Trace")
             .def(pybind11::init<const char*>())
             .def("createSpan", &cppkin::Trace::CreateSpan)
-            .def("submit", &cppkin::Trace::Submit);
+            .def("submit", &cppkin::Trace::Submit)
+            .def("add_binary_annotation", static_cast<void(cppkin::Trace::*)(const char*)>(&cppkin::Trace::AddAnnotation))
+            .def("add_binary_annotation", &cppkin::Trace::AddBinaryAnnotation<std::string const &>);
         
         pybind11::class_<cppkin::CppkinParams>(module, "CppkinParams")
             .def(pybind11::init<>())
@@ -85,5 +89,14 @@ INIT_MODULE(_cppkin, "cppkin library wrapper")
         module.def("cast_trace_to_span", [](cppkin::Trace& trace)->cppkin::Span&{
             return static_cast<cppkin::Span&>(trace);},
             pybind11::return_value_policy::reference, "casting from trace to span");
+    
+        module.def("add_binary_annotation", [](const std::string& key, const std::string& value){
+                    auto& span = cppkin::TopSpan();
+                    span.AddBinaryAnnotation(key.c_str(), value);},
+                   "adding a new binary annotation for current span");
+        module.def("add_annotation", [](const std::string& value){
+                       auto& span = cppkin::TopSpan();
+                       span.AddAnnotation(value.c_str());},
+                   "adding a new annotation for current span");
     }
 #endif

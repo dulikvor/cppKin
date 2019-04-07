@@ -1,5 +1,5 @@
 import _cppkin
-from _cppkin import Span, Trace, SERVER_RECEIVE, SERVER_SEND
+from _cppkin import Span, Trace, SERVER_RECEIVE, SERVER_SEND, add_binary_annotation, add_annotation
 
 
 def start(host_address, port, service_name, sample_count):

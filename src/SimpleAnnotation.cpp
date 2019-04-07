@@ -1,4 +1,5 @@
 #include "SimpleAnnotation.h"
+#include "AnnotationType.h"
 
 using namespace std;
 
