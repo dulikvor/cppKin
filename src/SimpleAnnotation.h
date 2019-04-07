@@ -2,7 +2,6 @@
 
 #include <string>
 #include <cinttypes>
-#include "AnnotationType.h"
 #include "Annotation.h"
 
 namespace cppkin
@@ -11,7 +10,7 @@ namespace cppkin
     {
     public:
         SimpleAnnotation(const EndPoint& endPoint, const std::string& event, int_fast64_t timeStamp);
-        virtual ~SimpleAnnotation(){}
+        ~SimpleAnnotation() override = default;
         const std::string& GetEvent() const{
             return m_event;
         }

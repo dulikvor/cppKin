@@ -23,6 +23,13 @@ namespace cppkin
         void Join(const std::string& b3format);
         void AddAnnotation(const char* value);
         void AddAnnotation(const char* value, int_fast64_t timeStamp);
+        template<typename T>
+        void AddBinaryAnnotation(const char* key, T&& value)
+        {
+            if(m_span->GetHeader().Sampled == false)
+                return;
+            m_span->CreateBinaryAnnotation(key, std::forward<T>(value));
+        }
         void Submit(const char* value = Annotation::Value::SERVER_SEND);
         bool IsSampled() const;
         std::string GetHeaderB3Format() const;

@@ -19,6 +19,7 @@ class Span:
         self.duration = ''
         self.parentId = ''
         self.annotations = []
+        self.binaryAnnotations = []
 
 class EndPoint:
     def __init__(self):
@@ -32,9 +33,16 @@ class Annotation:
         self.timestamp = -1
         self.value = ""
 
+class BinaryAnnotation:
+    def __init__(self):
+        self.endpoint = EndPoint()
+        self.key = ""
+        self.value = ""
+
 class JsonEncoder:
     spanAttributeList = ['name', 'id', 'timestamp', 'traceId', 'duration']
     annotationAttributeList = ['timestamp', 'value']
+    binaryAnnotationAttributeList = ['key', 'value']
 
     @staticmethod
     def fromRawToEndPoint( endPointRawData):
@@ -53,6 +61,14 @@ class JsonEncoder:
         return annotation
 
     @staticmethod
+    def fromRawToBinaryAnnotation( binaryAnnotationRawData ):
+        binaryAnnotation = BinaryAnnotation()
+        for attribute in JsonEncoder.binaryAnnotationAttributeList:
+            setattr(binaryAnnotation, attribute, binaryAnnotationRawData[attribute])
+        binaryAnnotation.endpoint = JsonEncoder.fromRawToEndPoint( binaryAnnotationRawData['endpoint'])
+        return binaryAnnotation
+
+    @staticmethod
     def fromRawToSpan( spanRawData ):
         span = Span()
         for attribute in JsonEncoder.spanAttributeList:
@@ -63,6 +79,10 @@ class JsonEncoder:
         for annotationData in spanRawData['annotations']:
             annotation = JsonEncoder.fromRawToAnnotation( annotationData )
             span.annotations.append(annotation)
+
+        for binaryAnnotationData in spanRawData['binaryAnnotations']:
+            binaryAnnotation = JsonEncoder.fromRawToBinaryAnnotation( binaryAnnotationData )
+            span.binaryAnnotations.append(binaryAnnotation)
 
         return span
 

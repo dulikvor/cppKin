@@ -17,10 +17,12 @@ class TestCppkinTrace(TestCppkin):
 
     @span("Decorator_Span")
     def span_wrapped_func(self):
+        cppkin.add_binary_annotation("some key", "some value")
         pass
 
     @trace("Decorator_Trace")
     def trace_wrapped_func(self):
+        cppkin.add_annotation("some event")
         self.span_wrapped_func()
 
     def runTest(self):
@@ -36,8 +38,11 @@ class TestCppkinTrace(TestCppkin):
         self.assertEqual(spans[1].name, "Decorator_Span", "Trace name dosn't match {0} != {1}".format(spans[2].name, "Decorator_Span"))
         self.assertEqual(spans[1].traceId, spans[2].id, "Trace id dosn't match id {0} != {1}".format(spans[1].traceId, spans[2].id))
         self.assertEqual(spans[1].parentId, spans[2].id, "Span parent id dosn't match trace's id {0} != {1}".format(spans[1].parentId, spans[2].id))
+        binary_annotation_state = lambda annotation: (annotation.key, annotation.value)
+        self.assertEqual(binary_annotation_state(spans[1].binaryAnnotations[0]), ("some key", "some value"), "Span's binary annotation dons't match {0} != {1}".format(binary_annotation_state(spans[1].binaryAnnotations[0]), ("some key", "some value")))
         self.assertEqual(spans[2].name, "Decorator_Trace", "Trace name dosn't match {0} != {1}".format(spans[2].name, "Decorator_Trace"))
         self.assertEqual(spans[2].id, spans[2].traceId, "Trace id dosn't match id {0} != {1}".format(spans[2].id, spans[2].traceId))
+        self.assertEqual(spans[2].annotations[1].value, "some event", "Span's annotation dons't match {0} != {1}".format(spans[2].annotations[1].value, "some event"))
 
 
 class TestCppkinTraceSpanRelation(TestCppkin):

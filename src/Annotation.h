@@ -33,11 +33,11 @@ namespace cppkin
     public:
         Annotation(AnnotationType type, const EndPoint& endPoint): m_type(type),
             m_endPoint(endPoint){}
-        virtual ~Annotation(){}
+        virtual ~Annotation() = default;
         AnnotationType GetType() const{ return m_type; }
         const EndPoint& GetEndPoint() const {return m_endPoint;}
 
-    private:
+    protected:
         AnnotationType m_type;
         EndPoint m_endPoint;
     };

@@ -1,11 +1,10 @@
 #include "Span.h"
-#include "span_impl.h"
 #include "TransportManager.h"
 
 namespace cppkin
 {
 
-    Span::Span() {}
+    Span::Span() = default;
 
     Span::Span(const char* operationName, uint_fast64_t traceId, bool sampled)
     {
