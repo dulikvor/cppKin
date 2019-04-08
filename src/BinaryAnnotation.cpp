@@ -15,14 +15,14 @@ namespace cppkin
             :Annotation(AnnotationType::Binary, endPoint), m_key(key),
              m_valueType(BinaryValueTypes::String)
     {
-        new(&m_value.m_str_val)std::string(value);
+        m_value.m_str_val = new std::string(value);
     }
     
     BinaryAnnotation::BinaryAnnotation(const EndPoint& endPoint, const char* key, const char* value)
             :Annotation(AnnotationType::Binary, endPoint), m_key(key),
              m_valueType(BinaryValueTypes::String)
     {
-        new(&m_value.m_str_val)std::string(value);
+        m_value.m_str_val = new std::string(value);
     }
     
     BinaryAnnotation::BinaryAnnotation(const BinaryAnnotation& object)
@@ -35,7 +35,7 @@ namespace cppkin
                 m_value.m_bool_val = object.m_value.m_bool_val;
                 break;
             case BinaryValueTypes::String:
-                new(&m_value.m_str_val)std::string(object.m_value.m_str_val);
+                m_value.m_str_val = new std::string(*object.m_value.m_str_val);
                 break;
         }
     }
@@ -43,7 +43,7 @@ namespace cppkin
     BinaryAnnotation::~BinaryAnnotation()
     {
         if(m_valueType == BinaryValueTypes::String)
-        m_value.m_str_val.std::string::~basic_string();
+			delete m_value.m_str_val;
     }
 
     void BinaryAnnotation::GetValue(bool& value) const
@@ -56,6 +56,6 @@ namespace cppkin
     {
         if(m_valueType != BinaryValueTypes::String)
             throw core::Exception(__CORE_SOURCE, "Requested type dosen't match the stored instance type");
-        value = m_value.m_str_val;
+        value = *m_value.m_str_val;
     }
 }

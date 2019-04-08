@@ -2,18 +2,19 @@
 
 #include <string>
 #include <cinttypes>
+#include <memory>
 #include "Annotation.h"
+#include "Export.h"
 
 namespace cppkin
 {
-    
     union BinaryValue
     {
         BinaryValue(){}
         ~BinaryValue(){}
         
         bool         m_bool_val;
-        std::string  m_str_val;
+        std::string* m_str_val;
     };
     
     enum BinaryValueTypes
@@ -22,7 +23,7 @@ namespace cppkin
         String
     };
     
-    class BinaryAnnotation : public Annotation
+    class CPPKIN_EXPORT BinaryAnnotation : public Annotation
     {
     public:
         BinaryAnnotation(const EndPoint& endPoint, const char* key, bool value);

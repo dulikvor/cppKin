@@ -13,7 +13,7 @@
 
 namespace cppkin
 {
-    class CPPKIN_EXPORT SpanContainer
+    class SpanContainer
     {
     public:
         static SpanContainer& Instance();

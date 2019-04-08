@@ -7,10 +7,10 @@
 
 namespace cppkin
 {
-    class Annotation
+    class CPPKIN_EXPORT Annotation
     {
     public:
-        struct EndPoint
+        struct CPPKIN_EXPORT EndPoint
         {
         public:
             EndPoint(const std::string& serviceName, std::string host, uint_fast16_t port);

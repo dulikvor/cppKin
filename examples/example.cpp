@@ -90,7 +90,6 @@ int main( int argc, const char *argv[] )
     portable_sleep(1);
     span_1.AddAnnotation("Span1Event");
     span_1.AddBinaryAnnotation("str value", "some value");
-    span_1.AddBinaryAnnotation("boolean value", true);
     //Lets use the span container in order to reach a certain stack frame.
     cppkin::PushSpan(span_1);
     foo();
