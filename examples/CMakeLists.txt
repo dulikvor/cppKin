@@ -6,11 +6,12 @@ if(${CMAKE_BUILD_TYPE} STREQUAL "Debug")
 endif()
 
 include_directories(.)
+remove_definitions(-DCPPKIN_DLL)
 add_executable(example example.cpp)
 
 if(WIN32)
     add_definitions(-DBOOST_ALL_DYN_LINK)
-    set(TO_LINK_LIBS cppkin ${boost_lib}.dll libCore${CMAKE_DEBUG_POSTFIX}.dll curl)
+    set(TO_LINK_LIBS cppkin ${boost_lib}.dll Core${CMAKE_DEBUG_POSTFIX}.dll libcurl)
 else()
     set(TO_LINK_LIBS cppkin boost_program_options libCore${CMAKE_DEBUG_POSTFIX}.so curl)
 endif()

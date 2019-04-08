@@ -3,9 +3,7 @@
 #include <memory>
 #include "Export.h"
 #include "core/GeneralParams.h"
-#include "ConfigParams.h"
 #include "ConfigTags.h"
-#include "SpanContainer.h"
 #include "Trace.h"
 #include "Span.h"
 #if defined(WIN32)

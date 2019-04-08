@@ -2,6 +2,7 @@
 #include <chrono>
 #include <random>
 #include <iomanip>
+#include <sstream>
 #include "SimpleAnnotation.h"
 
 namespace cppkin

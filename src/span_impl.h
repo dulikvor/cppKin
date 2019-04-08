@@ -8,7 +8,6 @@
 #include "core/Environment.h"
 #include "Annotation.h"
 #include "BinaryAnnotation.h"
-#include "ConfigTags.h"
 #include "ConfigParams.h"
 #if defined(WIN32)
 #pragma warning( push )
@@ -20,7 +19,7 @@ namespace cppkin
     class Trace;
     class EncoderContextThrift;
 
-    class span_impl
+    class CPPKIN_EXPORT span_impl
     {
     public:
         typedef std::vector<std::unique_ptr<Annotation>> Annotations;
