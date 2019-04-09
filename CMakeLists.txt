@@ -137,17 +137,23 @@ if(COMPILATION_STEP)
     target_link_libraries(cppkin ${TO_LINK_LIBS})
 
     if(WITH_EXAMPLES)
-        remove_definitions(-DCPPKIN_DLL)
         add_subdirectory(${PROJECT_DIR}/examples)
     endif()
     if(UNIX AND NOT APPLE AND WITH_TESTS)
         add_subdirectory(bench)
         add_subdirectory(python)
     endif()
-    install(TARGETS cppkin
-            PUBLIC_HEADER DESTINATION ${OUTPUT_DIR}/include
-            LIBRARY DESTINATION ${OUTPUT_DIR}/lib
-            )
+	if(WIN32)
+		install(TARGETS cppkin
+				PUBLIC_HEADER DESTINATION ${OUTPUT_DIR}/include
+				RUNTIME DESTINATION ${OUTPUT_DIR}/lib
+				)
+	else()
+		install(TARGETS cppkin
+				PUBLIC_HEADER DESTINATION ${OUTPUT_DIR}/include
+				LIBRARY DESTINATION ${OUTPUT_DIR}/lib
+				)
+	endif()
 endif()
 
 if(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
