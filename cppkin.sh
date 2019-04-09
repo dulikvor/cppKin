@@ -22,7 +22,7 @@ display_help(){
     echo "--with_examples               Compile cppkin examples          "
     echo "                                                               "
     echo "--python_binding=<PRODUCT>    cppkin being exported by -       "
-    echo "                              sweetPy|pyBind. Default=sweetPy  "
+    echo "                              pyBind|sweetPy. Default=pyBind   "
 }
 
 clean_cmake_cache(){
@@ -56,7 +56,7 @@ compile(){
     BUILD_TYPE=Release
     THIRD_PARTY_PREFIX=""
     OUTPUT_DIR=""
-    PYTHON_BINDING="sweetPy"
+    PYTHON_BINDING="pyBind"
     for argument in "${@:2}"
     do
         case $argument in

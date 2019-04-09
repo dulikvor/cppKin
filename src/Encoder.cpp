@@ -4,7 +4,7 @@
 #include "ThriftEncoder.h"
 #endif
 
-#ifdef POCO_JSON_FOUND
+#ifdef RAPID_JSON_FOUND
 #include "JsonEncoder.h"
 #endif
 
@@ -27,7 +27,7 @@ namespace cppkin
                            unique_ptr<ConcreteEncoderCreator<EncoderImpl<EncodingType::Thrift>>>(new ConcreteEncoderCreator<EncoderImpl<EncodingType::Thrift>>()));
 #endif
 
-#ifdef POCO_JSON_FOUND
+#ifdef RAPID_JSON_FOUND
         m_encoders.emplace(EncodingType::Json,
                            unique_ptr<ConcreteEncoderCreator<EncoderImpl<EncodingType::Json>>>(new ConcreteEncoderCreator<EncoderImpl<EncodingType::Json>>()));
 #endif

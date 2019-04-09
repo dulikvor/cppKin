@@ -2,19 +2,11 @@
 
 #include <string>
 #include <cinttypes>
+#include "boost/variant.hpp"
 #include "Annotation.h"
 
 namespace cppkin
 {
-    
-    union BinaryValue
-    {
-        BinaryValue(){}
-        ~BinaryValue(){}
-        
-        bool         m_bool_val;
-        std::string  m_str_val;
-    };
     
     enum BinaryValueTypes
     {
@@ -30,7 +22,7 @@ namespace cppkin
         BinaryAnnotation(const EndPoint& endPoint, const char* key, const char* value);
         BinaryAnnotation(const BinaryAnnotation& object);
         
-        ~BinaryAnnotation() override;
+        ~BinaryAnnotation() override = default;
         BinaryValueTypes GetValueType() const { return m_valueType; }
         const std::string& GetKey() const { return m_key; }
         
@@ -40,7 +32,7 @@ namespace cppkin
     private:
         std::string m_key;
         BinaryValueTypes m_valueType;
-        BinaryValue m_value;
+        boost::variant<bool, std::string> m_value;
     };
 }
 

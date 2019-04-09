@@ -1,4 +1,4 @@
-find_path(SweetPy_INCLUDE_DIR NAMES sweetPy/CPythonClass.h PATHS ${PROJECT_3RD_LOC}/include)
+find_path(SweetPy_INCLUDE_DIR NAMES CPythonClass.h PATHS ${PROJECT_3RD_LOC}/include/sweetPy)
 find_program(SweetPy_LIBRARY_DIR NAMES libsweetPy${CMAKE_DEBUG_POSTFIX}.so PATHS ${PROJECT_3RD_LOC}/lib)
 include(FindPackageHandleStandardArgs)
 find_package_handle_standard_args(SweetPy REQUIRED_VARS SweetPy_INCLUDE_DIR)

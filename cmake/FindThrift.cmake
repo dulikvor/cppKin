@@ -4,7 +4,7 @@ if(WIN32)
 else()
 	find_program(THRIFT_LIBRARY_DIR NAMES libthrift.so PATHS ${PROJECT_3RD_LOC}/lib)
 endif()	
-find_path(THRIFT_INCLUDE_DIR NAMES thrift/Thrift.h PATHS ${PROJECT_3RD_LOC}/include)
+find_path(THRIFT_INCLUDE_DIR NAMES Thrift.h PATHS ${PROJECT_3RD_LOC}/include/thrift)
 include(FindPackageHandleStandardArgs)
 find_package_handle_standard_args(thrift REQUIRED_VARS THRIFT_BINARY_DIR THRIFT_LIBRARY_DIR THRIFT_INCLUDE_DIR)
 
