@@ -1,16 +1,14 @@
 #include <string>
-#include "Poco/JSON/Object.h"
-#include "Poco/JSON/Array.h"
+#include "rapidjson/stringbuffer.h"
+#include "rapidjson/writer.h"
 #include "Encoder.h"
 #include "span_impl.h"
 #include "ConfigParams.h"
 #include "SimpleAnnotation.h"
 #include "BinaryAnnotation.h"
 
-namespace json = Poco::JSON;
-
 namespace cppkin {
-
+    
     template<>
     class EncoderImpl<EncodingType::Json> : public Encoder {
     public:
@@ -18,98 +16,136 @@ namespace cppkin {
         std::string ToString(const std::vector<EncoderContext::ContextElement> &) const override;
 
     private:
+        typedef rapidjson::StringBuffer jbuffer;
+        typedef rapidjson::Writer<jbuffer> jwriter;
         friend ConcreteEncoderCreator<EncoderImpl<EncodingType::Json>>;
         EncoderImpl() = default;
-        static Poco::JSON::Object Serialize(const span_impl &span);
-        static void Serialize(Poco::JSON::Array &jsonSpan, const SimpleAnnotation &annotation);
-        static void Serialize(Poco::JSON::Array &jsonSpan, const BinaryAnnotation &annotation);
+        static void Serialize(jwriter &writer, const span_impl &span);
+        static void Serialize(jwriter &writer, const SimpleAnnotation &annotation);
+        static void Serialize(jwriter &writer, const BinaryAnnotation &annotation);
     };
 
-    inline json::Object EncoderImpl<EncodingType::Json>::Serialize(const span_impl& span) {
-        json::Object jsonSpan;
-        jsonSpan.set("traceId", std::to_string(span.GetHeader().TraceID));
-        jsonSpan.set("name", span.GetHeader().Name);
-        jsonSpan.set("id", std::to_string(span.GetHeader().ID));
-        jsonSpan.set("debug", ConfigParams::Instance().GetDebug());
-        jsonSpan.set("timestamp", span.GetTimeStamp());
-        jsonSpan.set("duration", span.GetDuration());
+    inline void EncoderImpl<EncodingType::Json>::Serialize(jwriter& writer, const span_impl& span) {
+        writer.StartObject();
+        writer.Key("traceId");
+        writer.String(std::to_string(span.GetHeader().TraceID).c_str());
+        writer.Key("name");
+        writer.String(span.GetHeader().Name.c_str());
+        writer.Key("id");
+        writer.String(std::to_string(span.GetHeader().ID).c_str());
+        writer.Key("debug");
+        writer.Bool(ConfigParams::Instance().GetDebug());
+        writer.Key("timestamp");
+        writer.Int64(span.GetTimeStamp());
+        writer.Key("duration");
+        writer.Int64(span.GetDuration());
 
         if(span.GetHeader().ParentIdSet)
-            jsonSpan.set("parentId", std::to_string(span.GetHeader().ParentID));
-
-        json::Array jsonAnnotations;
-        json::Array jsonBinaryAnnotations;
-        for(auto& annotation : span.GetAnnotations())
-            if(annotation->GetType() == AnnotationType::Simple)
-                Serialize(jsonAnnotations, static_cast<const SimpleAnnotation&>(*annotation));
-            else
-                Serialize(jsonBinaryAnnotations, static_cast<const BinaryAnnotation&>(*annotation));
-            
-        jsonSpan.set("annotations", jsonAnnotations);
-        jsonSpan.set("binaryAnnotations", jsonBinaryAnnotations);
-
-        return jsonSpan;
+        {
+            writer.Key("parentId");
+            writer.String(std::to_string(span.GetHeader().ParentID).c_str());
+        }
+    
+        {
+            writer.Key("annotations");
+            writer.StartArray();
+            for (auto &annotation : span.GetAnnotations())
+                if (annotation->GetType() == AnnotationType::Simple)
+                    Serialize(writer, static_cast<const SimpleAnnotation &>(*annotation));
+        
+            writer.EndArray();
+        }
+    
+        {
+            writer.Key("binaryAnnotations");
+            writer.StartArray();
+            for (auto &annotation : span.GetAnnotations())
+                if (annotation->GetType() == AnnotationType::Binary)
+                    Serialize(writer, static_cast<const BinaryAnnotation &>(*annotation));
+        
+            writer.EndArray();
+        }
+    
+        writer.EndObject();
     }
 
-    inline void EncoderImpl<EncodingType::Json>::Serialize(json::Array& jsonAnnotations, const SimpleAnnotation &annotation) {
-        json::Object jsonAnnotation;
-        jsonAnnotation.set("value", annotation.GetEvent());
-        jsonAnnotation.set("timestamp", annotation.GetTimeStamp());
-
-        const Annotation::EndPoint& endPoint = annotation.GetEndPoint();
-        json::Object jsonEndPoint;
-        jsonEndPoint.set("serviceName", endPoint.ServiceName);
-        jsonEndPoint.set("ipv4", endPoint.Host);
-        jsonEndPoint.set("port", endPoint.Port);
-        jsonAnnotation.set( "endpoint", jsonEndPoint);
-
-        jsonAnnotations.add(jsonAnnotation);
+    inline void EncoderImpl<EncodingType::Json>::Serialize(jwriter& writer, const SimpleAnnotation &annotation) {
+        writer.StartObject();
+        {
+            writer.Key("value");
+            writer.String(annotation.GetEvent().c_str());
+            writer.Key("timestamp");
+            writer.Int64(annotation.GetTimeStamp());
+            {
+                const Annotation::EndPoint &endPoint = annotation.GetEndPoint();
+        
+                writer.Key("endpoint");
+                writer.StartObject();
+                writer.Key("serviceName");
+                writer.String(endPoint.ServiceName.c_str());
+                writer.Key("ipv4");
+                writer.String(endPoint.Host.c_str());
+                writer.Key("port");
+                writer.Int(endPoint.Port);
+                writer.EndObject();
+            }
+        }
+        writer.EndObject();
     }
     
-    inline void EncoderImpl<EncodingType::Json>::Serialize(json::Array& jsonAnnotations, const BinaryAnnotation &annotation) {
-        json::Object jsonAnnotation;
-        jsonAnnotation.set("key", annotation.GetKey());
+    inline void EncoderImpl<EncodingType::Json>::Serialize(jwriter &writer, const BinaryAnnotation &annotation) {
+        writer.StartObject();
+        writer.Key("key");
+        writer.String(annotation.GetKey().c_str());
+        
+        writer.Key("value");
         switch(annotation.GetValueType())
         {
             case BinaryValueTypes::Boolean:
                 bool bool_value;
                 annotation.GetValue(bool_value);
-                jsonAnnotation.set("value", bool_value);
+                writer.Bool(bool_value);
                 break;
             case BinaryValueTypes::String:
                 std::string str_value;
                 annotation.GetValue(str_value);
-                jsonAnnotation.set("value", str_value);
+                writer.String(str_value.c_str());
                 break;
         }
+    
+        {
+            const Annotation::EndPoint &endPoint = annotation.GetEndPoint();
         
-        const Annotation::EndPoint& endPoint = annotation.GetEndPoint();
-        json::Object jsonEndPoint;
-        jsonEndPoint.set("serviceName", endPoint.ServiceName);
-        jsonEndPoint.set("ipv4", endPoint.Host);
-        jsonEndPoint.set("port", endPoint.Port);
-        jsonAnnotation.set( "endpoint", jsonEndPoint);
-        
-        jsonAnnotations.add(jsonAnnotation);
+            writer.Key("endpoint");
+            writer.StartObject();
+            writer.Key("serviceName");
+            writer.String(endPoint.ServiceName.c_str());
+            writer.Key("ipv4");
+            writer.String(endPoint.Host.c_str());
+            writer.Key("port");
+            writer.Int(endPoint.Port);
+            writer.EndObject();
+        }
+        writer.EndObject();
     }
 
     inline std::string EncoderImpl<EncodingType::Json>::ToString(const span_impl& span) const {
-        json::Object jsonSpan = EncoderImpl<EncodingType::Json>::Serialize(span);
-        std::ostringstream oss;
-        jsonSpan.stringify(oss);
-        return oss.str();
+        jbuffer buffer;
+        jwriter writer(buffer);
+        EncoderImpl<EncodingType::Json>::Serialize(writer, span);
+        return std::string(buffer.GetString());
     }
 
-    inline std::string EncoderImpl<EncodingType::Json>::ToString(const std::vector<EncoderContext::ContextElement>& spans) const {
-
-        json::Array jsonSpans;
-        for (const auto& span : spans) {
-            json::Object jsonSpan = EncoderImpl<EncodingType::Json>::Serialize(*span);
-            jsonSpans.add(jsonSpan);
-        }
-
-        std::ostringstream oss;
-        jsonSpans.stringify(oss);
-        return oss.str();
+    inline std::string EncoderImpl<EncodingType::Json>::ToString(const std::vector<EncoderContext::ContextElement>& spans) const
+    {
+        jbuffer buffer;
+        jwriter writer(buffer);
+        
+        writer.StartArray();
+        for (const auto& span : spans)
+            EncoderImpl<EncodingType::Json>::Serialize(writer, *span);
+        
+        writer.EndArray();
+        return std::string(buffer.GetString());
     }
 }

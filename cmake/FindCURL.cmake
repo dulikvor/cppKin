@@ -17,7 +17,7 @@
 #   CURL_VERSION_STRING - the version of curl found (since CMake 2.8.8)
 
 # Look for the header file.
-find_path(CURL_INCLUDE_DIR NAMES curl/curl.h PATHS ${PROJECT_3RD_LOC}/include NO_DEFAULT_PATH)
+find_path(CURL_INCLUDE_DIR NAMES curl.h PATHS ${PROJECT_3RD_LOC}/include/curl NO_DEFAULT_PATH)
 mark_as_advanced(CURL_INCLUDE_DIR) 
 
 # Look for the library (sorted from most current/relevant entry to least).
