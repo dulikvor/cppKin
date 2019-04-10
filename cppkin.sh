@@ -2,7 +2,7 @@
 
 display_help(){
     echo "                                                               "
-    echo "cppkin compile [options]..."
+    echo "cppkin config [options]..."
     echo "Install                       Install related options."
     echo "======="
     echo "--3rd_loc_prefix=<PREFIX>     3rd party install area prefix.   "
@@ -49,7 +49,7 @@ clean_cmake_cache(){
     done
 }
 
-compile(){
+config(){
     WITH_THRIFT=OFF
     WITH_TESTS=OFF
     WITH_EXAMPLES=OFF
@@ -83,7 +83,7 @@ compile(){
             ;;
         esac
     done
-    cmake -DPRE_COMPILE_STEP=ON -D3RD_PARTY_INSTALL_STEP=ON -DCOMPILATION_STEP=ON -DWITH_THRIFT=$WITH_THRIFT -D WITH_TESTS=$WITH_TESTS -DWITH_EXAMPLES=$WITH_EXAMPLES -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DPROJECT_3RD_LOC:STRING=$THIRD_PARTY_PREFIX -DOUTPUT_DIR:STRING=$OUTPUT_DIR -DPYTHON_BINDING:STRING=$PYTHON_BINDING . && make
+    cmake -DPRE_COMPILE_STEP=ON -D3RD_PARTY_INSTALL_STEP=ON -DCOMPILATION_STEP=ON -DWITH_THRIFT=$WITH_THRIFT -D WITH_TESTS=$WITH_TESTS -DWITH_EXAMPLES=$WITH_EXAMPLES -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DPROJECT_3RD_LOC:STRING=$THIRD_PARTY_PREFIX -DOUTPUT_DIR:STRING=$OUTPUT_DIR -DPYTHON_BINDING:STRING=$PYTHON_BINDING .
 }
 
 while true; do
@@ -97,8 +97,8 @@ while true; do
                 return 0
             fi
         ;;
-        compile)
-            compile $@
+        config)
+            config $@
             if [ "$0" = "$BASH_SOURCE" ]
             then
                 exit 0
@@ -116,7 +116,7 @@ while true; do
             fi
         ;;
         *)
-            echo "supported commands - --help, compile, clean_cache"
+            echo "supported commands - --help, config, clean_cache"
             if [ "$0" = "$BASH_SOURCE" ]
             then
                 exit 0
