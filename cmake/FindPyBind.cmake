@@ -1,4 +1,4 @@
-find_path(PyBind_INCLUDE_DIR NAMES pybind11/pybind11.h PATHS ${PROJECT_3RD_LOC}/include)
+find_path(PyBind_INCLUDE_DIR NAMES pybind11.h PATHS ${PROJECT_3RD_LOC}/include/pybind11)
 include(FindPackageHandleStandardArgs)
 find_package_handle_standard_args(PyBind REQUIRED_VARS PyBind_INCLUDE_DIR)
 

@@ -1,4 +1,4 @@
-find_path(CORE_INCLUDE_DIR NAMES core/Exception.h PATHS ${PROJECT_3RD_LOC}/include)
+find_path(CORE_INCLUDE_DIR NAMES Exception.h PATHS ${PROJECT_3RD_LOC}/include/core)
 if(WIN32)
 	find_program(CORE_LIBRARY_DIR NAMES Core${CMAKE_DEBUG_POSTFIX}.dll PATHS ${PROJECT_3RD_LOC}/lib)
 else()
