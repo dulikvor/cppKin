@@ -55,4 +55,5 @@ cppkin.bat install #add arguments of choice
 ```
 
 ### Language:
-[The client cpp interface and details](https://github.com/Dudi119/cppKin/blob/master/docs/cpp_client.md)
+- [cppkin - cpp variation](https://github.com/Dudi119/cppKin/blob/master/docs/cpp_client.md)
+- [cppkin - python variation](https://github.com/Dudi119/cppKin/blob/master/docs/python_client.md)
