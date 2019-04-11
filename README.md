@@ -4,19 +4,19 @@
 
 `cppkin` is an instrumentation client library for `zipkin` available in **C++** and **Python**.
 
-## Linux Requirements
+## Linux Requirements:
 * c++11.
 * Cmake version > 3.8.
 
-## Windows Requirements
+## Windows Requirements:
 * VC++ 12.0 and above.
 * Cmake version > 3.8.
 
-## Python
+## Python:
 * pybind11.
 * Python 2.7 and 3.X are supported.
 
-## Getting Started
+## Getting Started:
 cppkin is dependent upon -
 
 | Package                 | Required   |  version  |
@@ -30,7 +30,7 @@ cppkin is dependent upon -
 | google benchmark        | tests |     >= 1.3     |
 | thrift                  | only for scribe transport | >= 0.10 |
 
-### Linux Install
+### Linux Install:
 Use the help command to review the different configuration arguments:
 ```
 . cppkin.bash --help
@@ -43,7 +43,7 @@ make
 make install
 ```
 
-### Windows Install
+### Windows Install:
 Use the help command to review the different configuration arguments:
 ```
 cppkin.bat --help
@@ -54,3 +54,5 @@ Build cppkin by using the batch script:
 cppkin.bat install #add arguments of choice
 ```
 
+### Language:
+[The client cpp interface and details](https://github.com/Dudi119/cppKin/blob/master/docs/cpp_client.md)
