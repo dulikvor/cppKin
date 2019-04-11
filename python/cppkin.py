@@ -1,5 +1,5 @@
 import _cppkin
-from _cppkin import Span, Trace, SERVER_RECEIVE, SERVER_SEND, add_binary_annotation, add_annotation
+from _cppkin import Span, Trace, SERVER_RECEIVE, SERVER_SEND, add_tag, add_annotation
 
 
 def start(host_address, port, service_name, sample_count):
@@ -30,8 +30,8 @@ def trace(operation):
 def span(operation):
     def span_decorator(func):
         def span_wrapper(*args, **kwargs):
-            poped_span = _cppkin.top_span()
-            span = poped_span.createSpan(operation, SERVER_RECEIVE)
+            top_span = _cppkin.top_span()
+            span = top_span.createSpan(operation, SERVER_RECEIVE)
             _cppkin.push_span(span)
             result = func(*args, **kwargs)
             _cppkin.pop_span()
@@ -39,4 +39,22 @@ def span(operation):
             return result
         return span_wrapper
     return span_decorator
+
+class TracingContext:
+    def __init__(self, operation):
+        self._operation = operation
+        self._span = None
+
+    def __enter__(self):
+        if _cppkin.is_container_empty():
+            self._span = Trace(self._operation)
+        else:
+            top_span = _cppkin.top_span()
+            self._span = top_span.createSpan(self._operation, SERVER_RECEIVE)
+        _cppkin.push_span(self._span)
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        _cppkin.pop_span()
+        self._span.submit(SERVER_SEND)
+
 

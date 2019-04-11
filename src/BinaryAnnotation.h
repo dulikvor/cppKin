@@ -19,7 +19,6 @@ namespace cppkin
     {
     public:
         BinaryAnnotation(const EndPoint& endPoint, const char* key, bool value);
-        BinaryAnnotation(const EndPoint& endPoint, const char* key, const std::string& value);
         BinaryAnnotation(const EndPoint& endPoint, const char* key, const char* value);
         BinaryAnnotation(const BinaryAnnotation& object);
         
