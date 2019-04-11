@@ -19,7 +19,7 @@ namespace cppkin
     span_impl::span_impl(const std::string &name, uint_fast64_t traceID, bool sampled) :
             m_header(name, traceID, traceID, sampled), m_timeStamp(GetCurrentTime()) {}
     
-    span_impl::span_impl(const std::string &b3format)
+    span_impl::span_impl(const char* b3format)
         : m_timeStamp(GetCurrentTime())
     {
         std::istringstream is(b3format);
@@ -80,6 +80,24 @@ namespace cppkin
                                              core::Environment::Instance().GetIPV4Addresses().back(),
                                              ConfigParams::Instance().GetPort());
         m_events.emplace_back(new SimpleAnnotation(endPoint, event, timeStamp));
+    }
+    
+    void span_impl::CreateBinaryAnnotation(const char *key, bool value)
+    {
+        VERIFY(!core::Environment::Instance().GetIPV4Addresses().empty(), "Missing IPV4 address");
+        static Annotation::EndPoint endPoint(ConfigParams::Instance().GetServiceName(),
+                                             core::Environment::Instance().GetIPV4Addresses().back(),
+                                             ConfigParams::Instance().GetPort());
+        m_events.emplace_back(new BinaryAnnotation(endPoint, key, value));
+    }
+    
+    void span_impl::CreateBinaryAnnotation(const char *key, const char* value)
+    {
+        VERIFY(!core::Environment::Instance().GetIPV4Addresses().empty(), "Missing IPV4 address");
+        static Annotation::EndPoint endPoint(ConfigParams::Instance().GetServiceName(),
+                                             core::Environment::Instance().GetIPV4Addresses().back(),
+                                             ConfigParams::Instance().GetPort());
+        m_events.emplace_back(new BinaryAnnotation(endPoint, key, value));
     }
 
     int_fast64_t span_impl::GetTimeStamp() const{

@@ -20,6 +20,7 @@ namespace cppkin {
     CPPKIN_EXPORT void PushSpan(Span& span);
     CPPKIN_EXPORT Span& TopSpan();
     CPPKIN_EXPORT void PopSpan();
+    CPPKIN_EXPORT bool IsContainerEmpty();
 }
 #if defined(WIN32)
 #pragma warning( pop )

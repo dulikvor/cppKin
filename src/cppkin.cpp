@@ -35,4 +35,9 @@ namespace cppkin
     {
         SpanContainer::Instance().PopSpan();
     }
+    
+    bool IsContainerEmpty()
+    {
+        return SpanContainer::Instance().IsEmpty();
+    }
 }

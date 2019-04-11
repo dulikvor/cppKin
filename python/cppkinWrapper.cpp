@@ -55,15 +55,15 @@ INIT_MODULE(_cppkin, "cppkin library wrapper")
             .def(pybind11::init<>())
             .def("createSpan", &cppkin::Span::CreateSpan)
             .def("submit", &cppkin::Span::Submit)
-            .def("add_binary_annotation", static_cast<void(cppkin::Span::*)(const char*)>(&cppkin::Span::AddAnnotation))
-            .def("add_binary_annotation", &cppkin::Span::AddBinaryAnnotation<std::string const &>);
+            .def("add_annotation", static_cast<void(cppkin::Span::*)(const char*)>(&cppkin::Span::AddAnnotation))
+            .def("add_tag", static_cast<void(cppkin::Span::*)(const char*, const char*)>(&cppkin::Span::AddTag));
         
         pybind11::class_<cppkin::Trace>(module, "Trace")
             .def(pybind11::init<const char*>())
             .def("createSpan", &cppkin::Trace::CreateSpan)
             .def("submit", &cppkin::Trace::Submit)
-            .def("add_binary_annotation", static_cast<void(cppkin::Trace::*)(const char*)>(&cppkin::Trace::AddAnnotation))
-            .def("add_binary_annotation", &cppkin::Trace::AddBinaryAnnotation<std::string const &>);
+            .def("add_annotation", static_cast<void(cppkin::Trace::*)(const char*)>(&cppkin::Trace::AddAnnotation))
+            .def("add_tag", static_cast<void(cppkin::Trace::*)(const char*, const char*)>(&cppkin::Trace::AddTag));
         
         pybind11::class_<cppkin::CppkinParams>(module, "CppkinParams")
             .def(pybind11::init<>())
@@ -86,13 +86,14 @@ INIT_MODULE(_cppkin, "cppkin library wrapper")
         module.def("push_span", &cppkin::PushSpan, "pushes current span to the span container");
         module.def("top_span", &cppkin::TopSpan, pybind11::return_value_policy::reference, "retrieves current top span from the span container");
         module.def("pop_span", &cppkin::PopSpan, "pop the current top span at the span container");
+        module.def("is_container_empty", &cppkin::IsContainerEmpty, "inquiries if the span container is empty");
         module.def("cast_trace_to_span", [](cppkin::Trace& trace)->cppkin::Span&{
             return static_cast<cppkin::Span&>(trace);},
             pybind11::return_value_policy::reference, "casting from trace to span");
     
-        module.def("add_binary_annotation", [](const std::string& key, const std::string& value){
+        module.def("add_tag", [](const std::string& key, const std::string& value){
                     auto& span = cppkin::TopSpan();
-                    span.AddBinaryAnnotation(key.c_str(), value);},
+                    span.AddTag(key.c_str(), value.c_str());},
                    "adding a new binary annotation for current span");
         module.def("add_annotation", [](const std::string& value){
                        auto& span = cppkin::TopSpan();

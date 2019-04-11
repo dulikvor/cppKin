@@ -1,4 +1,5 @@
 #include "Span.h"
+#include <functional>
 #include "TransportManager.h"
 
 namespace cppkin
@@ -30,7 +31,7 @@ namespace cppkin
         m_span.reset(new span_impl(operationName, traceId, parentId, id, sampled));
     }
     
-    void Span::Join(const std::string& b3format)
+    void Span::Join(const char* b3format)
     {
         m_span.reset(new span_impl(b3format));
     }
@@ -48,6 +49,20 @@ namespace cppkin
             return;
         m_span->CreateSimpleAnnotation(value, timeStamp);
     }
+    
+    void Span::AddTag(const char* key, bool value)
+    {
+        if(m_span->GetHeader().Sampled == false)
+            return;
+        m_span->CreateBinaryAnnotation(key, value);
+    }
+    
+    void Span::AddTag(const char* key, const char* value)
+    {
+        if(m_span->GetHeader().Sampled == false)
+            return;
+        m_span->CreateBinaryAnnotation(key, value);
+    }
 
     void Span::Submit(const char* value)
     {
@@ -63,9 +78,14 @@ namespace cppkin
         return m_span->GetHeader().Sampled;
     }
     
-    std::string Span::GetHeaderB3Format() const
+    void Span::GetHeaderB3Format(const char*& b3header) const
     {
-        return m_span->GetHeaderB3Format();
+        typedef std::unique_ptr<char, std::function<void(char*)>> char_ptr;
+        std::string b3header_str = m_span->GetHeaderB3Format();
+        char_ptr temp_header((char*)malloc(sizeof(char)*(b3header_str.size() + 1)), [](char* ptr){free(ptr);});
+        std::memcpy(temp_header.get(), b3header_str.c_str(), b3header_str.size());
+        temp_header.get()[b3header_str.size()] = '\0';
+        b3header = temp_header.release();
     }
 
     const span_impl::SpanHeader& Span::GetHeader() const

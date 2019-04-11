@@ -47,4 +47,9 @@ namespace cppkin
 
         m_spans.pop_front();
     }
+    
+    bool SpanContainer::IsEmpty()
+    {
+        return m_spans.empty();
+    }
 }
