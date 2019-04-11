@@ -4,6 +4,7 @@
 #include <cinttypes>
 #include "boost/variant.hpp"
 #include "Annotation.h"
+#include "Export.h"
 
 namespace cppkin
 {
@@ -14,7 +15,7 @@ namespace cppkin
         String
     };
     
-    class BinaryAnnotation : public Annotation
+    class CPPKIN_EXPORT BinaryAnnotation : public Annotation
     {
     public:
         BinaryAnnotation(const EndPoint& endPoint, const char* key, bool value);

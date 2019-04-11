@@ -9,6 +9,7 @@
 #include "Annotation.h"
 #include "BinaryAnnotation.h"
 #include "ConfigParams.h"
+#include "Export.h"
 #if defined(WIN32)
 #pragma warning( push )
 #pragma warning (disable : 4251)

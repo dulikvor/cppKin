@@ -36,6 +36,7 @@ IF %ERRORLEVEL% GEQ 1 (EXIT /B 2) ELSE (EXIT /B 0)
 	IF exist CURL.vcxproj (CMD /C msbuild CURL.vcxproj /property:Configuration=%BUILD_TYPE%)
 	IF exist SpdLog.vcxproj (CMD /C msbuild SpdLog.vcxproj /property:Configuration=%BUILD_TYPE%)
 	IF exist Core.vcxproj (CMD /C msbuild Core.vcxproj /property:Configuration=%BUILD_TYPE%)
+	IF exist RAPIDJSON.vcxproj (CMD /C msbuild RAPIDJSON.vcxproj /property:Configuration=%BUILD_TYPE%)
 	IF exist cppkin.vcxproj (CMD /C msbuild cppkin.vcxproj /property:Configuration=%BUILD_TYPE%)
     IF %WITH_EXAMPLES%==ON (IF exist examples/example.vcxproj (CMD /C msbuild examples/example.vcxproj /property:Configuration=%BUILD_TYPE%))
 goto :eof
