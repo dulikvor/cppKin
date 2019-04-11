@@ -2,6 +2,8 @@
 #include <windows.h>
 #endif
 #include <string>
+#include <memory>
+#include <functional>
 #include <boost/program_options.hpp>
 #include "src/cppkin.h"
 
@@ -18,7 +20,7 @@ static void portable_sleep(int duration)
 #endif
 }
 
-static void boo(const std::string& b3format)
+static void boo(const char* b3format)
 {
     cppkin::Span span_2;
     span_2.Join(b3format);
@@ -29,10 +31,14 @@ static void boo(const std::string& b3format)
 
 static void foo()
 {
+    typedef std::unique_ptr<const char, std::function<void(const char*)>> char_ptr;
     cppkin::Span& span_1 = cppkin::TopSpan();
     auto span_2 = span_1.CreateSpan("Span2");
     portable_sleep(1);
-    boo(span_2.GetHeaderB3Format());
+    char const * b3header;
+    span_2.GetHeaderB3Format(b3header);
+    char_ptr guard(b3header, [](char const * ptr){free(const_cast<char*>(ptr));});
+    boo(b3header);
     span_2.Submit();
 }
 
@@ -89,7 +95,7 @@ int main( int argc, const char *argv[] )
     auto span_1 = trace.CreateSpan("Span1");
     portable_sleep(1);
     span_1.AddAnnotation("Span1Event");
-    span_1.AddBinaryAnnotation("str value", "some value");
+    span_1.AddTag("str value", "some value");
     //Lets use the span container in order to reach a certain stack frame.
     cppkin::PushSpan(span_1);
     foo();

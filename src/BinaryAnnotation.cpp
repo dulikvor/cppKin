@@ -11,12 +11,6 @@ namespace cppkin
     {
     }
     
-    BinaryAnnotation::BinaryAnnotation(const EndPoint& endPoint, const char* key, const std::string& value)
-            :Annotation(AnnotationType::Binary, endPoint), m_key(key),
-             m_valueType(BinaryValueTypes::String), m_value(value)
-    {
-    }
-    
     BinaryAnnotation::BinaryAnnotation(const EndPoint& endPoint, const char* key, const char* value)
             :Annotation(AnnotationType::Binary, endPoint), m_key(key),
              m_valueType(BinaryValueTypes::String), m_value(std::string(value))

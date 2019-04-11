@@ -21,6 +21,7 @@ namespace cppkin
         void PushSpan(Span& span);
         Span& TopSpan();
         void PopSpan();
+        bool IsEmpty();
      private:
         SpanContainer();
 
