@@ -41,15 +41,28 @@ cppkin.add_tag("some_key", "some_value")
 ```
 Spans and Traces are propegated automaticlly to zipkin's server once the decorated function goes out of scope.
 
-## Stopping:
-once done, we can call stop in order to release the client's resources:
-```python
-cppkin.stop()
-```
 decorators are not the only way to instrument functions, 
 cppkin Tracing context manager can also be used:
 ```python
 def foo():
-  with TracingContext("Context_Span"):
-    cppkin.add_annotation("context span event")
+  with TracingContext("operation_name_we_want_to_display"):
+    cppkin.add_annotation("some_event")
+```
+
+it is also possible to use Span and Trace user types directly.
+```python
+from cppkin import Trace, Span
+...
+trace = Trace("some_operation")
+trace.add_annotation("some_event")
+span = trace.createSpan("some_operation")
+...
+span.add_tag("key", "value")
+span.submit()
+```
+
+## Stopping:
+once done, we can call stop in order to release the client's resources:
+```python
+cppkin.stop()
 ```
