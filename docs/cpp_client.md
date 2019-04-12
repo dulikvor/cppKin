@@ -1,6 +1,11 @@
 # CPP Client:
 
 ## Initialization:
+Include cppkin header file - `cppkin.h`.
+```c++
+#include "cppkin/include/cppkin.h"
+```
+
 Before we can start we need to initialize our client, should be done once per service.
 
 lets set the our client different policies:
@@ -30,10 +35,6 @@ cppkin::Init(cppkinParams);
 ```
 
 ## Instrumenting:
-Include cppkin header file - `cppkin.h`.
-```c++
-#include "cppkin/include/cppkin.h"
-```
 The header will publish two **user types**:
 ### Trace:
 ```c++
