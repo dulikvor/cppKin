@@ -54,7 +54,7 @@ INIT_MODULE(_cppkin, "cppkin library wrapper")
         pybind11::class_<cppkin::Span>(module, "Span")
             .def(pybind11::init<>())
             .def("create_span", &cppkin::Span::CreateSpan)
-            .def("submit", &cppkin::Span::Submit)
+            .def("submit", &cppkin::Span::Submit, pybind11::arg("value") = cppkin::Annotation::Value::SERVER_SEND)
             .def("add_annotation", static_cast<void(cppkin::Span::*)(const char*)>(&cppkin::Span::AddAnnotation))
             .def("add_tag", static_cast<void(cppkin::Span::*)(const char*, const char*)>(&cppkin::Span::AddTag))
             .def("get_header_b3_format", [](const cppkin::Span& self){
@@ -65,12 +65,13 @@ INIT_MODULE(_cppkin, "cppkin library wrapper")
                         [](const char* ptr){free(const_cast<char*>(ptr));}
                     );
                 return std::string(header_b3_format);
-            });
+            })
+            .def("join", static_cast<void(cppkin::Span::*)(const char*)>(&cppkin::Span::Join));
         
         pybind11::class_<cppkin::Trace>(module, "Trace")
             .def(pybind11::init<const char*>())
             .def("create_span", &cppkin::Trace::CreateSpan)
-            .def("submit", &cppkin::Trace::Submit)
+            .def("submit", &cppkin::Trace::Submit, pybind11::arg("value") = cppkin::Annotation::Value::SERVER_SEND)
             .def("add_annotation", static_cast<void(cppkin::Trace::*)(const char*)>(&cppkin::Trace::AddAnnotation))
             .def("add_tag", static_cast<void(cppkin::Trace::*)(const char*, const char*)>(&cppkin::Trace::AddTag))
             .def("get_header_b3_format", [](const cppkin::Trace& self){
@@ -81,7 +82,8 @@ INIT_MODULE(_cppkin, "cppkin library wrapper")
                         [](const char* ptr){free(const_cast<char*>(ptr));}
                 );
                 return std::string(header_b3_format);
-            });
+            })
+            .def("join", static_cast<void(cppkin::Trace::*)(const char*)>(&cppkin::Trace::Join));
         
         pybind11::class_<cppkin::CppkinParams>(module, "CppkinParams")
             .def(pybind11::init<>())
@@ -98,6 +100,7 @@ INIT_MODULE(_cppkin, "cppkin library wrapper")
         
         module.attr("SERVER_RECEIVE") = cppkin::Annotation::Value::SERVER_RECEIVE;
         module.attr("SERVER_SEND") = cppkin::Annotation::Value::SERVER_SEND;
+        module.attr("NOP") = cppkin::Annotation::Value::NOP;
         
         module.def("init", &cppkin::Init, "initializes cppkin");
         module.def("stop", &cppkin::Stop, "deallocate cppkin resources");

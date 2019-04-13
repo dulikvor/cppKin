@@ -3,6 +3,13 @@ sys.path.append(os.environ['PYBINDER'])
 import cppkin
 from cppkin import trace, span, add_annotation, add_tag, Trace, Span, TracingContext
 
+def poo(b3_header_format):
+    span = Span()
+    span.join(b3_header_format)
+    span.add_annotation("span2_event2")
+    span.submit(cppkin.NOP)
+
+
 def boo():
     with TracingContext("span3_operation"):
         cppkin.add_annotation("span3_event")
@@ -10,7 +17,7 @@ def boo():
 @span("span2_operation")
 def foo(span : Span):
     cppkin.add_annotation("span2_event")
-    span.add_annotation("span2_event2")
+    poo(span.get_header_b3_format())
     boo()
 
 def main():
@@ -34,8 +41,8 @@ def main():
     foo()
     cppkin.pop_span()
 
-    span_1.submit(cppkin.SERVER_SEND)
-    trace.submit(cppkin.SERVER_SEND)
+    span_1.submit()
+    trace.submit()
 
     time.sleep(3)
 

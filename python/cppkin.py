@@ -1,6 +1,6 @@
 import sys
 import _cppkin
-from _cppkin import Span, Trace, SERVER_RECEIVE, SERVER_SEND, add_tag, add_annotation
+from _cppkin import Span, Trace, SERVER_RECEIVE, SERVER_SEND, NOP, add_tag, add_annotation
 
 is_type_hints_supported = sys.version_info.major >= 3 and sys.version_info.minor >= 5
 
@@ -43,7 +43,7 @@ def trace(operation):
                 kwargs.update({span_arg_name : span})
             result = func(*args, **kwargs)
             _cppkin.pop_span()
-            trace.submit(SERVER_SEND)
+            trace.submit()
             return result
         return trace_wrapper
     return trace_decorator
@@ -63,7 +63,7 @@ def span(operation):
                 kwargs.update({span_arg_name : span})
             result = func(*args, **kwargs)
             _cppkin.pop_span()
-            span.submit(SERVER_SEND)
+            span.submit()
             return result
         return span_wrapper
     return span_decorator
@@ -83,6 +83,6 @@ class TracingContext:
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         _cppkin.pop_span()
-        self._span.submit(SERVER_SEND)
+        self._span.submit()
 
 
