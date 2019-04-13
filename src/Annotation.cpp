@@ -8,6 +8,7 @@ namespace cppkin
     const char* Annotation::Value::SERVER_RECEIVE = "sr";
     const char* Annotation::Value::CLIENT_SEND = "cs";
     const char* Annotation::Value::CLIENT_RECEIVE = "cr";
+    const char* Annotation::Value::NOP = "nop";
 
     Annotation::EndPoint::EndPoint(const std::string &serviceName, std::string host, uint_fast16_t port)
             : ServiceName(serviceName), Host(host), Port(port)
