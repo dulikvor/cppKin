@@ -9,6 +9,13 @@
 
 namespace cppkin {
     
+    static std::string to_hex(std::int64_t value)
+    {
+        std::ostringstream os;
+        os << std::hex << value;
+        return os.str();
+    }
+    
     template<>
     class EncoderImpl<EncodingType::Json> : public Encoder {
     public:
@@ -28,11 +35,11 @@ namespace cppkin {
     inline void EncoderImpl<EncodingType::Json>::Serialize(jwriter& writer, const span_impl& span) {
         writer.StartObject();
         writer.Key("traceId");
-        writer.String(std::to_string(span.GetHeader().TraceID).c_str());
+        writer.String(to_hex(span.GetHeader().TraceID).c_str());
         writer.Key("name");
         writer.String(span.GetHeader().Name.c_str());
         writer.Key("id");
-        writer.String(std::to_string(span.GetHeader().ID).c_str());
+        writer.String(to_hex(span.GetHeader().ID).c_str());
         writer.Key("debug");
         writer.Bool(ConfigParams::Instance().GetDebug());
         writer.Key("timestamp");
@@ -43,7 +50,7 @@ namespace cppkin {
         if(span.GetHeader().ParentIdSet)
         {
             writer.Key("parentId");
-            writer.String(std::to_string(span.GetHeader().ParentID).c_str());
+            writer.String(to_hex(span.GetHeader().ParentID).c_str());
         }
     
         {

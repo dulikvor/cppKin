@@ -28,6 +28,7 @@ namespace cppkin
             static const char* SERVER_RECEIVE;
             static const char* CLIENT_SEND;
             static const char* CLIENT_RECEIVE;
+            static const char* NOP;
         };
 
     public:

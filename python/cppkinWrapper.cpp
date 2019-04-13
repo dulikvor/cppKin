@@ -22,12 +22,12 @@ INIT_MODULE(_cppkin, "cppkin library wrapper")
 {
     sweetPy::CPythonClass<cppkin::Span> span(module, "Span", "cppkin span");
     span.AddConstructor<>();
-    span.AddMethod("createSpan", "creating a child span", &cppkin::Span::CreateSpan);
+    span.AddMethod("create_span", "creating a child span", &cppkin::Span::CreateSpan);
     span.AddMethod("submit", "the trace will be submitted to the collector", &cppkin::Span::Submit);
 
     sweetPy::CPythonClass<cppkin::Trace> trace(module, "Trace", "cppkin trace");
     trace.AddConstructor<const char *>();
-    trace.AddMethod("createSpan", "creating a child span", &cppkin::Trace::CreateSpan);
+    trace.AddMethod("create_span", "creating a child span", &cppkin::Trace::CreateSpan);
     trace.AddMethod("submit", "the trace will be submitted to the collector", &cppkin::Trace::Submit);
 
     sweetPy::CPythonClass<cppkin::CppkinParams> params(module, "CppkinParams", "a general key value storage for cppkin params");
@@ -53,17 +53,37 @@ INIT_MODULE(_cppkin, "cppkin library wrapper")
     {
         pybind11::class_<cppkin::Span>(module, "Span")
             .def(pybind11::init<>())
-            .def("createSpan", &cppkin::Span::CreateSpan)
-            .def("submit", &cppkin::Span::Submit)
+            .def("create_span", &cppkin::Span::CreateSpan)
+            .def("submit", &cppkin::Span::Submit, pybind11::arg("value") = cppkin::Annotation::Value::SERVER_SEND)
             .def("add_annotation", static_cast<void(cppkin::Span::*)(const char*)>(&cppkin::Span::AddAnnotation))
-            .def("add_tag", static_cast<void(cppkin::Span::*)(const char*, const char*)>(&cppkin::Span::AddTag));
+            .def("add_tag", static_cast<void(cppkin::Span::*)(const char*, const char*)>(&cppkin::Span::AddTag))
+            .def("get_header_b3_format", [](const cppkin::Span& self){
+                const char* header_b3_format;
+                self.GetHeaderB3Format(header_b3_format);
+                std::unique_ptr<const char, std::function<void(const char*)>> guard(
+                        header_b3_format,
+                        [](const char* ptr){free(const_cast<char*>(ptr));}
+                    );
+                return std::string(header_b3_format);
+            })
+            .def("join", static_cast<void(cppkin::Span::*)(const char*)>(&cppkin::Span::Join));
         
         pybind11::class_<cppkin::Trace>(module, "Trace")
             .def(pybind11::init<const char*>())
-            .def("createSpan", &cppkin::Trace::CreateSpan)
-            .def("submit", &cppkin::Trace::Submit)
+            .def("create_span", &cppkin::Trace::CreateSpan)
+            .def("submit", &cppkin::Trace::Submit, pybind11::arg("value") = cppkin::Annotation::Value::SERVER_SEND)
             .def("add_annotation", static_cast<void(cppkin::Trace::*)(const char*)>(&cppkin::Trace::AddAnnotation))
-            .def("add_tag", static_cast<void(cppkin::Trace::*)(const char*, const char*)>(&cppkin::Trace::AddTag));
+            .def("add_tag", static_cast<void(cppkin::Trace::*)(const char*, const char*)>(&cppkin::Trace::AddTag))
+            .def("get_header_b3_format", [](const cppkin::Trace& self){
+                const char* header_b3_format;
+                self.GetHeaderB3Format(header_b3_format);
+                std::unique_ptr<const char, std::function<void(const char*)>> guard(
+                        header_b3_format,
+                        [](const char* ptr){free(const_cast<char*>(ptr));}
+                );
+                return std::string(header_b3_format);
+            })
+            .def("join", static_cast<void(cppkin::Trace::*)(const char*)>(&cppkin::Trace::Join));
         
         pybind11::class_<cppkin::CppkinParams>(module, "CppkinParams")
             .def(pybind11::init<>())
@@ -80,6 +100,7 @@ INIT_MODULE(_cppkin, "cppkin library wrapper")
         
         module.attr("SERVER_RECEIVE") = cppkin::Annotation::Value::SERVER_RECEIVE;
         module.attr("SERVER_SEND") = cppkin::Annotation::Value::SERVER_SEND;
+        module.attr("NOP") = cppkin::Annotation::Value::NOP;
         
         module.def("init", &cppkin::Init, "initializes cppkin");
         module.def("stop", &cppkin::Stop, "deallocate cppkin resources");

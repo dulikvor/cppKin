@@ -55,7 +55,7 @@ class TestCppkinTrace(TestCppkin):
 class TestCppkinTraceSpanRelation(TestCppkin):
     def runTest(self):
         trace = Trace("TestTrace")
-        span = trace.createSpan("TestSpan", cppkin.SERVER_RECEIVE)
+        span = trace.create_span("TestSpan", cppkin.SERVER_RECEIVE)
         span.submit(cppkin.SERVER_SEND)
         trace.submit(cppkin.SERVER_SEND)
 

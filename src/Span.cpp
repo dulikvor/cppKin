@@ -69,7 +69,8 @@ namespace cppkin
         if(m_span->GetHeader().Sampled == false)
             return;
         m_span->SetEndTime();
-        AddAnnotation(value, m_span->GetTimeStamp() + m_span->GetDuration());
+        if(strcmp(value, Annotation::Value::NOP) != 0)
+            AddAnnotation(value, m_span->GetTimeStamp() + m_span->GetDuration());
         TransportManager::Instance().PushSpan(m_span);
     }
 
