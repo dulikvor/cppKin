@@ -15,7 +15,7 @@ namespace cppkin
         String
     };
     
-    class CPPKIN_EXPORT BinaryAnnotation : public Annotation
+    class BinaryAnnotation : public Annotation
     {
     public:
         BinaryAnnotation(const EndPoint& endPoint, const char* key, bool value);
