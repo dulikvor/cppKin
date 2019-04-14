@@ -6,15 +6,14 @@
 
 ## Linux Requirements:
 * c++11.
-* Cmake version > 3.8.
+* Cmake version > 3.5.
 
 ## Windows Requirements:
 * VC++ 12.0 and above.
-* Cmake version > 3.8.
+* Cmake version > 3.5.
 
 ## Python:
 * pybind11.
-* Python 2.7 and 3.X are supported.
 
 ## Getting Started:
 cppkin is dependent upon -
@@ -53,6 +52,12 @@ Build cppkin by using the batch script:
 ```
 cppkin.bat install #add arguments of choice
 ```
+
+### Python products:
+In order to use the client python variation, 3 compilation products are required:
+- **python.py** (available at the python directory and installed into a destination of choice).
+- **_cppkin.so** (linux example), internal module being used by the python.py script. available at a destination of choice.
+- **cppkin.so** and all relevant 3rd party dependency products.
 
 ### Language:
 - [cppkin - cpp variation](https://github.com/Dudi119/cppKin/blob/master/docs/cpp_client.md)
