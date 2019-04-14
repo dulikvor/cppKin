@@ -138,4 +138,4 @@ trace.Submit();
 ```
 
 #### For more information please review the cpp example:
-[cpp example](https://github.com/Dudi119/cppKin/blob/master/examples/cpp/example.py)
+[cpp example](https://github.com/Dudi119/cppKin/blob/master/examples/cpp/example.cpp)
