@@ -85,7 +85,7 @@ once done, we can call stop, in order to release the client’s resources:
 cppkin::Stop();
 ```
 
-# Advance capabilities:
+# Advance usage:
 
 ## Span header:
 The span header can be retrieved in order to propagate it to a different service.
@@ -136,3 +136,6 @@ foo();
 cppkin::PopSpan();
 trace.Submit();
 ```
+
+#### For more information please review the cpp example:
+[cpp example](https://github.com/Dudi119/cppKin/blob/master/examples/cpp/example.py)
