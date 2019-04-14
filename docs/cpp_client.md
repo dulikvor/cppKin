@@ -8,7 +8,7 @@ Include cppkin header file - `cppkin.h`.
 
 Before we can start we need to initialize our client, should be done once per service.
 
-lets set the our client different policies:
+lets set our client different policies:
 ```c++
 cppkin::CppkinParams cppkinParams;
 cppkinParams.AddParam(cppkin::ConfigTags::HOST_ADDRESS,"127.0.0.1");
@@ -70,7 +70,7 @@ Spans and Traces can be added with key-value occurences called - **tags**:
 ```c++
 span.AddTag("our_tag_key", "our_event");
 ```
-Now that we are done with our span, let propegate it to zipkin:
+Now that we are done with our span, lets propagate it to zipkin’s server:
 ```c++
 span.Submit();
 ```
@@ -80,7 +80,7 @@ trace.Submit();
 ```
 
 ## Stopping:
-once done, we can call stop, in order to release the client resources:
+once done, we can call stop, in order to release the client’s resources:
 ```c++
 cppkin::Stop();
 ```
@@ -88,13 +88,13 @@ cppkin::Stop();
 # Advance capabilities:
 
 ## Span header:
-The span header can be retrived in order to propegate it to a differet service.
+The span header can be retrieved in order to propagate it to a different service.
 
-Can be done directly:
+It can be done directly:
 ```c++
 auto spanHeader = span.GetHeader();
 ```
-Or by the b3 string format:
+Or by using a char array encoded as - b3 format:
 ```c++
 typedef std::unique_ptr<const char, std::function<void(char const*)>> char_ptr;
 const char* b3_header_format;
@@ -103,14 +103,14 @@ char_ptr ptr(b3_header_format, [](char const* ptr){free(ptr);});
 ```
 
 ## Join:
-Spans can be joined - continued in seperate services.
+Spans can be joined (continued in separate services).
 
 One option is to provide the span's header in full:
 ```c++
 Span span();
 span.Join(traceHeader.Name.c_str(), traceHeader.TraceID, traceHeader.ParentID, traceHeader.ID, traceHeader.Sampled);
 ```
-Or by using the b3 string format:
+Or by using the header, encoded in b3 format:
 ```c++
 std::string header_in_b3_format = ...
 Span span();
@@ -118,11 +118,11 @@ span.Join(header_in_b3_format.c_str());
 ```
 
 ### Passing Trace/Span across multiple stack frames:
-It is possible to provide an instance of Trace/Span across many stack frames:
+It is possible to provide a Trace/Span instance to another stack frame with out involving dependency injection:
 ```c++
 static void foo()
 {
-    auto& trace = cppkin::PopSpan(); //our trace from before
+    auto& trace = cppkin::TopSpan(); //our trace from before
     auto span = trace.CreateSpan("span_operation");
     span.Submit();
 }
