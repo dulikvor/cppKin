@@ -104,9 +104,9 @@ import cppkin
 from cppkin import Trace, Span
 
 def foo():
-    trace = cppkin.top_span(); #our trace from before
-    span = trace.create_span("span_operation");
-    span.submit();
+    trace = cppkin.top_span() #our trace from before
+    span = trace.create_span("span_operation")
+    span.submit()
 
 #main function
 trace = Trace("trace_operation")
@@ -114,8 +114,8 @@ trace = Trace("trace_operation")
 cppkin.push_span(trace);
 foo()
 #once done we can pop the span from the stack
-cppkin.pop_span();
-trace.submit();
+cppkin.pop_span()
+trace.submit()
 ```
 #### For more information please review the python example:
 [python example](https://github.com/Dudi119/cppKin/blob/master/examples/python/example.py)
