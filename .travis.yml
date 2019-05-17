@@ -27,8 +27,6 @@ matrix:
             - e2fslibs-dev
             - libboost-all-dev
             - libaudit-dev
-            - pybind11-dev
-            - rapidjson-dev
             - libcurl4-openssl-dev
       env:
         - MATRIX_EVAL="CC=gcc-5 && CXX=g++-5"
