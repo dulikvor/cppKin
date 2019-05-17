@@ -1,4 +1,4 @@
-find_path(RAPIDJSON_INCLUDE_DIR NAMES rapidjson.h PATHS ${PROJECT_3RD_LOC}/include/rapidjson)
+find_path(RAPIDJSON_INCLUDE_DIR NAMES rapidjson/rapidjson.h PATHS ${PROJECT_3RD_LOC}/include)
 include(FindPackageHandleStandardArgs)
 find_package_handle_standard_args(RAPIDJSON REQUIRED_VARS RAPIDJSON_INCLUDE_DIR)
 
