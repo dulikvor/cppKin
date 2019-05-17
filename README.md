@@ -29,15 +29,20 @@ cppkin is dependent upon -
 | google benchmark        | tests |     >= 1.3     |
 | thrift                  | only for scribe transport | >= 0.10 |
 
+All mandatory packages besdies **core** can be fetched directly:
+```
+apt-get install cmake pybind11-dev rapidjson-dev libcurl4-openssl-dev libblkid-dev e2fslibs-dev libboost-all-dev libaudit-dev
+```
+
 ### Linux Install:
 Use the help command to review the different configuration arguments:
 ```
-. cppkin.bash --help
+. cppkin.sh --help
 ```
 
 Build cppkin by using the shell script:
 ```
-. cppkin.bash config #add arguments of choice
+. cppkin.sh config #add arguments of choice
 make
 make install
 ```
