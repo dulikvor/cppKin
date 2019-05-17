@@ -13,10 +13,23 @@ matrix:
             - ubuntu-toolchain-r-test
           packages:
             - g++-5
-            - libssl-dev
-            - libboost-all-dev
       env:
          - MATRIX_EVAL="CC=gcc-5 && CXX=g++-5"
+    - os: linux
+      addons:
+        apt:
+          update: true
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - g++-5
+            - libblkid-dev
+            - e2fslibs-dev
+            - libboost-all-dev
+            - libaudit-dev
+            - libcurl4-openssl-dev
+      env:
+        - MATRIX_EVAL="CC=gcc-5 && CXX=g++-5"
 
 before_install:
 - eval "${MATRIX_EVAL}"

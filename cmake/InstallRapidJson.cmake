@@ -15,7 +15,7 @@ if (NOT RAPIDJSON_FOUND)
                 DOWNLOAD_NAME       RapidJSON-1.1.0.tar.gz
                 URL                 https://github.com/miloyip/rapidjson/archive/v1.1.0.tar.gz
 				BUILD_COMMAND       ""
-				INSTALL_COMMAND     cp -a <SOURCE_DIR>/include/rapidjson <INSTALL_DIR>/include/rapidjson
+				INSTALL_COMMAND     mkdir -p <INSTALL_DIR>/include && cp -a <SOURCE_DIR>/include/rapidjson <INSTALL_DIR>/include/rapidjson
                 TEST_COMMAND        ""
                 )
     endif()
