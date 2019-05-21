@@ -12,9 +12,6 @@
 * VC++ 12.0 and above.
 * Cmake version > 3.5.
 
-## Python:
-* pybind11.
-
 ## Getting Started:
 cppkin is dependent upon -
 
@@ -29,12 +26,12 @@ cppkin is dependent upon -
 | google benchmark        | tests |     >= 1.3     |
 | thrift                  | only for scribe transport | >= 0.10 |
 
+### Linux Install:
 All mandatory packages besdies **core** can be fetched directly:
 ```
 apt-get install cmake pybind11-dev rapidjson-dev libcurl4-openssl-dev libblkid-dev e2fslibs-dev libboost-all-dev libaudit-dev
 ```
 
-### Linux Install:
 Use the help command to review the different configuration arguments:
 ```
 . cppkin.sh --help
