@@ -1,5 +1,6 @@
 @echo off
 setlocal EnableDelayedExpansion
+for %%F in (%0) do set scriptdir=%%~dpF
 IF "%1" == "install" ( call :clean && call :install %* 
 ) ELSE IF "%1" == "--help" ( call :display_help
 ) ELSE ( ECHO "supported commands - --help, install" )
@@ -25,15 +26,15 @@ IF %ERRORLEVEL% GEQ 1 (EXIT /B 2) ELSE (EXIT /B 0)
 	shift
     IF NOT [%1]==[] GOTO FOR_LABEL
 	IF %WITH_THRIFT%==ON (
-	cmake -G "Visual Studio %VCPP_VERSION%" -DCMAKE_BUILD_TYPE=%BUILD_TYPE% -D3RD_PARTY_INSTALL_STEP=ON -DPRE_COMPILE_STEP=ON -DWITH_THRIFT=%WITH_THRIFT% -DWITH_EXAMPLES=%WITH_EXAMPLES% -DPROJECT_3RD_LOC:STRING=%THIRD_PARTY_PREFIX%
+	cmake %scriptdir% -G "Visual Studio %VCPP_VERSION%" -DCMAKE_BUILD_TYPE=%BUILD_TYPE% -D3RD_PARTY_INSTALL_STEP=ON -DPRE_COMPILE_STEP=ON -DWITH_THRIFT=%WITH_THRIFT% -DWITH_EXAMPLES=%WITH_EXAMPLES% -DPROJECT_3RD_LOC:STRING=%THIRD_PARTY_PREFIX%
     IF exist Boost.vcxproj (CMD /C msbuild Boost.vcxproj /property:Configuration=%BUILD_TYPE%)
 	IF exist Thrift.vcxproj (CMD /C msbuild Thrift.vcxproj /property:Configuration=%BUILD_TYPE%)
 	IF exist THRIFT_BUILD.vcxproj (CMD /C msbuild THRIFT_BUILD.vcxproj /property:Configuration=%BUILD_TYPE%)
 	call:clean
 	)
-	cmake -G "Visual Studio %VCPP_VERSION%" -DCMAKE_BUILD_TYPE=%BUILD_TYPE% -D3RD_PARTY_INSTALL_STEP=ON -DCOMPILATION_STEP=ON -DWITH_THRIFT=%WITH_THRIFT% -DWITH_EXAMPLES=%WITH_EXAMPLES% -DPROJECT_3RD_LOC:STRING=%THIRD_PARTY_PREFIX%
+	cmake %scriptdir% -G "Visual Studio %VCPP_VERSION%" -DCMAKE_BUILD_TYPE=%BUILD_TYPE% -D3RD_PARTY_INSTALL_STEP=ON -DCOMPILATION_STEP=ON -DWITH_THRIFT=%WITH_THRIFT% -DWITH_EXAMPLES=%WITH_EXAMPLES% -DPROJECT_3RD_LOC:STRING=%THIRD_PARTY_PREFIX%
     IF %WITH_THRIFT%==OFF ( IF exist Boost.vcxproj (CMD /C msbuild Boost.vcxproj /property:Configuration=%BUILD_TYPE%) )
-    cmake -G "Visual Studio %VCPP_VERSION%" -DCMAKE_BUILD_TYPE=%BUILD_TYPE% -D3RD_PARTY_INSTALL_STEP=ON -DCOMPILATION_STEP=ON -DWITH_THRIFT=%WITH_THRIFT% -DWITH_EXAMPLES=%WITH_EXAMPLES% -DPROJECT_3RD_LOC:STRING=%THIRD_PARTY_PREFIX% -DOUTPUT_DIR:STRING=%OUTPUT_DIR%
+    cmake %scriptdir% -G "Visual Studio %VCPP_VERSION%" -DCMAKE_BUILD_TYPE=%BUILD_TYPE% -D3RD_PARTY_INSTALL_STEP=ON -DCOMPILATION_STEP=ON -DWITH_THRIFT=%WITH_THRIFT% -DWITH_EXAMPLES=%WITH_EXAMPLES% -DPROJECT_3RD_LOC:STRING=%THIRD_PARTY_PREFIX% -DOUTPUT_DIR:STRING=%OUTPUT_DIR%
 	IF exist POCO.vcxproj (CMD /C msbuild POCO.vcxproj /property:Configuration=%BUILD_TYPE%)
 	IF exist CURL.vcxproj (CMD /C msbuild CURL.vcxproj /property:Configuration=%BUILD_TYPE%)
 	IF exist SpdLog.vcxproj (CMD /C msbuild SpdLog.vcxproj /property:Configuration=%BUILD_TYPE%)
@@ -41,6 +42,7 @@ IF %ERRORLEVEL% GEQ 1 (EXIT /B 2) ELSE (EXIT /B 0)
 	IF exist RAPIDJSON.vcxproj (CMD /C msbuild RAPIDJSON.vcxproj /property:Configuration=%BUILD_TYPE%)
 	IF exist cppkin.vcxproj (CMD /C msbuild cppkin.vcxproj /property:Configuration=%BUILD_TYPE%)
     IF %WITH_EXAMPLES%==ON (IF exist examples/cpp/example.vcxproj (CMD /C msbuild examples/cpp/example.vcxproj /property:Configuration=%BUILD_TYPE%))
+	IF NOT %OUTPUT_DIR% == "" (IF exist INSTALL.vcxproj (CMD /C msbuild INSTALL.vcxproj /property:Configuration=%BUILD_TYPE%))
 goto :eof
 
 :display_help
@@ -50,7 +52,7 @@ goto :eof
     ECHO =======
     ECHO --3rd_loc_prefix=^<PREFIX^>     3rd party install area prefix.   
     ECHO.                                                               
-    ECHO --output_dir=^<DIR^>            cppkin binary install dir.
+    ECHO --output_dir=^<DIR^>            cppkin installation path, in relation to the batch script location.
     ECHO.                                                                
 	ECHO --vc_version=^<Number^>         visual c++ version.
     ECHO.                                                                
