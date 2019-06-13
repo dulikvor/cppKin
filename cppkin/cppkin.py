@@ -1,6 +1,6 @@
 import sys
-import _cppkin
-from _cppkin import Span, Trace, SERVER_RECEIVE, SERVER_SEND, NOP, add_tag, add_annotation
+from . import _cppkin
+from . _cppkin import Span, Trace, SERVER_RECEIVE, SERVER_SEND, NOP, add_tag, add_annotation
 
 is_type_hints_supported = sys.version_info.major >= 3 and sys.version_info.minor >= 5
 

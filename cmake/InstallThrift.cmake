@@ -1,13 +1,13 @@
 if (NOT THRIFT_FOUND)
     if (WIN32)
         include(cppkinMacro)
-        LinuxPath_ToWinPath(${PROJECT_SOURCE_DIR} PROJECT_DIR_WIN)
+        LinuxPath_ToWinPath(${PROJECT_BUILD_DIR} PROJECT_BUILD_DIR_WIN)
         LinuxPath_ToWinPath(${PROJECT_3RD_LOC} INSTALL_DIR_WIN)
         LinuxPath_ToWinPath(${PROJECT_3RD_LOC}/src/Thrift SOURCE_DIR_WIN)
         ExternalProject_Add(Thrift
                 DOWNLOAD_NAME       thrift-0.10.0.tar.gz
                 URL                 http://archive.apache.org/dist/thrift/0.10.0/thrift-0.10.0.tar.gz
-                CONFIGURE_COMMAND   copy ${PROJECT_DIR_WIN}\\Third_Party\\Patch\\FindBoost.cmake ${SOURCE_DIR_WIN}\\build\\cmake && copy ${PROJECT_DIR_WIN}\\Third_Party\\Patch\\Thrift.h ${SOURCE_DIR_WIN}\\lib\\cpp\\src\\thrift && cd ${SOURCE_DIR_WIN} && cmake -G "Visual Studio 12" -DWITH_SHARED_LIB=off -DBUILD_TUTORIALS=OFF -DBUILD_TESTING=OFF -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
+                CONFIGURE_COMMAND   copy ${PROJECT_BUILD_DIR_WIN}\\Third_Party\\Patch\\FindBoost.cmake ${SOURCE_DIR_WIN}\\build\\cmake && copy ${PROJECT_BUILD_DIR_WIN}\\Third_Party\\Patch\\Thrift.h ${SOURCE_DIR_WIN}\\lib\\cpp\\src\\thrift && cd ${SOURCE_DIR_WIN} && cmake -G "Visual Studio 12" -DWITH_SHARED_LIB=off -DBUILD_TUTORIALS=OFF -DBUILD_TESTING=OFF -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
                 BUILD_COMMAND       cd ${SOURCE_DIR_WIN} && msbuild ALL_BUILD.vcxproj /p:Configuration=${CMAKE_BUILD_TYPE}
                 INSTALL_COMMAND     ""
                 TEST_COMMAND        ""
