@@ -52,6 +52,7 @@ if (NOT CURL_FOUND OR USE_BUNDLED_CURL)
 			TEST_COMMAND        ""
 		)
 	endif()
+	set(CPPKIN_DEPEND_LIST ${CPPKIN_DEPEND_LIST} CURL)
 
     ExternalProject_Get_Property(CURL INSTALL_DIR)
 

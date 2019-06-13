@@ -13,6 +13,7 @@ if (NOT PYBIND_FOUND)
             DEPENDEES   install
             )
 
+    set(CPPKIN_WRAPPER_DEPEND_LIST ${CPPKIN_WRAPPER_DEPEND_LIST} PyBind)
     ExternalProject_Get_Property(PyBind INSTALL_DIR)
 
     set (PYBIND_ROOT_DIR          ${INSTALL_DIR})

@@ -28,6 +28,7 @@ if (NOT Boost_FOUND)
 						TEST_COMMAND        ""
 		)
 	endif()
+    set(CPPKIN_DEPEND_LIST ${CPPKIN_DEPEND_LIST} Boost)
 
 ExternalProject_Get_Property(Boost INSTALL_DIR)
 

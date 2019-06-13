@@ -26,6 +26,7 @@ if (NOT SPDLOG_FOUND)
 				)
 	endif()
 
+	set(CPPKIN_DEPEND_LIST ${CPPKIN_DEPEND_LIST} SpdLog)
     ExternalProject_Get_Property(SpdLog INSTALL_DIR)
 
     set (SPDLOG_ROOT_DIR          ${INSTALL_DIR})

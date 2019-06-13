@@ -20,6 +20,7 @@ if (NOT RAPIDJSON_FOUND)
                 )
     endif()
 
+	set(CPPKIN_DEPEND_LIST ${CPPKIN_DEPEND_LIST} RAPIDJSON)
     ExternalProject_Get_Property(RAPIDJSON INSTALL_DIR)
 
     set (RAPIDJSON_ROOT_DIR          ${INSTALL_DIR})

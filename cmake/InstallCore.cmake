@@ -11,6 +11,7 @@ if (NOT Core_FOUND)
 				BUILD_COMMAND       cd ${SOURCE_DIR_WIN} && CMD /C msbuild Core.vcxproj /p:Configuration=${CMAKE_BUILD_TYPE}
 				INSTALL_COMMAND     ""
 				TEST_COMMAND        ""
+				DEPENDS				SpdLog
 				)
 				
 		ExternalProject_Add_Step(Core Core_Create_HeadersDir
@@ -38,6 +39,7 @@ if (NOT Core_FOUND)
 				BUILD_COMMAND       cd <SOURCE_DIR> && make
 				INSTALL_COMMAND     mkdir -p <INSTALL_DIR>/lib && cp <SOURCE_DIR>/bin/libCore${CMAKE_DEBUG_POSTFIX}.so <INSTALL_DIR>/lib
 				TEST_COMMAND        ""
+				DEPENDS				SpdLog
 				)
 				
 		ExternalProject_Add_Step(Core Core_Install_Headers
@@ -45,6 +47,8 @@ if (NOT Core_FOUND)
 		DEPENDEES   install
 		)
 
+    set(CPPKIN_DEPEND_LIST ${CPPKIN_DEPEND_LIST} Core)
+    set(CPPKIN_WRAPPER_DEPEND_LIST ${CPPKIN_WRAPPER_DEPEND_LIST} Core)
     ExternalProject_Get_Property(Core INSTALL_DIR)
     add_custom_target(Core_stub)
 		

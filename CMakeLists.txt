@@ -36,6 +36,9 @@ option(WITH_TESTS "with tests" OFF)
 option(WITH_EXAMPLES "with examples" OFF)
 option(FORCE_INSTALL_RPATH "install rpath" OFF)
 
+set(CPPKIN_DEPEND_LIST "")
+set(CPPKIN_WRAPPER_DEPEND_LIST "")
+
 set(PROJECT_SOURCE_DIR ${CMAKE_SOURCE_DIR})
 set(PROJECT_BUILD_DIR ${CMAKE_BINARY_DIR})
 set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
@@ -122,6 +125,7 @@ if(COMPILATION_STEP)
     endif()
 
     add_library(cppkin SHARED src/Trace.h src/SpanContainer.h src/SpanContainer.cpp src/span_impl.cpp src/span_impl.h src/AnnotationType.cpp src/AnnotationType.h src/Annotation.h src/SimpleAnnotation.cpp src/SimpleAnnotation.h src/cppkin.h src/Trace.cpp src/Encoder.cpp src/Encoder.h src/EncodingTypes.cpp src/EncodingTypes.h src/EncodingContext.cpp src/EncodingContext.h src/TransportManager.cpp src/TransportManager.h src/Transport.cpp src/Transport.h src/HttpTransport.cpp src/HttpTransport.h src/ConfigTags.h src/TransportType.cpp src/TransportType.h src/TransportFactory.h src/TransportFactory.cpp src/ConfigParams.cpp src/ConfigTags.cpp src/Annotation.cpp src/Sampler.cpp src/JsonEncoder.h src/cppkin.cpp src/Export.h src/Span.cpp src/Span.h src/BinaryAnnotation.cpp)
+    add_dependencies(cppkin ${CPPKIN_DEPEND_LIST})
     set_target_properties(cppkin PROPERTIES PUBLIC_HEADER "src/Trace.h;src/Annotation.h;src/cppkin.h;src/Span.h;src/AnnotationType.h;src/BinaryAnnotation.h;src/ConfigParams.h;src/ConfigTags.h;src/Encoder.h;src/EncodingContext.h;src/EncodingTypes.h;src/Export.h;src/HttpTransport.h;src/JsonEncoder.h;src/Sampler.h;src/ScribeTransport.h;src/SimpleAnnotation.h;src/span_impl.h;src/StubTransport.h;src/ThriftEncoder.h;src/Transport.h;src/TransportFactory.h;src/TransportManager.h;src/TransportType.h")
 
     set(binderLib "")
@@ -133,6 +137,7 @@ if(COMPILATION_STEP)
     endif()
 
     add_library(_cppkin SHARED src/cppkinWrapper.cpp)
+    add_dependencies(_cppkin ${CPPKIN_WRAPPER_DEPEND_LIST})
     target_link_libraries(_cppkin libCore${CMAKE_DEBUG_POSTFIX}.so ${binderLib} cppkin)
     set_target_properties(_cppkin PROPERTIES PREFIX "")
     set_target_properties(_cppkin PROPERTIES DEBUG_POSTFIX "")

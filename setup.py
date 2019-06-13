@@ -42,7 +42,7 @@ class cmake_build_ext(build_ext):
 
 setup(
     name='cppkin',
-    version='1.1',
+    version='1.1.1',
     description='zipkin tracing library',
     url='https://github.com/Dudi119/cppKin',
     author='David (Dudi) Likvornik',
@@ -60,5 +60,8 @@ setup(
     include_package_data=True,
     cmdclass={
         'build_ext': cmake_build_ext
-    }
-)
+    },
+    long_description="""
+    cppkin is an instrumentation client library for zipkin available in C++ and Python.
+    """
+ )

@@ -6,6 +6,7 @@ if (NOT SweetPy_FOUND AND Core_FOUND)
             BUILD_COMMAND       cd <SOURCE_DIR> && make
             INSTALL_COMMAND     cp <SOURCE_DIR>/bin/libsweetPy${CMAKE_DEBUG_POSTFIX}.so <INSTALL_DIR>/lib
             TEST_COMMAND        ""
+            DEPENDS             Core
             )
 
     ExternalProject_Add_Step(SweetPy SweetPy_Install_Headers
@@ -26,6 +27,7 @@ if (NOT SweetPy_FOUND AND Core_FOUND)
         add_dependencies(SweetPy Core_stub)
     endif()
 
+    set(CPPKIN_WRAPPER_DEPEND_LIST ${CPPKIN_DEPEND_LIST} SweetPy)
     ExternalProject_Get_Property(SweetPy INSTALL_DIR)
 
     set (SweetPy_ROOT_DIR          ${INSTALL_DIR})
