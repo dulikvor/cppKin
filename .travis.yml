@@ -40,8 +40,9 @@ before_script:
 - ulimit -c unlimited -S       # enable core dumps
 
 script:
-- source cppkin.sh config --with_tests --with_examples && make
-- PYBINDER=$(pwd)/bin python ./tests/tests.py
+- mkdir build && cd build
+- source ../cppkin.sh config --with_tests --with_examples && make
+- BUILD_DIR=$(pwd) python ./tests/tests.py
 
 after_failure:
 - COREFILE=$(find . -maxdepth 1 -name "core*" | head -n 1) # find core file

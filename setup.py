@@ -28,7 +28,8 @@ class cmake_build_ext(build_ext):
             '-D3RD_PARTY_INSTALL_STEP=ON',
             '-DCOMPILATION_STEP=ON',
             '-DPYTHON_BINDING=pyBind',
-            '-DCMAKE_BUILD_TYPE=' + config
+            '-DCMAKE_BUILD_TYPE=' + config,
+            '-DFORCE_INSTALL_RPATH=ON'
         ]
         cwd = pathlib.Path().absolute()
         build_temp_rel = os.path.relpath(cwd, build_temp)
