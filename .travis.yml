@@ -25,8 +25,8 @@ before_script:
 - ulimit -c unlimited -S       # enable core dumps
 
 script:
-- mkdir build
-- cd build && source ../cppkin.sh config --with_tests --with_examples && make
+- mkdir build && cd build
+- ../cppkin.sh config --with_tests --with_examples && make
 - BUILD_DIR=$(pwd) python ../tests/tests.py
 
 after_failure:
