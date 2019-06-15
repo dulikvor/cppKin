@@ -9,7 +9,7 @@
 * Cmake version > 3.5.
 
 ## Windows Requirements:
-* VC++ 12.0 and above.
+* VC++ 12.0 (Visual Studio 2013 default toolset) or 14.0 (Visual Studio 2015 default toolset).
 * Cmake version > 3.5.
 
 ## Getting Started:
@@ -39,7 +39,8 @@ Use the help command to review the different configuration arguments:
 
 Build cppkin by using the shell script:
 ```
-. cppkin.sh config #add arguments of choice
+mkdir build && cd build
+../cppkin.sh config #add arguments of choice
 make
 make install
 ```
@@ -52,7 +53,8 @@ cppkin.bat --help
 
 Build cppkin by using the batch script:
 ```
-cppkin.bat install #add arguments of choice
+mkdir build && cd build
+..\cppkin.bat install #add arguments of choice
 ```
 
 ### Python products:
