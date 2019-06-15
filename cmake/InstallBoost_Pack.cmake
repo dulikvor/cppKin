@@ -40,5 +40,8 @@ ExternalProject_Get_Property(Boost INSTALL_DIR)
 set (Boost_ROOT_DIR          ${INSTALL_DIR})
 set (Boost_INCLUDE_DIR       ${INSTALL_DIR}/include)
 set (Boost_FOUND             YES)
+set (Boost_MAJOR_VERSION     1)
+set (Boost_MINOR_VERSION     65)
+set (Boost_SUBMINOR_VERSION  1)
 
 endif ()
