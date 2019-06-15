@@ -1,4 +1,4 @@
-find_path(BOTTLE_INCLUDE_DIR NAMES bottle.py PATHS ${PROJECT_DIR}/tests)
+find_path(BOTTLE_INCLUDE_DIR NAMES bottle.py PATHS ${PROJECT_SOURCE_DIR}/tests)
 include(FindPackageHandleStandardArgs)
 find_package_handle_standard_args(Bottle REQUIRED_VARS BOTTLE_INCLUDE_DIR)
 

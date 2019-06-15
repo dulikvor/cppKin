@@ -15,21 +15,6 @@ matrix:
             - g++-5
       env:
          - MATRIX_EVAL="CC=gcc-5 && CXX=g++-5"
-    - os: linux
-      addons:
-        apt:
-          update: true
-          sources:
-            - ubuntu-toolchain-r-test
-          packages:
-            - g++-5
-            - libblkid-dev
-            - e2fslibs-dev
-            - libboost-all-dev
-            - libaudit-dev
-            - libcurl4-openssl-dev
-      env:
-        - MATRIX_EVAL="CC=gcc-5 && CXX=g++-5"
 
 before_install:
 - eval "${MATRIX_EVAL}"
@@ -40,8 +25,9 @@ before_script:
 - ulimit -c unlimited -S       # enable core dumps
 
 script:
-- source cppkin.sh config --with_tests --with_examples && make
-- PYBINDER=$(pwd)/bin python ./tests/tests.py
+- mkdir build && cd build
+- ../cppkin.sh config --with_tests --with_examples && make
+- BUILD_DIR=$(pwd) python ../tests/tests.py
 
 after_failure:
 - COREFILE=$(find . -maxdepth 1 -name "core*" | head -n 1) # find core file

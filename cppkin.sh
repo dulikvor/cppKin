@@ -1,4 +1,5 @@
 #!/bin/bash
+SCRIPT_DIR=$(dirname "$0")
 
 display_help(){
     echo "                                                               "
@@ -13,9 +14,6 @@ display_help(){
     echo "                                                               "
     echo "Other options                                                  "
     echo "=============                                                  "
-    echo "                                                               "
-    echo "--with_thrift                 Scribe transportations layer     "
-    echo "                              support.                         "
     echo "                                                               "
     echo "--with_tests                  Run and install cppkin tests     "
     echo "                                                               "
@@ -50,7 +48,6 @@ clean_cmake_cache(){
 }
 
 config(){
-    WITH_THRIFT=OFF
     WITH_TESTS=OFF
     WITH_EXAMPLES=OFF
     BUILD_TYPE=Release
@@ -60,9 +57,6 @@ config(){
     for argument in "${@:2}"
     do
         case $argument in
-            --with_thrift)
-                WITH_THRIFT=ON
-            ;;
             --with_tests)
                 WITH_TESTS=ON
             ;;
@@ -83,7 +77,7 @@ config(){
             ;;
         esac
     done
-    cmake -DPRE_COMPILE_STEP=ON -D3RD_PARTY_INSTALL_STEP=ON -DCOMPILATION_STEP=ON -DWITH_THRIFT=$WITH_THRIFT -D WITH_TESTS=$WITH_TESTS -DWITH_EXAMPLES=$WITH_EXAMPLES -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DPROJECT_3RD_LOC:STRING=$THIRD_PARTY_PREFIX -DOUTPUT_DIR:STRING=$OUTPUT_DIR -DPYTHON_BINDING:STRING=$PYTHON_BINDING .
+    cmake $SCRIPT_DIR -DPRE_COMPILE_STEP=ON -D3RD_PARTY_INSTALL_STEP=ON -DCOMPILATION_STEP=ON -DWITH_TESTS=$WITH_TESTS -DWITH_EXAMPLES=$WITH_EXAMPLES -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DPROJECT_3RD_LOC:STRING=$THIRD_PARTY_PREFIX -DOUTPUT_DIR:STRING=$OUTPUT_DIR -DPYTHON_BINDING:STRING=$PYTHON_BINDING
 }
 
 while true; do

@@ -1,3 +1,6 @@
+import sys
+import os
+sys.path.extend([os.environ['BUILD_DIR'], '..', '.'])
 from zipkinStubServer import ServerGuard, ZipkinStubServer
 from server import WSGIRefServerStoppable
 import cppkin

@@ -1,8 +1,13 @@
 project(examples CXX)
 
-set(boost_lib "boost_program_options-vc120-mt-${Boost_MAJOR_VERSION}_${Boost_MINOR_VERSION}_${Boost_SUBMINOR_VERSION}")
+if(${VC_VERSION} STREQUAL "12")
+	set(toolset_version vc120)
+else(${VC_VERSION} STREQUAL "14")
+	set(toolset_version vc140)
+endif()
+set(boost_lib "boost_program_options-${toolset_version}-mt-${Boost_MAJOR_VERSION}_${Boost_MINOR_VERSION}_${Boost_SUBMINOR_VERSION}")
 if(${CMAKE_BUILD_TYPE} STREQUAL "Debug")
-    set(boost_lib "boost_program_options-vc120-mt-gd-${Boost_MAJOR_VERSION}_${Boost_MINOR_VERSION}_${Boost_SUBMINOR_VERSION}")
+    set(boost_lib "boost_program_options-${toolset_version}-mt-gd-${Boost_MAJOR_VERSION}_${Boost_MINOR_VERSION}_${Boost_SUBMINOR_VERSION}")
 endif()
 
 include_directories(.)

@@ -5,11 +5,6 @@ import queue
 from threading import Thread
 import server
 
-import sys
-import os
-sys.path.append(os.environ['PYBINDER'])
-
-
 class Span:
     def __init__(self):
         self.id = -1

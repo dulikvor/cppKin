@@ -1,5 +1,6 @@
 os:
   - Visual Studio 2013
+  - Visual Studio 2015
 
 build:
   verbosity: detailed
@@ -26,6 +27,9 @@ install:
   
 before_build:
   - cd C:\projects\cppkin
+  - mkdir build
+  - cd build
+  - ps: if($env:APPVEYOR_JOB_NAME -like "*Visual Studio 2013*") { $env:VC_VERSION = 12 } else { $env:VC_VERSION = 14 }
 
 build_script:
-  - cppkin.bat install --with_examples
+  - ..\cppkin.bat install --with_examples --vc_version=%VC_VERSION%
