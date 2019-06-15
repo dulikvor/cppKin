@@ -27,6 +27,7 @@ class cmake_build_ext(build_ext):
             '-DCMAKE_LIBRARY_OUTPUT_DIRECTORY=' + archive_out_dir,
             '-D3RD_PARTY_INSTALL_STEP=ON',
             '-DCOMPILATION_STEP=ON',
+			'-DWITH_PYTHON=ON',
             '-DPYTHON_BINDING=pyBind',
             '-DCMAKE_BUILD_TYPE=' + config,
             '-DFORCE_INSTALL_RPATH=ON'

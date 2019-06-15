@@ -1,13 +1,12 @@
 @echo off
 setlocal EnableDelayedExpansion
 for %%F in (%0) do set scriptdir=%%~dpF
-IF "%1" == "install" ( call :clean && call :install %* 
+IF "%1" == "install" ( call :install %* 
 ) ELSE IF "%1" == "--help" ( call :display_help
 ) ELSE ( ECHO "supported commands - --help, install" )
 IF %ERRORLEVEL% GEQ 1 (EXIT /B 2) ELSE (EXIT /B 0)
 
 :install
-    SET WITH_THRIFT=OFF
     SET WITH_TESTS=OFF
     SET WITH_EXAMPLES=OFF
     SET BUILD_TYPE=Release
@@ -16,8 +15,7 @@ IF %ERRORLEVEL% GEQ 1 (EXIT /B 2) ELSE (EXIT /B 0)
     SET OUTPUT_DIR=""
 	shift
 	:FOR_LABEL
-	IF "%1" == "--with_thrift" (SET WITH_THRIFT=ON
-	) ELSE IF "%1" == "--with_tests" (ECHO "--with_tests is not supported in windows"
+	IF "%1" == "--with_tests" (ECHO "--with_tests is not supported in windows"
 	)  ELSE IF "%1" == "--with_examples" (SET WITH_EXAMPLES=ON
     )  ELSE IF "%1" == "--debug" (SET BUILD_TYPE=Debug
     )  ELSE IF "%1" == "--3rd_loc_prefix" (SET THIRD_PARTY_PREFIX=%2 && shift
@@ -25,16 +23,8 @@ IF %ERRORLEVEL% GEQ 1 (EXIT /B 2) ELSE (EXIT /B 0)
 	)  ELSE IF "%1" == "--vc_version" (SET VCPP_VERSION=%2&& shift)
 	shift
     IF NOT [%1]==[] GOTO FOR_LABEL
-	IF %WITH_THRIFT%==ON (
-	cmake %scriptdir% -G "Visual Studio %VCPP_VERSION%" -DCMAKE_BUILD_TYPE=%BUILD_TYPE% -D3RD_PARTY_INSTALL_STEP=ON -DPRE_COMPILE_STEP=ON -DWITH_THRIFT=%WITH_THRIFT% -DWITH_EXAMPLES=%WITH_EXAMPLES% -DPROJECT_3RD_LOC:STRING=%THIRD_PARTY_PREFIX%
+    cmake %scriptdir% -G "Visual Studio %VCPP_VERSION%" -DVC_VERSION=%VCPP_VERSION% -DCMAKE_BUILD_TYPE=%BUILD_TYPE% -D3RD_PARTY_INSTALL_STEP=ON -DCOMPILATION_STEP=ON -DWITH_EXAMPLES=%WITH_EXAMPLES% -DPROJECT_3RD_LOC:STRING=%THIRD_PARTY_PREFIX% -DOUTPUT_DIR:STRING=%OUTPUT_DIR%
     IF exist Boost.vcxproj (CMD /C msbuild Boost.vcxproj /property:Configuration=%BUILD_TYPE%)
-	IF exist Thrift.vcxproj (CMD /C msbuild Thrift.vcxproj /property:Configuration=%BUILD_TYPE%)
-	IF exist THRIFT_BUILD.vcxproj (CMD /C msbuild THRIFT_BUILD.vcxproj /property:Configuration=%BUILD_TYPE%)
-	call:clean
-	)
-	cmake %scriptdir% -G "Visual Studio %VCPP_VERSION%" -DCMAKE_BUILD_TYPE=%BUILD_TYPE% -D3RD_PARTY_INSTALL_STEP=ON -DCOMPILATION_STEP=ON -DWITH_THRIFT=%WITH_THRIFT% -DWITH_EXAMPLES=%WITH_EXAMPLES% -DPROJECT_3RD_LOC:STRING=%THIRD_PARTY_PREFIX%
-    IF %WITH_THRIFT%==OFF ( IF exist Boost.vcxproj (CMD /C msbuild Boost.vcxproj /property:Configuration=%BUILD_TYPE%) )
-    cmake %scriptdir% -G "Visual Studio %VCPP_VERSION%" -DCMAKE_BUILD_TYPE=%BUILD_TYPE% -D3RD_PARTY_INSTALL_STEP=ON -DCOMPILATION_STEP=ON -DWITH_THRIFT=%WITH_THRIFT% -DWITH_EXAMPLES=%WITH_EXAMPLES% -DPROJECT_3RD_LOC:STRING=%THIRD_PARTY_PREFIX% -DOUTPUT_DIR:STRING=%OUTPUT_DIR%
 	IF exist POCO.vcxproj (CMD /C msbuild POCO.vcxproj /property:Configuration=%BUILD_TYPE%)
 	IF exist CURL.vcxproj (CMD /C msbuild CURL.vcxproj /property:Configuration=%BUILD_TYPE%)
 	IF exist SpdLog.vcxproj (CMD /C msbuild SpdLog.vcxproj /property:Configuration=%BUILD_TYPE%)
@@ -59,12 +49,9 @@ goto :eof
     ECHO --debug                       debug build, otherwise - release.
     ECHO.                                                                
     ECHO Other options                                                  
-    ECHO =============                                                  
+    ECHO =============                                                        
     ECHO.                                                                
-    ECHO --with_thrift                 Scribe transportations layer     
-    ECHO                               support.                         
-    ECHO.                                                                
-    ECHO --with_examples               Compile cppkin examples          
+    ECHO --with_examples               Compile cppkin examples
 goto :eof
 
 :clean
