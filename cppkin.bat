@@ -44,7 +44,8 @@ goto :eof
     ECHO.                                                               
     ECHO --output_dir=^<DIR^>            cppkin installation path, in relation to the batch script location.
     ECHO.                                                                
-	ECHO --vc_version=^<Number^>         visual c++ version.
+	ECHO --vc_version=^<Number^>         12 (Default) = Visual Studio 2013,
+	ECHO.                              14 = Visual Studio 2015 
     ECHO.                                                                
     ECHO --debug                       debug build, otherwise - release.
     ECHO.                                                                
