@@ -13,7 +13,6 @@ class cmake_build_ext(build_ext):
             if not isinstance(ext, CMakeExtension):
                 raise TypeError('ext type {0} mismatch intended CMakeExtension'.format(type(ext)))
             self.build_cmake(ext)
-        #super().run()
 
     def build_cmake(self, ext):
         build_temp = pathlib.Path(self.build_temp)
