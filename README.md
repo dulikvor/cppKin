@@ -57,11 +57,11 @@ mkdir build && cd build
 ..\cppkin.bat install #add arguments of choice
 ```
 
-### Python products:
-In order to use the client python variation, 3 compilation products are required:
-- **python.py** (available at the python directory and installed into a destination of choice).
-- **_cppkin.so** (linux example), internal module being used by the python.py script. available at a destination of choice.
-- **cppkin.so** and all relevant 3rd party dependency products.
+### Python Install:
+Only available in Linux as of now.
+```
+pip install cppkin
+```
 
 ### Language:
 - [cppkin - cpp variation](https://github.com/Dudi119/cppKin/blob/master/docs/cpp_client.md)
