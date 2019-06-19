@@ -13,7 +13,7 @@ class cmake_build_ext(build_ext):
             if not isinstance(ext, CMakeExtension):
                 raise TypeError('ext type {0} mismatch intended CMakeExtension'.format(type(ext)))
             self.build_cmake(ext)
-        super().run()
+        #super().run()
 
     def build_cmake(self, ext):
         build_temp = pathlib.Path(self.build_temp)
@@ -43,7 +43,7 @@ class cmake_build_ext(build_ext):
 
 setup(
     name='cppkin',
-    version='1.1.1',
+    version='1.1.2',
     description='zipkin tracing library',
     url='https://github.com/Dudi119/cppKin',
     author='David (Dudi) Likvornik',
@@ -56,7 +56,6 @@ setup(
     ],
     keywords='zipkin instrumentation tracing',
     packages=['cppkin'],
-    package_files={'cppkin': ['_cppkin.so']},
     ext_modules=[CMakeExtension('cppKin')],
     include_package_data=True,
     cmdclass={
