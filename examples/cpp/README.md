@@ -3,7 +3,7 @@
 Start Zipking server
 -------------------
 
-wget -O zipkin.jar 'https://search.maven.org/remote_content?g=io.zipkin.java&a=zipkin-server&v=LATEST&c=exec'
+curl -sSL https://zipkin.io/quickstart.sh | bash -s
 
 java -jar zipkin.jar
 
